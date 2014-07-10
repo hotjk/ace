@@ -1,0 +1,50 @@
+﻿@model IEnumerable<CQRS.Demo.Model.Investments.Investment>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>CQRS Demo</h2>
+@Html.ActionLink("投资", "Create", "Invest")
+
+<table>
+    <thead>
+        <tr>
+            <th>
+                InvestmentId
+            </th>
+            <th>
+                ProjectId
+            </th>
+            <th>
+                AccountId
+            </th>
+            <th>
+                Amount
+            </th>
+            <th>
+                Status
+            </th>
+        </tr>
+    </thead>
+    @foreach (var investment in Model)
+    {
+        <tr>
+            <td>
+                @investment.InvestmentId
+            </td>
+            <td>
+                @investment.ProjectId
+        </td>
+        <td>
+            @investment.AccountId
+        </td>
+        <td>
+            @investment.Amount
+        </td>
+        <td>
+            @investment.Status
+        </td>
+    </tr>
+    }
+
+</table>

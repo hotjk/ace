@@ -1,0 +1,31 @@
+﻿@model CQRS.Demo.Model.Investments.Investment
+@using Grit.CQRS.Actions
+@{
+    ViewBag.Title = "Index";
+    ActionResponse response = TempData["ActionResponse"] as ActionResponse;
+}
+@if (response != null)
+{
+    <h2>
+        @response.Message
+    </h2>
+}
+@if (Model != null) { 
+    if (Model.Status == CQRS.Demo.Contracts.Enum.InvestmentStatus.Initial)
+    {
+        <p>
+            投资已发起
+            @using (Html.BeginForm("Pay", "Invest", FormMethod.Post))
+            {
+                @Html.Hidden("id", @Model.InvestmentId)
+                <input type="submit" value="支付" />
+            }
+        </p>
+    }
+    else if (Model.Status == CQRS.Demo.Contracts.Enum.InvestmentStatus.Paied)
+    {
+        <p>
+            投资已支付
+        </p>
+    }
+}
