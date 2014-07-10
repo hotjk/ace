@@ -16,6 +16,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grit.Configuration", "Grit.Configuration\Grit.Configuration.csproj", "{38BFF300-BE60-4A8B-886E-0C3DF4362657}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CQRS", "CQRS", "{9C7D4CD4-9C10-48E0-AAEE-83419CD8B19B}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grit.CQRS", "Grit.CQRS\Grit.CQRS.csproj", "{81569F0A-133A-4E07-A66B-9EFC8B5F7411}"
 EndProject
@@ -31,7 +34,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRS.Demo.Model.Write", "CQ
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{BAF43B16-9BAD-4569-9E4D-CD7202BAB7C7}"
 	ProjectSection(SolutionItems) = preProject
-		README.md = README.md
+		INSTALL.md = INSTALL.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CQRS", "CQRS", "{82C2D6D9-5AD5-4FF7-A580-2F8E286BB913}"
