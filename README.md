@@ -10,7 +10,7 @@ DomainMesssage 也叫 DomainEvent，用于解耦服务。
 
 #### Send
 
-发送 Action 到外部的事件总线（RabbitMQ）。Send 方法是一种 RPC 调用，发送之前会在 RabbitMQ 创建一个线程专用的匿名 Queue 用于接收 ActionResponse；业务处理中心（Saga）负责从队列中获取 Action，并执行具体的业务操作，操作完成后，Saga 要在 Action 指定的匿名 Queue 里发送 ActionResponse 应答；发送如果不能在指定的超时时间内收到 ActionResponse，会抛出异常。
+发送 Action 到外部的事件总线（RabbitMQ）。Send 方法是一种 RPC 调用，发送之前会在 RabbitMQ 创建一个线程专用的匿名 Queue 用于接收 ActionResponse；业务处理中心（Saga）负责从队列中获取 Action，并执行具体的业务操作，操作完成后，Saga 要在 Action 指定的匿名 Queue 里发送 ActionResponse 应答。
 
 #### Invoke
 
@@ -22,7 +22,7 @@ Saga 收到 Action 后，可以在使用 Invoke 方法发送 Action 到特定的
 
 #### Send
 
-发送 Command 对象，一个 Command 只能被一个特定的 CommandHandler 处理，应该在 UnitOfWork 内部调用该方法，发送的多个 Command 对象将在线程内顺序执行，且保持数据库事务一致性。
+发送 Command 对象，一个 Command 只能被一个特定的 CommandHandler 处理，MUST 在 UnitOfWork 内部调用该方法，发送的多个 Command 对象将在线程内顺序执行，且保持数据库事务一致性。
 
 ### Event/EventBus
 
@@ -59,3 +59,7 @@ Event Consumer 收到来自事件队列的 Action 对象后，调用 Handle 方�
 ## Event Consumer
 
 特定业务的 Event 消费者，特定 Event consumer 需要根据特定业务创建特定 Queue，并配置路由规则将 Queue 绑定到 Event Exchange。
+
+## BootStrapper
+
+通过反射将 Action/Command/Event 和相应的 Handler 绑定；初始化 ServiceLocator。
