@@ -38,15 +38,36 @@ namespace Grit.CQRS
             string json = JsonConvert.SerializeObject(@event);
             log4net.LogManager.GetLogger("event.logger").Info(
                 string.Format("Event Publish {0} {1}", @event, json));
-
-            var channel = ServiceLocator.Channel;
-            channel.BasicPublish(ServiceLocator.EventBusExchange,
-                @event.RoutingKey, 
-                new BasicProperties { 
-                    DeliveryMode = 2, // durable
-                    Type = @event.Type
-                },
-                Encoding.UTF8.GetBytes(json));
+            
+            try
+            {
+                int retry = 2;
+                try
+                {
+                    ServiceLocator.Channel.BasicPublish(ServiceLocator.EventBusExchange,
+                        @event.RoutingKey,
+                        new BasicProperties
+                        {
+                            DeliveryMode = 2, // durable
+                            Type = @event.Type
+                        },
+                        Encoding.UTF8.GetBytes(json));
+                }
+                catch (RabbitMQ.Client.Exceptions.AlreadyClosedException ex)
+                {
+                    if (retry > 0)
+                    {
+                        retry--;
+                        ServiceLocator.Reset();
+                    }
+                    throw ex;
+                }
+            }
+            catch (Exception ex)
+            {
+                log4net.LogManager.GetLogger("exception.logger").Error(
+                    new Exception(string.Format("Flush {0} {1}", @event.Type, @event.Id), ex));
+            }
 
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
@@ -62,9 +83,8 @@ namespace Grit.CQRS
                         }
                         catch (Exception ex)
                         {
-                            var newEx = new Exception(string.Format("{0} {1} {2}",
-                            handler.GetType().Name, @event.Type, @event.Id), ex);
-                            log4net.LogManager.GetLogger("exception.logger").Error(newEx);
+                            log4net.LogManager.GetLogger("exception.logger").Error(
+                                new Exception(string.Format("{0} {1} {2}", handler.GetType().Name, @event.Type, @event.Id), ex));
                         }
                     });
                 }
@@ -88,9 +108,9 @@ namespace Grit.CQRS
                     }
                     catch(Exception ex)
                     {
-                        var newEx = new Exception(string.Format("{0} {1} {2}",
-                            handler.GetType().Name, @event.Type, @event.Id), ex);
-                        log4net.LogManager.GetLogger("exception.logger").Error(newEx);
+                        log4net.LogManager.GetLogger("exception.logger").Error(
+                            new Exception(string.Format("{0} {1} {2}",
+                            handler.GetType().Name, @event.Type, @event.Id), ex));
                     }
                 }
             }

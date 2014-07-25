@@ -28,7 +28,6 @@ namespace CQRS.Demo.EventConsumer
         public static void BootStrap()
         {
             AddIocBindings();
-            InitMessageQueue();
             InitHandlerFactory();
             InitServiceLocator();
         }
@@ -69,7 +68,7 @@ namespace CQRS.Demo.EventConsumer
             Kernel.Bind<IAccountActivityWriteRepository>().To<AccountActivityWriteRepository>().InSingletonScope();
         }
 
-        private static void InitMessageQueue()
+        private static IModel InitMessageQueue()
         {
             ConnectionFactory factory = new ConnectionFactory { Uri = Grit.Configuration.RabbitMQ.CQRSDemo };
             connection = factory.CreateConnection();
@@ -80,6 +79,7 @@ namespace CQRS.Demo.EventConsumer
             channel.QueueBind(Grit.Configuration.RabbitMQ.CQRSDemoAccountEventQueue, 
                 Grit.Configuration.RabbitMQ.CQRSDemoEventBusExchange,
                 Grit.Configuration.RabbitMQ.CQRSDemoAccountEventRoutingKey);
+            return channel;
         }
 
         private static void InitHandlerFactory()
@@ -94,11 +94,10 @@ namespace CQRS.Demo.EventConsumer
         {
             ServiceLocator.Init(
                 Kernel,
-                channel,
                 Grit.Configuration.RabbitMQ.CQRSDemoEventBusExchange,
                 Grit.Configuration.RabbitMQ.CQRSDemoActionBusExchange,
                 Grit.Configuration.RabbitMQ.CQRSDemoCoreActionQueue,
-                10);
+                10, InitMessageQueue);
         }
     }
 }

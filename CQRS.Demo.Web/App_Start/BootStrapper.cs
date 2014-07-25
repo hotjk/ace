@@ -25,7 +25,6 @@ namespace CQRS.Demo.Web
         public static void BootStrap()
         {
             AddIocBindings();
-            InitMessageQueue();
             InitServiceLocator();
         }
 
@@ -60,24 +59,24 @@ namespace CQRS.Demo.Web
             Kernel.Bind<IAccountService>().To<AccountService>().InSingletonScope();
         }
 
-        private static void InitMessageQueue()
+        private static IModel InitMessageQueue()
         {
             ConnectionFactory factory = new ConnectionFactory { Uri = Grit.Configuration.RabbitMQ.CQRSDemo };
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
             channel.ExchangeDeclare(Grit.Configuration.RabbitMQ.CQRSDemoActionBusExchange, ExchangeType.Direct, true);
             channel.QueueDeclare(Grit.Configuration.RabbitMQ.CQRSDemoCoreActionQueue, true, false, false, null);
+            return channel;
         }
 
         private static void InitServiceLocator()
         {
             ServiceLocator.Init(
                 Kernel,
-                channel,
                 Grit.Configuration.RabbitMQ.CQRSDemoEventBusExchange,
                 Grit.Configuration.RabbitMQ.CQRSDemoActionBusExchange,
                 Grit.Configuration.RabbitMQ.CQRSDemoCoreActionQueue,
-                10);
+                10, InitMessageQueue);
         }
     }
 }

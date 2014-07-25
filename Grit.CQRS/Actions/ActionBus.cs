@@ -5,6 +5,7 @@ using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Framing.v0_9_1;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -26,13 +27,15 @@ namespace Grit.CQRS
         public void Invoke<T>(T action) where T : Action
         {
             log4net.LogManager.GetLogger("action.logger").Info(
-                string.Format("Action Invoke {0}", action.Id));
+                string.Format("Action BeginInvoke {0}", action.Id));
 
             var handler = _actionHandlerFactory.GetHandler<T>();
             if (handler != null)
             {
                 handler.Invoke(action);
             }
+            log4net.LogManager.GetLogger("action.logger").Info(
+                string.Format("Action EndInvoke {0}", action.Id));
         }
 
         public Type GetType(string name)
@@ -64,19 +67,49 @@ namespace Grit.CQRS
             string json = JsonConvert.SerializeObject(action);
             log4net.LogManager.GetLogger("action.logger").Info(
                 string.Format("Action Send {0} {1}", action, json));
-            
-            DeclareReplyQueue();
 
-            var props = ServiceLocator.Channel.CreateBasicProperties();
-            props.ReplyTo = _replyQueueName;
-            props.CorrelationId = action.Id.ToString();
-            props.Type = action.Type;
+            int retry = 2;
+            while (true)
+            {
+                try
+                {
+                    DeclareReplyQueue();
 
-            ServiceLocator.Channel.BasicPublish(
-                ServiceLocator.ActionBusExchange,
-                ServiceLocator.ActionBusQueue, //Queue is also the routing key in direct exchange
-                props,
-                Encoding.UTF8.GetBytes(json));
+                    var props = ServiceLocator.Channel.CreateBasicProperties();
+                    props.ReplyTo = _replyQueueName;
+                    props.CorrelationId = action.Id.ToString();
+                    props.Type = action.Type;
+
+                    ServiceLocator.Channel.BasicPublish(
+                        ServiceLocator.ActionBusExchange,
+                        ServiceLocator.ActionBusQueue, //Queue is also the routing key in direct exchange
+                        props,
+                        Encoding.UTF8.GetBytes(json));
+                    break;
+                }
+                catch (System.IO.EndOfStreamException ex)
+                {
+                    if (retry > 0)
+                    {
+                        retry--;
+                        _replyQueueName = null;
+                        ServiceLocator.Reset();
+                        continue;
+                    }
+                    throw ex;
+                }
+                catch(RabbitMQ.Client.Exceptions.AlreadyClosedException ex)
+                {
+                    if (retry > 0)
+                    {
+                        retry--;
+                        _replyQueueName = null;
+                        ServiceLocator.Reset();
+                        continue;
+                    }
+                    throw ex;
+                }
+            }
 
             BasicDeliverEventArgs result;
             if (_consumer.Queue.Dequeue(ServiceLocator.ActionResponseTimeoutSeconds * 1000, out result))

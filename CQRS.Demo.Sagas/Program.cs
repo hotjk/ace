@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CQRS.Demo.Sagas
@@ -24,6 +25,22 @@ namespace CQRS.Demo.Sagas
             CQRS.Demo.Applications.EnsoureAssemblyLoaded.Pike();
             BootStrapper.BootStrap();
 
+            while (true)
+            {
+                try
+                {
+                    Run();
+                }
+                catch (Exception ex) // Ping rabbitmq exception
+                {
+                    log4net.LogManager.GetLogger("exception.logger").Error(ex);
+                }
+                Thread.Sleep(5000);
+            }
+        }
+
+        private static void Run()
+        {
             var factory = new ConnectionFactory() { Uri = Grit.Configuration.RabbitMQ.CQRSDemo };
             using (var connection = factory.CreateConnection())
             {
@@ -41,33 +58,49 @@ namespace CQRS.Demo.Sagas
                         var props = ea.BasicProperties;
                         var replyProps = channel.CreateBasicProperties();
                         replyProps.CorrelationId = props.CorrelationId;
-                        Type type = ServiceLocator.ActionBus.GetType(props.Type);
-                        dynamic action = JsonConvert.DeserializeObject(message, type);
                         ActionResponse response = new ActionResponse { Result = ActionResponse.ActionResponseResult.OK };
-                        //Console.WriteLine("{0} {1}", routingKey, message);
 
                         try
                         {
-                            ServiceLocator.ActionBus.Invoke(action);
+                            Type type = ServiceLocator.ActionBus.GetType(props.Type);
+                            dynamic action = JsonConvert.DeserializeObject(message, type);
+                            try
+                            {
+                                ServiceLocator.ActionBus.Invoke(action);
+                            }
+                            catch (BusinessException ex)
+                            {
+                                response.Result = ActionResponse.ActionResponseResult.NG;
+                                response.Message = ex.Message;
+                            }
                         }
-                        catch (BusinessException ex)
-                        {
-                            response.Result = ActionResponse.ActionResponseResult.NG;
-                            response.Message = ex.Message;
-                        }
-                        catch (Exception ex)
+                        catch(RabbitMQ.Client.Exceptions.AlreadyClosedException ex)
                         {
                             response.Result = ActionResponse.ActionResponseResult.Exception;
                             response.Message = ex.Message;
-                            Exception newEx = new Exception(string.Format("{0} {1}", action.Type, action.Id), ex);
-                            log4net.LogManager.GetLogger("exception.logger").Error(newEx);
+                            log4net.LogManager.GetLogger("exception.logger").Error(ex);
+                            return;
+                        }
+                        catch (Exception ex) // Deserialze action exception
+                        {
+                            response.Result = ActionResponse.ActionResponseResult.Exception;
+                            response.Message = ex.Message;
+                            log4net.LogManager.GetLogger("exception.logger").Error(ex);
                         }
                         finally
                         {
-                            var responseBytes =
-                            Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(response));
-                            channel.BasicPublish("", props.ReplyTo, replyProps, responseBytes);
-                            channel.BasicAck(ea.DeliveryTag, false);
+
+                            try
+                            {
+                                var responseBytes =
+                                Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(response));
+                                channel.BasicPublish("", props.ReplyTo, replyProps, responseBytes);
+                                channel.BasicAck(ea.DeliveryTag, false);
+                            }
+                            catch (Exception ex) // Reply Ack exception
+                            {
+                                log4net.LogManager.GetLogger("exception.logger").Error(ex);
+                            }
                         }
                     }
                 }

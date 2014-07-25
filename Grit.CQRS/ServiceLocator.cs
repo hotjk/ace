@@ -38,19 +38,23 @@ namespace Grit.CQRS
         private static bool _isInitialized;
         private static readonly object _lockThis = new object();
 
+        private static System.Func<IModel> _callback = null;
+
         public static void Init(IKernel kernel, 
-            IModel channel, 
             string eventBusExchange, 
             string actionBusExchange,
             string actionBusQueue, 
-            int timeoutSeconds = 10)
+            int timeoutSeconds = 10,
+            System.Func<IModel> callback = null)
         {
             if (!_isInitialized)
             {
                 lock (_lockThis)
                 {
+                    _callback = callback;
                     Kernel = kernel;
-                    Channel = channel;
+
+                    Reset();
 
                     EventBusExchange = eventBusExchange;
                     ActionBusExchange = actionBusExchange;
@@ -71,6 +75,14 @@ namespace Grit.CQRS
                     CommandBus = kernel.Get<ICommandBus>();
                     _isInitialized = true;
                 }
+            }
+        }
+
+        public static void Reset()
+        {
+            if (_callback != null)
+            {
+                Channel = _callback();
             }
         }
     }

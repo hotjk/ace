@@ -69,7 +69,7 @@ namespace CQRS.Demo.Sagas
             Kernel.Bind<IAccountActivityWriteRepository>().To<AccountActivityWriteRepository>().InSingletonScope();
         }
 
-        private static void InitMessageQueue()
+        private static IModel InitMessageQueue()
         {
             ConnectionFactory factory = new ConnectionFactory { Uri = Grit.Configuration.RabbitMQ.CQRSDemo };
             connection = factory.CreateConnection();
@@ -80,6 +80,7 @@ namespace CQRS.Demo.Sagas
             channel.QueueBind(Grit.Configuration.RabbitMQ.CQRSDemoCoreActionQueue,
                 Grit.Configuration.RabbitMQ.CQRSDemoActionBusExchange,
                 Grit.Configuration.RabbitMQ.CQRSDemoCoreActionQueue);
+            return channel;
         }
 
         private static void InitHandlerFactory()
@@ -96,11 +97,10 @@ namespace CQRS.Demo.Sagas
         {
             ServiceLocator.Init(
                 Kernel,
-                channel,
                 Grit.Configuration.RabbitMQ.CQRSDemoEventBusExchange,
                 Grit.Configuration.RabbitMQ.CQRSDemoActionBusExchange,
                 Grit.Configuration.RabbitMQ.CQRSDemoCoreActionQueue,
-                10);
+                10, InitMessageQueue);
         }
     }
 }
