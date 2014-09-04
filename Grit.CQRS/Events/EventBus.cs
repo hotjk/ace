@@ -38,7 +38,36 @@ namespace Grit.CQRS
             string json = JsonConvert.SerializeObject(@event);
             log4net.LogManager.GetLogger("event.logger").Info(
                 string.Format("Event Publish {0} {1}", @event, json));
-            
+
+            if (@event.Outer)
+            {
+                FlushAnEventToOuter<T>(@event, json);
+            }
+
+            var handlers = _eventHandlerFactory.GetHandlers<T>();
+            if (handlers != null)
+            {
+                foreach (var handler in handlers)
+                {
+                    // handle event in thread pool
+                    ThreadPool.QueueUserWorkItem(x =>
+                    {
+                        try
+                        {
+                            handler.Handle(@event);
+                        }
+                        catch (Exception ex)
+                        {
+                            log4net.LogManager.GetLogger("exception.logger").Error(
+                                new Exception(string.Format("{0} {1} {2}", handler.GetType().Name, @event.Type, @event.Id), ex));
+                        }
+                    });
+                }
+            }
+        }
+
+        private static void FlushAnEventToOuter<T>(T @event, string json) where T : Event
+        {
             try
             {
                 int retry = 2;
@@ -67,27 +96,6 @@ namespace Grit.CQRS
             {
                 log4net.LogManager.GetLogger("exception.logger").Error(
                     new Exception(string.Format("Flush {0} {1}", @event.Type, @event.Id), ex));
-            }
-
-            var handlers = _eventHandlerFactory.GetHandlers<T>();
-            if (handlers != null)
-            {
-                foreach (var handler in handlers)
-                {
-                    // handle event in thread pool
-                    ThreadPool.QueueUserWorkItem(x =>
-                    {
-                        try
-                        {
-                            handler.Handle(@event);
-                        }
-                        catch (Exception ex)
-                        {
-                            log4net.LogManager.GetLogger("exception.logger").Error(
-                                new Exception(string.Format("{0} {1} {2}", handler.GetType().Name, @event.Type, @event.Id), ex));
-                        }
-                    });
-                }
             }
         }
 

@@ -10,5 +10,10 @@ namespace Grit.CQRS
 {
     public class Event : DomainMessage, IEvent
     {
+        public Event(bool outer = true)
+        {
+            this.Outer = outer;
+        }
+        public bool Outer { get; set; }
     }
 }
