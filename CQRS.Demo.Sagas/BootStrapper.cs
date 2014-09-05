@@ -28,7 +28,6 @@ namespace CQRS.Demo.Sagas
         public static void BootStrap()
         {
             AddIocBindings();
-            InitMessageQueue();
             InitHandlerFactory();
             InitServiceLocator();
         }
