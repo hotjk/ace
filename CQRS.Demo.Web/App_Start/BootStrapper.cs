@@ -18,61 +18,61 @@ namespace CQRS.Demo.Web
 {
     public static class BootStrapper
     {
-        public static IKernel Kernel { get; private set; }
-        private static IConnection connection;
-        private static IModel channel;
+        public static IKernel IoCKernel { get; private set; }
+        private static IConnection _MQConnection;
+        private static IModel _MQChannel;
 
         public static void BootStrap()
         {
-            AddIocBindings();
+            AddIoCBindings();
             InitServiceLocator();
         }
 
         public static void Dispose()
         {
-            if(channel != null)
+            if(_MQChannel != null)
             {
-                channel.Dispose();
+                _MQChannel.Dispose();
             }
-            if(connection != null)
+            if(_MQConnection != null)
             {
-                connection.Dispose();
+                _MQConnection.Dispose();
             }
-            if (Kernel != null)
+            if (IoCKernel != null)
             {
-                Kernel.Dispose();
+                IoCKernel.Dispose();
             }
         }
 
-        private static void AddIocBindings()
+        private static void AddIoCBindings()
         {
-            Kernel = new StandardKernel();
+            IoCKernel = new StandardKernel();
 
-            Kernel.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
-            Kernel.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
+            IoCKernel.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
+            IoCKernel.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
 
-            Kernel.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
-            Kernel.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
-            Kernel.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
-            Kernel.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
-            Kernel.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
-            Kernel.Bind<IAccountService>().To<AccountService>().InSingletonScope();
+            IoCKernel.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
+            IoCKernel.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
+            IoCKernel.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
+            IoCKernel.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
+            IoCKernel.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
+            IoCKernel.Bind<IAccountService>().To<AccountService>().InSingletonScope();
         }
 
         private static IModel InitMessageQueue()
         {
             ConnectionFactory factory = new ConnectionFactory { Uri = Grit.Configuration.RabbitMQ.CQRSDemo };
-            connection = factory.CreateConnection();
-            channel = connection.CreateModel();
-            channel.ExchangeDeclare(Grit.Configuration.RabbitMQ.CQRSDemoActionBusExchange, ExchangeType.Direct, true);
-            channel.QueueDeclare(Grit.Configuration.RabbitMQ.CQRSDemoCoreActionQueue, true, false, false, null);
-            return channel;
+            _MQConnection = factory.CreateConnection();
+            _MQChannel = _MQConnection.CreateModel();
+            _MQChannel.ExchangeDeclare(Grit.Configuration.RabbitMQ.CQRSDemoActionBusExchange, ExchangeType.Direct, true);
+            _MQChannel.QueueDeclare(Grit.Configuration.RabbitMQ.CQRSDemoCoreActionQueue, true, false, false, null);
+            return _MQChannel;
         }
 
         private static void InitServiceLocator()
         {
             ServiceLocator.Init(
-                Kernel,
+                IoCKernel,
                 Grit.Configuration.RabbitMQ.CQRSDemoEventBusExchange,
                 Grit.Configuration.RabbitMQ.CQRSDemoActionBusExchange,
                 Grit.Configuration.RabbitMQ.CQRSDemoCoreActionQueue,

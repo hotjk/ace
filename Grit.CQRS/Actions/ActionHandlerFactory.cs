@@ -118,7 +118,7 @@ namespace Grit.CQRS
                 throw new UnregisteredDomainCommandException("no handler registered for action: " + typeof(T));
             }
 
-            return (IActionHandler<T>)ServiceLocator.Kernel.GetService(handler);
+            return (IActionHandler<T>)ServiceLocator.IoCKernel.GetService(handler);
         }
     }
 }

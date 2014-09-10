@@ -11,14 +11,14 @@ namespace Grit.CQRS
 {
     public sealed class ServiceLocator
     {
-        public static IKernel Kernel { get; private set; }
-        public static IModel Channel { get; private set; }
+        public static IKernel IoCKernel { get; private set; }
+        public static IModel MQChannel { get; private set; }
         public static ICommandBus CommandBus { get; private set; }
         public static IEventBus EventBus
         {
             get
             {
-                return Kernel.GetService(typeof(IEventBus)) as IEventBus;
+                return IoCKernel.GetService(typeof(IEventBus)) as IEventBus;
             }
         }
 
@@ -26,7 +26,7 @@ namespace Grit.CQRS
         {
             get
             {
-                return Kernel.GetService(typeof(IActionBus)) as IActionBus;
+                return IoCKernel.GetService(typeof(IActionBus)) as IActionBus;
             }
         }
 
@@ -38,39 +38,39 @@ namespace Grit.CQRS
         private static bool _isInitialized;
         private static readonly object _lockThis = new object();
 
-        private static System.Func<IModel> _callback = null;
+        private static System.Func<IModel> _resetMQCallback = null;
 
         public static void Init(IKernel kernel, 
             string eventBusExchange, 
             string actionBusExchange,
             string actionBusQueue, 
-            int timeoutSeconds = 10,
-            System.Func<IModel> callback = null)
+            int actionResponseTimeoutSeconds = 10,
+            System.Func<IModel> resetMQCallback = null)
         {
             if (!_isInitialized)
             {
                 lock (_lockThis)
                 {
-                    _callback = callback;
-                    Kernel = kernel;
+                    _resetMQCallback = resetMQCallback;
+                    IoCKernel = kernel;
 
-                    Reset();
+                    ResetMQ();
 
                     EventBusExchange = eventBusExchange;
                     ActionBusExchange = actionBusExchange;
                     ActionBusQueue = actionBusQueue;
-                    ActionResponseTimeoutSeconds = timeoutSeconds;
+                    ActionResponseTimeoutSeconds = actionResponseTimeoutSeconds;
 
-                    Kernel.Bind<ICommandHandlerFactory>().To<CommandHandlerFactory>().InSingletonScope();
-                    Kernel.Bind<ICommandBus>().To<CommandBus>().InSingletonScope();
+                    IoCKernel.Bind<ICommandHandlerFactory>().To<CommandHandlerFactory>().InSingletonScope();
+                    IoCKernel.Bind<ICommandBus>().To<CommandBus>().InSingletonScope();
                     
-                    Kernel.Bind<IEventHandlerFactory>().To<EventHandlerFactory>().InSingletonScope();
+                    IoCKernel.Bind<IEventHandlerFactory>().To<EventHandlerFactory>().InSingletonScope();
                     // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
-                    Kernel.Bind<IEventBus>().To<EventBus>().InThreadScope();
+                    IoCKernel.Bind<IEventBus>().To<EventBus>().InThreadScope();
                     
-                    Kernel.Bind<IActionHandlerFactory>().To<ActionHandlerFactory>().InSingletonScope();
+                    IoCKernel.Bind<IActionHandlerFactory>().To<ActionHandlerFactory>().InSingletonScope();
                     // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
-                    Kernel.Bind<IActionBus>().To<ActionBus>().InThreadScope();
+                    IoCKernel.Bind<IActionBus>().To<ActionBus>().InThreadScope();
 
                     CommandBus = kernel.Get<ICommandBus>();
                     _isInitialized = true;
@@ -78,11 +78,11 @@ namespace Grit.CQRS
             }
         }
 
-        public static void Reset()
+        public static void ResetMQ()
         {
-            if (_callback != null)
+            if (_resetMQCallback != null)
             {
-                Channel = _callback();
+                MQChannel = _resetMQCallback();
             }
         }
     }

@@ -113,7 +113,7 @@ namespace Grit.CQRS
             List<Type> handlers;
             if(_handlers.TryGetValue(typeof(T), out handlers))
             {
-                return handlers.Select(handler => (IEventHandler<T>)ServiceLocator.Kernel.GetService(handler)).ToList();
+                return handlers.Select(handler => (IEventHandler<T>)ServiceLocator.IoCKernel.GetService(handler)).ToList();
             }
             return null;
         }

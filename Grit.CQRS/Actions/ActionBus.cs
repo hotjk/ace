@@ -47,7 +47,7 @@ namespace Grit.CQRS
         {
             if(_replyQueueName == null)
             {
-                var channel = ServiceLocator.Channel;
+                var channel = ServiceLocator.MQChannel;
                 string name = channel.QueueDeclare();
                 _consumer = new QueueingBasicConsumer(channel);
                 channel.BasicConsume(name, true, _consumer);
@@ -75,39 +75,29 @@ namespace Grit.CQRS
                 {
                     DeclareReplyQueue();
 
-                    var props = ServiceLocator.Channel.CreateBasicProperties();
+                    var props = ServiceLocator.MQChannel.CreateBasicProperties();
                     props.ReplyTo = _replyQueueName;
                     props.CorrelationId = action.Id.ToString();
                     props.Type = action.Type;
 
-                    ServiceLocator.Channel.BasicPublish(
+                    ServiceLocator.MQChannel.BasicPublish(
                         ServiceLocator.ActionBusExchange,
                         ServiceLocator.ActionBusQueue, //Queue is also the routing key in direct exchange
                         props,
                         Encoding.UTF8.GetBytes(json));
                     break;
                 }
-                catch (System.IO.EndOfStreamException ex)
+                catch(Exception ex)
                 {
-                    if (retry > 0)
+                    if(ex is System.IO.EndOfStreamException 
+                        || ex is RabbitMQ.Client.Exceptions.AlreadyClosedException)
                     {
                         retry--;
                         _replyQueueName = null;
-                        ServiceLocator.Reset();
+                        ServiceLocator.ResetMQ();
                         continue;
                     }
-                    throw ex;
-                }
-                catch(RabbitMQ.Client.Exceptions.AlreadyClosedException ex)
-                {
-                    if (retry > 0)
-                    {
-                        retry--;
-                        _replyQueueName = null;
-                        ServiceLocator.Reset();
-                        continue;
-                    }
-                    throw ex;
+                    throw;
                 }
             }
 

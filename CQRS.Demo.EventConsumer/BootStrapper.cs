@@ -21,9 +21,9 @@ namespace CQRS.Demo.EventConsumer
 {
     public static class BootStrapper
     {
-        public static IKernel Kernel { get; private set; }
-        private static IConnection connection;
-        private static IModel channel;
+        public static IKernel IoCKernel { get; private set; }
+        private static IConnection _MQConnection;
+        private static IModel _MQChannel;
 
         public static void BootStrap()
         {
@@ -34,52 +34,52 @@ namespace CQRS.Demo.EventConsumer
 
         public static void Dispose()
         {
-            if(channel != null)
+            if(_MQChannel != null)
             {
-                channel.Dispose();
+                _MQChannel.Dispose();
             }
-            if(connection != null)
+            if(_MQConnection != null)
             {
-                connection.Dispose();
+                _MQConnection.Dispose();
             }
-            if (Kernel != null)
+            if (IoCKernel != null)
             {
-                Kernel.Dispose();
+                IoCKernel.Dispose();
             }
         }
 
         private static void AddIocBindings()
         {
-            Kernel = new StandardKernel();
+            IoCKernel = new StandardKernel();
 
-            Kernel.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
-            Kernel.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
+            IoCKernel.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
+            IoCKernel.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
 
-            Kernel.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
-            Kernel.Bind<IInvestmentWriteRepository>().To<InvestmentWriteRepository>().InSingletonScope();
-            Kernel.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
-            Kernel.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
-            Kernel.Bind<IProjectWriteRepository>().To<ProjectWriteRepository>().InSingletonScope();
-            Kernel.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
-            Kernel.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
-            Kernel.Bind<IAccountWriteRepository>().To<AccountWriteRepository>().InSingletonScope();
-            Kernel.Bind<IAccountService>().To<AccountService>().InSingletonScope();
-            Kernel.Bind<IMessageWriteRepository>().To<MessageWriteRepository>().InSingletonScope();
-            Kernel.Bind<IAccountActivityWriteRepository>().To<AccountActivityWriteRepository>().InSingletonScope();
+            IoCKernel.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
+            IoCKernel.Bind<IInvestmentWriteRepository>().To<InvestmentWriteRepository>().InSingletonScope();
+            IoCKernel.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
+            IoCKernel.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
+            IoCKernel.Bind<IProjectWriteRepository>().To<ProjectWriteRepository>().InSingletonScope();
+            IoCKernel.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
+            IoCKernel.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
+            IoCKernel.Bind<IAccountWriteRepository>().To<AccountWriteRepository>().InSingletonScope();
+            IoCKernel.Bind<IAccountService>().To<AccountService>().InSingletonScope();
+            IoCKernel.Bind<IMessageWriteRepository>().To<MessageWriteRepository>().InSingletonScope();
+            IoCKernel.Bind<IAccountActivityWriteRepository>().To<AccountActivityWriteRepository>().InSingletonScope();
         }
 
         private static IModel InitMessageQueue()
         {
             ConnectionFactory factory = new ConnectionFactory { Uri = Grit.Configuration.RabbitMQ.CQRSDemo };
-            connection = factory.CreateConnection();
-            channel = connection.CreateModel();
+            _MQConnection = factory.CreateConnection();
+            _MQChannel = _MQConnection.CreateModel();
 
-            channel.ExchangeDeclare(Grit.Configuration.RabbitMQ.CQRSDemoEventBusExchange, ExchangeType.Topic, true);
-            channel.QueueDeclare(Grit.Configuration.RabbitMQ.CQRSDemoAccountEventQueue, true, false, false, null);
-            channel.QueueBind(Grit.Configuration.RabbitMQ.CQRSDemoAccountEventQueue, 
+            _MQChannel.ExchangeDeclare(Grit.Configuration.RabbitMQ.CQRSDemoEventBusExchange, ExchangeType.Topic, true);
+            _MQChannel.QueueDeclare(Grit.Configuration.RabbitMQ.CQRSDemoAccountEventQueue, true, false, false, null);
+            _MQChannel.QueueBind(Grit.Configuration.RabbitMQ.CQRSDemoAccountEventQueue, 
                 Grit.Configuration.RabbitMQ.CQRSDemoEventBusExchange,
                 Grit.Configuration.RabbitMQ.CQRSDemoAccountEventRoutingKey);
-            return channel;
+            return _MQChannel;
         }
 
         private static void InitHandlerFactory()
@@ -93,7 +93,7 @@ namespace CQRS.Demo.EventConsumer
         private static void InitServiceLocator()
         {
             ServiceLocator.Init(
-                Kernel,
+                IoCKernel,
                 Grit.Configuration.RabbitMQ.CQRSDemoEventBusExchange,
                 Grit.Configuration.RabbitMQ.CQRSDemoActionBusExchange,
                 Grit.Configuration.RabbitMQ.CQRSDemoCoreActionQueue,

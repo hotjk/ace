@@ -73,7 +73,7 @@ namespace Grit.CQRS
                 int retry = 2;
                 try
                 {
-                    ServiceLocator.Channel.BasicPublish(ServiceLocator.EventBusExchange,
+                    ServiceLocator.MQChannel.BasicPublish(ServiceLocator.EventBusExchange,
                         @event.RoutingKey,
                         new BasicProperties
                         {
@@ -82,14 +82,14 @@ namespace Grit.CQRS
                         },
                         Encoding.UTF8.GetBytes(json));
                 }
-                catch (RabbitMQ.Client.Exceptions.AlreadyClosedException ex)
+                catch (RabbitMQ.Client.Exceptions.AlreadyClosedException)
                 {
                     if (retry > 0)
                     {
                         retry--;
-                        ServiceLocator.Reset();
+                        ServiceLocator.ResetMQ();
                     }
-                    throw ex;
+                    throw;
                 }
             }
             catch (Exception ex)
