@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Grit.CQRS
 {
-    public sealed class ServiceLocator
+    public static class ServiceLocator
     {
         public static IKernel IoCKernel { get; private set; }
         public static IModel MQChannel { get; private set; }
