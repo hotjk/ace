@@ -55,10 +55,8 @@ namespace Grit.CQRS
             }
             else
             {
-                while (_consumer.Queue.DequeueNoWait(null) != null)
-                {
-                    // give up old response.
-                }
+                // give up old response.
+                ServiceLocator.MQChannel.QueuePurge(_replyQueueName);
             }
         }
 
