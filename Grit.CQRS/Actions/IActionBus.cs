@@ -27,6 +27,8 @@ namespace Grit.CQRS
         /// <returns></returns>
         ActionResponse Send<T>(T action) where T : Action;
 
+        Task<ActionResponse> SendAsync<T>(T action) where T : Action;
+
         Type GetType(string name);
     }
 }

@@ -41,7 +41,7 @@ namespace CQRS.Demo.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(InvestViewModel vm)
+        public async Task<ActionResult> Create(InvestViewModel vm)
         {
             var action = new InvestmentCreateRequest
             {
@@ -51,7 +51,7 @@ namespace CQRS.Demo.Web.Controllers
                 Amount = vm.Amount
             };
 
-            ActionResponse response = ServiceLocator.ActionBus.Send(action);
+            var response = await ServiceLocator.ActionBus.SendAsync(action);
             TempData["ActionResponse"] = response;
             return RedirectToAction("Index", new { id = action.InvestmentId });
         }

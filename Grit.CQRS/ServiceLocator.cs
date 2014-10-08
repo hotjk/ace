@@ -11,8 +11,8 @@ namespace Grit.CQRS
 {
     public static class ServiceLocator
     {
-        public static IKernel IoCKernel { get; private set; }
-        public static IModel MQChannel { get; private set; }
+        public static Ninject.IKernel IoCKernel { get; private set; }
+        public static EasyNetQ.IBus EasyNetQBus { get; private set; }
         public static ICommandBus CommandBus { get; private set; }
         public static IEventBus EventBus
         {
@@ -30,36 +30,19 @@ namespace Grit.CQRS
             }
         }
 
-        public static string EventBusExchange { get; private set; }
-        public static string ActionBusExchange { get; private set; }
-        public static string ActionBusQueue { get; private set; }
-        public static int ActionResponseTimeoutSeconds { get; private set; }
-
         private static bool _isInitialized;
         private static readonly object _lockThis = new object();
 
-        private static System.Func<IModel> _resetMQCallback = null;
-
-        public static void Init(IKernel kernel, 
-            string eventBusExchange, 
-            string actionBusExchange,
-            string actionBusQueue, 
-            int actionResponseTimeoutSeconds = 10,
-            System.Func<IModel> resetMQCallback = null)
+        public static void Init(Ninject.IKernel kernel, 
+            string queueConnectionString)
         {
             if (!_isInitialized)
             {
                 lock (_lockThis)
                 {
-                    _resetMQCallback = resetMQCallback;
                     IoCKernel = kernel;
 
-                    ResetMQ();
-
-                    EventBusExchange = eventBusExchange;
-                    ActionBusExchange = actionBusExchange;
-                    ActionBusQueue = actionBusQueue;
-                    ActionResponseTimeoutSeconds = actionResponseTimeoutSeconds;
+                    EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(queueConnectionString);
 
                     IoCKernel.Bind<ICommandHandlerFactory>().To<CommandHandlerFactory>().InSingletonScope();
                     IoCKernel.Bind<ICommandBus>().To<CommandBus>().InSingletonScope();
@@ -78,11 +61,11 @@ namespace Grit.CQRS
             }
         }
 
-        public static void ResetMQ()
+        public static void Dispose()
         {
-            if (_resetMQCallback != null)
+            if(EasyNetQBus != null)
             {
-                MQChannel = _resetMQCallback();
+                EasyNetQBus.Dispose();
             }
         }
     }

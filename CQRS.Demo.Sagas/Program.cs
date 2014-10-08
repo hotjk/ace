@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,85 +26,43 @@ namespace CQRS.Demo.Sagas
             CQRS.Demo.Applications.EnsoureAssemblyLoaded.Pike();
             BootStrapper.BootStrap();
 
-            while (true)
+            var workers = new BlockingCollection<Worker>();
+            for (int i = 0; i < 20; i++)
             {
-                try
-                {
-                    Run();
-                }
-                catch (Exception ex) // Ping rabbitmq exception
-                {
-                    log4net.LogManager.GetLogger("exception.logger").Error(ex);
-                }
-                Thread.Sleep(5000);
+                workers.Add(new Worker());
             }
+
+            ServiceLocator.EasyNetQBus.RespondAsync<Grit.CQRS.Action, ActionResponse>(action =>
+                Task.Factory.StartNew(() =>
+                {
+                    var worker = workers.Take();
+                    try
+                    {
+                        return worker.Execute(action);
+                    }
+                    finally
+                    {
+                        workers.Add(worker);
+                    }
+                }));
+            Thread.Sleep(Timeout.Infinite);
         }
 
-        private static void Run()
+        public class Worker
         {
-            var factory = new ConnectionFactory() { Uri = Grit.Configuration.RabbitMQ.CQRSDemo };
-            using (var connection = factory.CreateConnection())
+            public ActionResponse Execute(Grit.CQRS.Action action)
             {
-                using (var channel = connection.CreateModel())
+                ActionResponse response = new ActionResponse { Result = ActionResponse.ActionResponseResult.OK };
+                try
                 {
-                    var consumer = new QueueingBasicConsumer(channel);
-                    channel.BasicConsume(ServiceLocator.ActionBusQueue, false, consumer);
-
-                    while (true)
-                    {
-                        var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
-                        var body = ea.Body;
-                        var message = Encoding.UTF8.GetString(body);
-                        var routingKey = ea.RoutingKey;
-                        var props = ea.BasicProperties;
-                        var replyProps = channel.CreateBasicProperties();
-                        replyProps.CorrelationId = props.CorrelationId;
-                        ActionResponse response = new ActionResponse { Result = ActionResponse.ActionResponseResult.OK };
-
-                        try
-                        {
-                            Type type = ServiceLocator.ActionBus.GetType(props.Type);
-                            dynamic action = JsonConvert.DeserializeObject(message, type);
-                            try
-                            {
-                                ServiceLocator.ActionBus.Invoke(action);
-                            }
-                            catch (BusinessException ex)
-                            {
-                                response.Result = ActionResponse.ActionResponseResult.NG;
-                                response.Message = ex.Message;
-                            }
-                        }
-                        catch(RabbitMQ.Client.Exceptions.AlreadyClosedException ex)
-                        {
-                            response.Result = ActionResponse.ActionResponseResult.Exception;
-                            response.Message = ex.Message;
-                            log4net.LogManager.GetLogger("exception.logger").Error(ex);
-                            return;
-                        }
-                        catch (Exception ex) // Deserialze action exception
-                        {
-                            response.Result = ActionResponse.ActionResponseResult.Exception;
-                            response.Message = ex.Message;
-                            log4net.LogManager.GetLogger("exception.logger").Error(ex);
-                        }
-                        finally
-                        {
-
-                            try
-                            {
-                                var responseBytes =
-                                Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(response));
-                                channel.BasicPublish("", props.ReplyTo, replyProps, responseBytes);
-                                channel.BasicAck(ea.DeliveryTag, false);
-                            }
-                            catch (Exception ex) // Reply Ack exception
-                            {
-                                log4net.LogManager.GetLogger("exception.logger").Error(ex);
-                            }
-                        }
-                    }
+                    ServiceLocator.ActionBus.Invoke((dynamic)action);
                 }
+                catch (BusinessException ex)
+                {
+                    response.Result = ActionResponse.ActionResponseResult.NG;
+                    response.Message = ex.Message;
+                }
+                return response;
             }
         }
     }

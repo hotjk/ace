@@ -19,8 +19,6 @@ namespace CQRS.Demo.Web
     public static class BootStrapper
     {
         public static IKernel IoCKernel { get; private set; }
-        private static IConnection _MQConnection;
-        private static IModel _MQChannel;
 
         public static void BootStrap()
         {
@@ -30,14 +28,7 @@ namespace CQRS.Demo.Web
 
         public static void Dispose()
         {
-            if(_MQChannel != null)
-            {
-                _MQChannel.Dispose();
-            }
-            if(_MQConnection != null)
-            {
-                _MQConnection.Dispose();
-            }
+            ServiceLocator.Dispose();
             if (IoCKernel != null)
             {
                 IoCKernel.Dispose();
@@ -59,24 +50,11 @@ namespace CQRS.Demo.Web
             IoCKernel.Bind<IAccountService>().To<AccountService>().InSingletonScope();
         }
 
-        private static IModel InitMessageQueue()
-        {
-            ConnectionFactory factory = new ConnectionFactory { Uri = Grit.Configuration.RabbitMQ.CQRSDemo };
-            _MQConnection = factory.CreateConnection();
-            _MQChannel = _MQConnection.CreateModel();
-            _MQChannel.ExchangeDeclare(Grit.Configuration.RabbitMQ.CQRSDemoActionBusExchange, ExchangeType.Direct, true);
-            _MQChannel.QueueDeclare(Grit.Configuration.RabbitMQ.CQRSDemoCoreActionQueue, true, false, false, null);
-            return _MQChannel;
-        }
-
         private static void InitServiceLocator()
         {
             ServiceLocator.Init(
                 IoCKernel,
-                Grit.Configuration.RabbitMQ.CQRSDemoEventBusExchange,
-                Grit.Configuration.RabbitMQ.CQRSDemoActionBusExchange,
-                Grit.Configuration.RabbitMQ.CQRSDemoCoreActionQueue,
-                10, InitMessageQueue);
+                Grit.Configuration.RabbitMQ.CQRSQueueConnectionString);
         }
     }
 }

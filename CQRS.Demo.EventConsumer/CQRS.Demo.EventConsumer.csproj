@@ -102,6 +102,10 @@
       <Project>{0161cd61-4221-47c3-9567-1695c06de101}</Project>
       <Name>Grit.Sequence</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Libraries\EasyNetQ-master\Source\EasyNetQ\EasyNetQ.csproj">
+      <Project>{b8def709-5168-48f1-b8d3-ad44e4a4a22b}</Project>
+      <Name>EasyNetQ</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

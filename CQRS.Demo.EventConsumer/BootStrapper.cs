@@ -22,8 +22,6 @@ namespace CQRS.Demo.EventConsumer
     public static class BootStrapper
     {
         public static IKernel IoCKernel { get; private set; }
-        private static IConnection _MQConnection;
-        private static IModel _MQChannel;
 
         public static void BootStrap()
         {
@@ -34,14 +32,7 @@ namespace CQRS.Demo.EventConsumer
 
         public static void Dispose()
         {
-            if(_MQChannel != null)
-            {
-                _MQChannel.Dispose();
-            }
-            if(_MQConnection != null)
-            {
-                _MQConnection.Dispose();
-            }
+            ServiceLocator.Dispose();
             if (IoCKernel != null)
             {
                 IoCKernel.Dispose();
@@ -68,20 +59,6 @@ namespace CQRS.Demo.EventConsumer
             IoCKernel.Bind<IAccountActivityWriteRepository>().To<AccountActivityWriteRepository>().InSingletonScope();
         }
 
-        private static IModel InitMessageQueue()
-        {
-            ConnectionFactory factory = new ConnectionFactory { Uri = Grit.Configuration.RabbitMQ.CQRSDemo };
-            _MQConnection = factory.CreateConnection();
-            _MQChannel = _MQConnection.CreateModel();
-
-            _MQChannel.ExchangeDeclare(Grit.Configuration.RabbitMQ.CQRSDemoEventBusExchange, ExchangeType.Topic, true);
-            _MQChannel.QueueDeclare(Grit.Configuration.RabbitMQ.CQRSDemoAccountEventQueue, true, false, false, null);
-            _MQChannel.QueueBind(Grit.Configuration.RabbitMQ.CQRSDemoAccountEventQueue, 
-                Grit.Configuration.RabbitMQ.CQRSDemoEventBusExchange,
-                Grit.Configuration.RabbitMQ.CQRSDemoAccountEventRoutingKey);
-            return _MQChannel;
-        }
-
         private static void InitHandlerFactory()
         {
             CommandHandlerFactory.Init(new string[] { "CQRS.Demo.Contracts" },
@@ -94,10 +71,7 @@ namespace CQRS.Demo.EventConsumer
         {
             ServiceLocator.Init(
                 IoCKernel,
-                Grit.Configuration.RabbitMQ.CQRSDemoEventBusExchange,
-                Grit.Configuration.RabbitMQ.CQRSDemoActionBusExchange,
-                Grit.Configuration.RabbitMQ.CQRSDemoCoreActionQueue,
-                10, InitMessageQueue);
+                Grit.Configuration.RabbitMQ.CQRSQueueConnectionString);
         }
     }
 }

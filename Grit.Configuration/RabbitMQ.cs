@@ -22,5 +22,6 @@ namespace Grit.Configuration
         public static readonly string CQRSDemoActionBusExchange = "action_bus_exchange";
         public static readonly string CQRSDemoCoreActionQueue = "core_action_queue";
         public static readonly string CQRSDemo = "amqp://event_user:event_password@localhost:5672/event_bus_vhost";
+        public static readonly string CQRSQueueConnectionString = "host=localhost";
     }
 }

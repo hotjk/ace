@@ -41,7 +41,7 @@ namespace Grit.CQRS
 
             if (@event.Outer)
             {
-                FlushAnEventToOuter<T>(@event, json);
+                FlushAnEventToOuter(@event);
             }
 
             var handlers = _eventHandlerFactory.GetHandlers<T>();
@@ -66,31 +66,11 @@ namespace Grit.CQRS
             }
         }
 
-        private static void FlushAnEventToOuter<T>(T @event, string json) where T : Event
+        private static void FlushAnEventToOuter<T>(T @event) where T : Event
         {
             try
             {
-                int retry = 2;
-                try
-                {
-                    ServiceLocator.MQChannel.BasicPublish(ServiceLocator.EventBusExchange,
-                        @event.RoutingKey,
-                        new BasicProperties
-                        {
-                            DeliveryMode = 2, // durable
-                            Type = @event.Type
-                        },
-                        Encoding.UTF8.GetBytes(json));
-                }
-                catch (RabbitMQ.Client.Exceptions.AlreadyClosedException)
-                {
-                    if (retry > 0)
-                    {
-                        retry--;
-                        ServiceLocator.ResetMQ();
-                    }
-                    throw;
-                }
+                ServiceLocator.EasyNetQBus.Publish(@event, @event.RoutingKey);
             }
             catch (Exception ex)
             {

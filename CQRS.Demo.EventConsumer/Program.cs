@@ -4,9 +4,11 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CQRS.Demo.EventConsumer
@@ -20,36 +22,40 @@ namespace CQRS.Demo.EventConsumer
             CQRS.Demo.Contracts.EnsoureAssemblyLoaded.Pike();
             BootStrapper.BootStrap();
 
-            var factory = new ConnectionFactory() { Uri = Grit.Configuration.RabbitMQ.CQRSDemo };
-            using (var connection = factory.CreateConnection())
+            var workers = new BlockingCollection<Worker>();
+            for (int i = 0; i < 20; i++)
             {
-                using (var channel = connection.CreateModel())
-                {
-                    var consumer = new QueueingBasicConsumer(channel);
-                    channel.BasicConsume("account_event_queue", false, consumer);
+                workers.Add(new Worker());
+            }
 
-                    while (true)
+            ServiceLocator.EasyNetQBus.SubscribeAsync<Event>("Account", 
+                @event => Task.Factory.StartNew(() =>
+                {
+                    var worker = workers.Take();
+                    try
                     {
-                        var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
-                        var body = ea.Body;
-                        var message = Encoding.UTF8.GetString(body);
-                        var routingKey = ea.RoutingKey;
-                        var props = ea.BasicProperties;
-                        Type type = ServiceLocator.EventBus.GetType(props.Type);
-                        dynamic @event = JsonConvert.DeserializeObject(message, type);
-                        try
-                        {
-                            ServiceLocator.EventBus.Handle(@event);
-                        }
-                        catch (Exception ex)
-                        {
-                            log4net.LogManager.GetLogger("exception.logger").Error(ex);
-                        }
-                        finally
-                        {
-                            channel.BasicAck(ea.DeliveryTag, false);
-                        }
+                        worker.Execute(@event);
                     }
+                    finally
+                    {
+                        workers.Add(worker);
+                    }
+                }),
+                x=>x.WithTopic("account.*.*"));
+            Thread.Sleep(Timeout.Infinite);
+        }
+
+        public class Worker
+        {
+            public void Execute(Grit.CQRS.Event @event)
+            {
+                try
+                {
+                    ServiceLocator.EventBus.Handle(@event);
+                }
+                catch (Exception ex)
+                {
+                    log4net.LogManager.GetLogger("exception.logger").Error(ex);
                 }
             }
         }
