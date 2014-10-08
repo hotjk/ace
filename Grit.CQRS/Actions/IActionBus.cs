@@ -27,8 +27,12 @@ namespace Grit.CQRS
         /// <returns></returns>
         ActionResponse Send<T>(T action) where T : Action;
 
+        /// <summary>
+        /// Send to RabbitMQ and waiting for response asyn.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <returns></returns>
         Task<ActionResponse> SendAsync<T>(T action) where T : Action;
-
-        Type GetType(string name);
     }
 }

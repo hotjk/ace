@@ -1,8 +1,6 @@
 ﻿using Grit.CQRS;
 using Grit.CQRS.Exceptions;
 using Newtonsoft.Json;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

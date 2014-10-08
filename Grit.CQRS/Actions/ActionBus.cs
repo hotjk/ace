@@ -36,18 +36,9 @@ namespace Grit.CQRS
                 string.Format("Action EndInvoke {0}", action.Id));
         }
 
-        public Type GetType(string name)
-        {
-            return _actionHandlerFactory.GetType(name);
-        }
-
         public ActionResponse Send<T>(T action) where T : Action
         {
-            string json = JsonConvert.SerializeObject(action);
-            log4net.LogManager.GetLogger("action.logger").Info(
-                string.Format("Action Send {0} {1}", action, json));
-
-            var task = ServiceLocator.EasyNetQBus.RequestAsync<Action, ActionResponse>(action);
+            var task = SendAsync(action);
             task.Wait();
             return task.Result;
         }
@@ -60,5 +51,10 @@ namespace Grit.CQRS
 
             return await ServiceLocator.EasyNetQBus.RequestAsync<Action, ActionResponse>(action);
         }
+    }
+
+    public class ActionWorker
+    {
+
     }
 }

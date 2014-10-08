@@ -10,7 +10,6 @@ using Grit.CQRS;
 using Grit.Sequence;
 using Grit.Sequence.Repository.MySql;
 using Ninject;
-using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;

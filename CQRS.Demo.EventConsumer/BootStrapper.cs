@@ -10,7 +10,6 @@ using Grit.CQRS;
 using Grit.Sequence;
 using Grit.Sequence.Repository.MySql;
 using Ninject;
-using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +20,7 @@ namespace CQRS.Demo.EventConsumer
 {
     public static class BootStrapper
     {
-        public static IKernel IoCKernel { get; private set; }
+        private static IKernel IoCKernel { get; set; }
 
         public static void BootStrap()
         {
