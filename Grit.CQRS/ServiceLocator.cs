@@ -33,14 +33,13 @@ namespace Grit.CQRS
         private static bool _isInitialized;
         private static readonly object _lockThis = new object();
 
-        public static void Init(Ninject.IKernel kernel, 
-            string queueConnectionString)
+        public static void Init(string queueConnectionString)
         {
             if (!_isInitialized)
             {
                 lock (_lockThis)
                 {
-                    IoCKernel = kernel;
+                    IoCKernel = new StandardKernel();
 
                     EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(queueConnectionString);
 
@@ -55,7 +54,7 @@ namespace Grit.CQRS
                     // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
                     IoCKernel.Bind<IActionBus>().To<ActionBus>().InThreadScope();
 
-                    CommandBus = kernel.Get<ICommandBus>();
+                    CommandBus = IoCKernel.Get<ICommandBus>();
                     _isInitialized = true;
                 }
             }
@@ -66,6 +65,10 @@ namespace Grit.CQRS
             if(EasyNetQBus != null)
             {
                 EasyNetQBus.Dispose();
+            }
+            if (IoCKernel != null)
+            {
+                IoCKernel.Dispose();
             }
         }
     }

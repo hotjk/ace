@@ -52,9 +52,4 @@ namespace Grit.CQRS
             return await ServiceLocator.EasyNetQBus.RequestAsync<Action, ActionResponse>(action);
         }
     }
-
-    public class ActionWorker
-    {
-
-    }
 }

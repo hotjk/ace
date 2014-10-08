@@ -17,43 +17,26 @@ namespace CQRS.Demo.Web
 {
     public static class BootStrapper
     {
-        public static IKernel IoCKernel { get; private set; }
-
         public static void BootStrap()
         {
-            AddIoCBindings();
-            InitServiceLocator();
-        }
+            // Action a dummy method to ensoure Command/Event assembly been loaded
+            CQRS.Demo.Contracts.EnsoureAssemblyLoaded.Pike();
 
-        public static void Dispose()
-        {
-            ServiceLocator.Dispose();
-            if (IoCKernel != null)
-            {
-                IoCKernel.Dispose();
-            }
+            ServiceLocator.Init(Grit.Configuration.RabbitMQ.CQRSQueueConnectionString);
+            AddIoCBindings();
         }
 
         private static void AddIoCBindings()
         {
-            IoCKernel = new StandardKernel();
+            ServiceLocator.IoCKernel.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
 
-            IoCKernel.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
-            IoCKernel.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
-
-            IoCKernel.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
-            IoCKernel.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
-            IoCKernel.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
-            IoCKernel.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
-            IoCKernel.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
-            IoCKernel.Bind<IAccountService>().To<AccountService>().InSingletonScope();
-        }
-
-        private static void InitServiceLocator()
-        {
-            ServiceLocator.Init(
-                IoCKernel,
-                Grit.Configuration.RabbitMQ.CQRSQueueConnectionString);
+            ServiceLocator.IoCKernel.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IAccountService>().To<AccountService>().InSingletonScope();
         }
     }
 }

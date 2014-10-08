@@ -16,8 +16,7 @@ namespace CQRS.Demo.EventConsumer
         static void Main(string[] args)
         {
             log4net.Config.XmlConfigurator.Configure();
-            // Pike a dummy method to ensoure Command/Event assembly been loaded
-            CQRS.Demo.Contracts.EnsoureAssemblyLoaded.Pike();
+            
             BootStrapper.BootStrap();
 
             var workers = new BlockingCollection<Worker>();

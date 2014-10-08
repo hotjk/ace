@@ -62,14 +62,14 @@ namespace CQRS.Demo.Web.Controllers
             return View(investment);
         }
 
-        public ActionResult Pay(int id)
+        public async Task<ActionResult> Pay(int id)
         {
             var action = new InvestmentPayRequest
             {
                 InvestmentId = id
             };
 
-            ActionResponse response = ServiceLocator.ActionBus.Send(action);
+            ActionResponse response = await ServiceLocator.ActionBus.SendAsync(action);
             TempData["ActionResponse"] = response;
             return RedirectToAction("Index", new { id = action.InvestmentId });
         }

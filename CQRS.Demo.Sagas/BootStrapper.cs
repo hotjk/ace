@@ -20,42 +20,33 @@ namespace CQRS.Demo.Sagas
 {
     public static class BootStrapper
     {
-        public static IKernel IoCKernel { get; private set; }
-
         public static void BootStrap()
         {
+            // Pike a dummy method to ensoure Command/Event assembly been loaded
+            CQRS.Demo.Contracts.EnsoureAssemblyLoaded.Pike();
+            CQRS.Demo.Applications.EnsoureAssemblyLoaded.Pike();
+
+            ServiceLocator.Init(Grit.Configuration.RabbitMQ.CQRSQueueConnectionString);
             AddIocBindings();
             InitHandlerFactory();
-            InitServiceLocator();
-        }
-
-        public static void Dispose()
-        {
-            ServiceLocator.Dispose();
-            if (IoCKernel != null)
-            {
-                IoCKernel.Dispose();
-            }
         }
 
         private static void AddIocBindings()
         {
-            IoCKernel = new StandardKernel();
+            ServiceLocator.IoCKernel.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
 
-            IoCKernel.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
-            IoCKernel.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
-
-            IoCKernel.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
-            IoCKernel.Bind<IInvestmentWriteRepository>().To<InvestmentWriteRepository>().InSingletonScope();
-            IoCKernel.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
-            IoCKernel.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
-            IoCKernel.Bind<IProjectWriteRepository>().To<ProjectWriteRepository>().InSingletonScope();
-            IoCKernel.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
-            IoCKernel.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
-            IoCKernel.Bind<IAccountWriteRepository>().To<AccountWriteRepository>().InSingletonScope();
-            IoCKernel.Bind<IAccountService>().To<AccountService>().InSingletonScope();
-            IoCKernel.Bind<IMessageWriteRepository>().To<MessageWriteRepository>().InSingletonScope();
-            IoCKernel.Bind<IAccountActivityWriteRepository>().To<AccountActivityWriteRepository>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IInvestmentWriteRepository>().To<InvestmentWriteRepository>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IProjectWriteRepository>().To<ProjectWriteRepository>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IAccountWriteRepository>().To<AccountWriteRepository>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IAccountService>().To<AccountService>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IMessageWriteRepository>().To<MessageWriteRepository>().InSingletonScope();
+            ServiceLocator.IoCKernel.Bind<IAccountActivityWriteRepository>().To<AccountActivityWriteRepository>().InSingletonScope();
         }
 
         private static void InitHandlerFactory()
@@ -66,13 +57,6 @@ namespace CQRS.Demo.Sagas
                 new string[] { "CQRS.Demo.Model.Write" } );
             ActionHandlerFactory.Init(new string[] { "CQRS.Demo.Contracts" },
                 new string[] { "CQRS.Demo.Applications" });
-        }
-
-        private static void InitServiceLocator()
-        {
-            ServiceLocator.Init(
-                IoCKernel,
-                Grit.Configuration.RabbitMQ.CQRSQueueConnectionString);
         }
     }
 }

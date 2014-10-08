@@ -1,4 +1,5 @@
 ﻿using CQRS.Demo.Contracts;
+using Grit.CQRS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,9 @@ namespace CQRS.Demo.Web
         protected void Application_Start()
         {
             log4net.Config.XmlConfigurator.Configure();
-            // Action a dummy method to ensoure Command/Event assembly been loaded
-            EnsoureAssemblyLoaded.Pike();
+            
             BootStrapper.BootStrap();
-            DependencyResolver.SetResolver(new NinjectDependencyResolver { Kernel = BootStrapper.IoCKernel });
+            DependencyResolver.SetResolver(new NinjectDependencyResolver { Kernel = ServiceLocator.IoCKernel });
 
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
@@ -29,7 +29,7 @@ namespace CQRS.Demo.Web
 
         protected void Application_Stop()
         {
-            BootStrapper.Dispose();
+            ServiceLocator.Dispose();
         }
     }
 }
