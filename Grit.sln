@@ -57,6 +57,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyNetQ", "Libraries\EasyNetQ-master\Source\EasyNetQ\EasyNetQ.csproj", "{B8DEF709-5168-48F1-B8D3-AD44E4A4A22B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyNetQ.DI.Ninject", "Libraries\EasyNetQ-master\Source\EasyNetQ.DI.Ninject\EasyNetQ.DI.Ninject.csproj", "{C76DA6EA-78F0-4918-8E0A-7A1CAD31E702}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,10 @@ Global
 		{B8DEF709-5168-48F1-B8D3-AD44E4A4A22B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8DEF709-5168-48F1-B8D3-AD44E4A4A22B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8DEF709-5168-48F1-B8D3-AD44E4A4A22B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C76DA6EA-78F0-4918-8E0A-7A1CAD31E702}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C76DA6EA-78F0-4918-8E0A-7A1CAD31E702}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C76DA6EA-78F0-4918-8E0A-7A1CAD31E702}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C76DA6EA-78F0-4918-8E0A-7A1CAD31E702}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -143,5 +149,6 @@ Global
 		{AD7BB8C2-DB28-40C0-828F-7E1AF4A26527} = {82C2D6D9-5AD5-4FF7-A580-2F8E286BB913}
 		{17C333D5-5BC1-4BA8-B7FE-FAAFD9CD843D} = {82C2D6D9-5AD5-4FF7-A580-2F8E286BB913}
 		{B8DEF709-5168-48F1-B8D3-AD44E4A4A22B} = {4F635C71-2834-4041-8F47-9FFF38190BD2}
+		{C76DA6EA-78F0-4918-8E0A-7A1CAD31E702} = {4F635C71-2834-4041-8F47-9FFF38190BD2}
 	EndGlobalSection
 EndGlobal

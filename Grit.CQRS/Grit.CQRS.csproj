@@ -90,6 +90,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Libraries\EasyNetQ-master\Source\EasyNetQ.DI.Ninject\EasyNetQ.DI.Ninject.csproj">
+      <Project>{c76da6ea-78f0-4918-8e0a-7a1cad31e702}</Project>
+      <Name>EasyNetQ.DI.Ninject</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libraries\EasyNetQ-master\Source\EasyNetQ\EasyNetQ.csproj">
       <Project>{b8def709-5168-48f1-b8d3-ad44e4a4a22b}</Project>
       <Name>EasyNetQ</Name>

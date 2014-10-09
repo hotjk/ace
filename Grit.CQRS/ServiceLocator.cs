@@ -43,6 +43,11 @@ namespace Grit.CQRS
                 {
                     IoCKernel = new StandardKernel();
 
+                    RabbitHutch.SetContainerFactory(() =>
+                    {
+                        return new EasyNetQ.DI.NinjectAdapter(IoCKernel);
+                    });
+
                     EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(queueConnectionString, x => x.Register<IEasyNetQLogger, NullLogger>());
 
                     IoCKernel.Bind<ICommandHandlerFactory>().To<CommandHandlerFactory>().InSingletonScope();
@@ -64,13 +69,16 @@ namespace Grit.CQRS
 
         public static void Dispose()
         {
-            if(EasyNetQBus != null)
+            lock (_lockThis)
             {
-                EasyNetQBus.Dispose();
-            }
-            if (IoCKernel != null)
-            {
-                IoCKernel.Dispose();
+                if (EasyNetQBus != null)
+                {
+                    EasyNetQBus.Dispose();
+                }
+                if (IoCKernel != null)
+                {
+                    IoCKernel.Dispose();
+                }
             }
         }
     }
