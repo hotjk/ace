@@ -1,4 +1,6 @@
-﻿using Grit.CQRS;
+﻿using EasyNetQ;
+using EasyNetQ.Loggers;
+using Grit.CQRS;
 using Ninject;
 using RabbitMQ.Client;
 using System;
@@ -41,7 +43,7 @@ namespace Grit.CQRS
                 {
                     IoCKernel = new StandardKernel();
 
-                    EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(queueConnectionString);
+                    EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(queueConnectionString, x => x.Register<IEasyNetQLogger, NullLogger>());
 
                     IoCKernel.Bind<ICommandHandlerFactory>().To<CommandHandlerFactory>().InSingletonScope();
                     IoCKernel.Bind<ICommandBus>().To<CommandBus>().InSingletonScope();
