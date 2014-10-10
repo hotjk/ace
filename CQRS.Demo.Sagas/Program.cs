@@ -19,47 +19,11 @@ namespace CQRS.Demo.Sagas
         static void Main(string[] args)
         {
             log4net.Config.XmlConfigurator.Configure();
-            
             BootStrapper.BootStrap();
 
-            var workers = new BlockingCollection<Worker>();
-            for (int i = 0; i < 20; i++)
-            {
-                workers.Add(new Worker());
-            }
-
-            ServiceLocator.EasyNetQBus.RespondAsync<Grit.CQRS.Action, ActionResponse>(action =>
-                Task.Factory.StartNew(() =>
-                {
-                    var worker = workers.Take();
-                    try
-                    {
-                        return worker.Execute(action);
-                    }
-                    finally
-                    {
-                        workers.Add(worker);
-                    }
-                }));
+            ServiceLocator.ActionBus.HandleInParallel(20);
+            //ServiceLocator.ActionBus.Handle();
             Thread.Sleep(Timeout.Infinite);
-        }
-
-        public class Worker
-        {
-            public ActionResponse Execute(Grit.CQRS.Action action)
-            {
-                ActionResponse response = new ActionResponse { Result = ActionResponse.ActionResponseResult.OK };
-                try
-                {
-                    ServiceLocator.ActionBus.Invoke((dynamic)action);
-                }
-                catch (BusinessException ex)
-                {
-                    response.Result = ActionResponse.ActionResponseResult.NG;
-                    response.Message = ex.Message;
-                }
-                return response;
-            }
         }
     }
 }

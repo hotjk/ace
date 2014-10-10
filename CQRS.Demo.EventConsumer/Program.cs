@@ -16,45 +16,11 @@ namespace CQRS.Demo.EventConsumer
         static void Main(string[] args)
         {
             log4net.Config.XmlConfigurator.Configure();
-            
             BootStrapper.BootStrap();
 
-            var workers = new BlockingCollection<Worker>();
-            for (int i = 0; i < 20; i++)
-            {
-                workers.Add(new Worker());
-            }
-
-            ServiceLocator.EasyNetQBus.SubscribeAsync<Event>("Account", 
-                @event => Task.Factory.StartNew(() =>
-                {
-                    var worker = workers.Take();
-                    try
-                    {
-                        worker.Execute(@event);
-                    }
-                    finally
-                    {
-                        workers.Add(worker);
-                    }
-                }),
-                x=>x.WithTopic("account.*.*"));
+            ServiceLocator.EventBus.HandleInParallel("Account", "account.*.*", 20);
+            //ServiceLocator.EventBus.Handle("Account", "account.*.*");
             Thread.Sleep(Timeout.Infinite);
-        }
-
-        public class Worker
-        {
-            public void Execute(Grit.CQRS.Event @event)
-            {
-                try
-                {
-                    ServiceLocator.EventBus.Handle(@event);
-                }
-                catch (Exception ex)
-                {
-                    log4net.LogManager.GetLogger("exception.logger").Error(ex);
-                }
-            }
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using Grit.CQRS.Events;
+using Newtonsoft.Json;
 using RabbitMQ.Client.Framing.v0_9_1;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -103,14 +105,43 @@ namespace Grit.CQRS
                 }
             }
         }
-        public Type GetType(string eventName)
-        {
-            return _eventHandlerFactory.GetType(eventName);
-        }
 
         public void Purge()
         {
             _events.Clear();
+        }
+
+        public void Handle(string subscriptionId, string topic)
+        {
+            var worker = new EventWorker();
+
+            ServiceLocator.EasyNetQBus.Subscribe<Event>(subscriptionId,
+                @event => worker.Execute(@event),
+                x => x.WithTopic(topic));
+        }
+
+        public void HandleInParallel(string subscriptionId, string topic, int capacity)
+        {
+            var workers = new BlockingCollection<EventWorker>();
+            for (int i = 0; i < capacity; i++)
+            {
+                workers.Add(new EventWorker());
+            }
+
+            ServiceLocator.EasyNetQBus.SubscribeAsync<Event>(subscriptionId,
+                @event => Task.Factory.StartNew(() =>
+                {
+                    var worker = workers.Take();
+                    try
+                    {
+                        worker.Execute(@event);
+                    }
+                    finally
+                    {
+                        workers.Add(worker);
+                    }
+                }),
+                x => x.WithTopic(topic));
         }
     }
 }

@@ -26,7 +26,7 @@ namespace CQRS.Demo.Repositories
             using (IDbConnection connection = OpenConnection())
             {
                 return connection.Query<Investment>(
-                    "SELECT InvestmentId, ProjectId, AccountId, Amount, Status FROM cqrs_demo_investment ORDER BY InvestmentId DESC;"
+                    "SELECT InvestmentId, ProjectId, AccountId, Amount, Status FROM cqrs_demo_investment LIMIT 10;"
                     );
             }
         }

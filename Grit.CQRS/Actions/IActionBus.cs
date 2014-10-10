@@ -34,5 +34,12 @@ namespace Grit.CQRS
         /// <param name="action"></param>
         /// <returns></returns>
         Task<ActionResponse> SendAsync<T>(T action) where T : Action;
+
+        void Handle();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="capacity"></param>
+        void HandleInParallel(int capacity);
     }
 }

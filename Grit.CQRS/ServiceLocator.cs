@@ -59,7 +59,7 @@ namespace Grit.CQRS
                     
                     IoCKernel.Bind<IActionHandlerFactory>().To<ActionHandlerFactory>().InSingletonScope();
                     // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
-                    IoCKernel.Bind<IActionBus>().To<ActionBus>().InThreadScope();
+                    IoCKernel.Bind<IActionBus>().To<ActionBus>().InSingletonScope();
 
                     CommandBus = IoCKernel.Get<ICommandBus>();
                     _isInitialized = true;

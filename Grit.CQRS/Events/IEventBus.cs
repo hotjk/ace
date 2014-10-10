@@ -34,6 +34,9 @@ namespace Grit.CQRS
         /// Clear all cached events in thread.
         /// </summary>
         void Purge();
-        Type GetType(string name);
+
+        void Handle(string subscriptionId, string topic);
+
+        void HandleInParallel(string subscriptionId, string topic, int capacity);
     }
 }

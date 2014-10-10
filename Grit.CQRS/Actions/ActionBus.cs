@@ -4,6 +4,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Framing.v0_9_1;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -50,6 +51,35 @@ namespace Grit.CQRS
                 string.Format("Action Send {0} {1}", action, json));
 
             return await ServiceLocator.EasyNetQBus.RequestAsync<Action, ActionResponse>(action);
+        }
+
+        public void Handle()
+        {
+            ActionWorker worker = new ActionWorker();
+            ServiceLocator.EasyNetQBus.Respond<Grit.CQRS.Action, ActionResponse>(action => worker.Execute(action));
+        }
+
+        public void HandleInParallel(int capacity)
+        {
+            var workers = new BlockingCollection<ActionWorker>();
+            for (int i = 0; i < capacity; i++)
+            {
+                workers.Add(new ActionWorker());
+            }
+
+            ServiceLocator.EasyNetQBus.RespondAsync<Grit.CQRS.Action, ActionResponse>(action =>
+                Task.Factory.StartNew(() =>
+                {
+                    var worker = workers.Take();
+                    try
+                    {
+                        return worker.Execute(action);
+                    }
+                    finally
+                    {
+                        workers.Add(worker);
+                    }
+                }));
         }
     }
 }
