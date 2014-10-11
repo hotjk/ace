@@ -12,7 +12,7 @@ namespace Grit.CQRS.Events
         {
             try
             {
-                ServiceLocator.EventBus.Handle(@event);
+                ServiceLocator.EventBus.Invoke(@event);
             }
             catch (Exception ex)
             {

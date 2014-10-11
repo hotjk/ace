@@ -28,7 +28,7 @@ namespace Grit.CQRS
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="event"></param>
-        void Handle<T>(T @event) where T : Event;
+        void Invoke<T>(T @event) where T : Event;
 
         /// <summary>
         /// Clear all cached events in thread.

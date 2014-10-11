@@ -18,7 +18,7 @@ namespace CQRS.Demo.Web
             log4net.Config.XmlConfigurator.Configure();
             
             BootStrapper.BootStrap();
-            DependencyResolver.SetResolver(new NinjectDependencyResolver { Kernel = ServiceLocator.IoCKernel });
+            DependencyResolver.SetResolver(new NinjectDependencyResolver { Kernel = ServiceLocator.NinjectContainer });
 
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);

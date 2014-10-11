@@ -12,9 +12,14 @@ DomainMesssage 也叫 DomainEvent，用于解耦服务。
 
 发送 Action 到外部的事件总线（RabbitMQ）。Send 方法是一种 RPC 调用，发送之前会在 RabbitMQ 创建一个线程专用的匿名 Queue 用于接收 ActionResponse；业务处理中心（Saga）负责从队列中获取 Action，并执行具体的业务操作，操作完成后，Saga 要在 Action 指定的匿名 Queue 里发送 ActionResponse 应答。
 
+#### Handle
+
+从事件总线获取 Action，调用 Invoke 方法处理 Action，并回复应答到消息总线。
+
 #### Invoke
 
-Saga 收到 Action 后，可以在使用 Invoke 方法发送 Action 到特定的一个 ActionHandler 处理。
+收到 Action 后，可以在使用 Invoke 方法发送 Action 到特定的一个 ActionHandler 处理。
+如果不使用事件总线，可直接使用 Invoke 方法处理 Action。
 
 ### Command/CommandBus
 
@@ -26,7 +31,7 @@ Saga 收到 Action 后，可以在使用 Invoke 方法发送 Action 到特定的
 
 ### Event/EventBus
 
-既用于进程内无应答通信，也用于进程间无应答通信
+既用于进程内无应答通信，也用于进程间无应答通信。
 
 #### Publish
 
@@ -42,7 +47,11 @@ Saga 收到 Action 后，可以在使用 Invoke 方法发送 Action 到特定的
 
 #### Handle
 
-Event Consumer 收到来自事件队列的 Action 对象后，调用 Handle 方法在进程内分发该消息，每个 EventHandler 将在独立线程内完成对 Event 的业务处理。
+从事件总线获取 Event，调用 Invoke 进行 Event 处理。
+
+#### Invoke
+
+Event Consumer 收到来自事件队列的 Event 对象后，调用 Invoke 方法在进程内分发该消息，每个 EventHandler 将在独立线程内完成对 Event 的业务处理。
 
 ## UnitOfWork
 

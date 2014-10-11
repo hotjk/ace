@@ -13,14 +13,14 @@ namespace Grit.CQRS
 {
     public static class ServiceLocator
     {
-        public static Ninject.IKernel IoCKernel { get; private set; }
+        public static Ninject.IKernel NinjectContainer { get; private set; }
         public static EasyNetQ.IBus EasyNetQBus { get; private set; }
         public static ICommandBus CommandBus { get; private set; }
         public static IEventBus EventBus
         {
             get
             {
-                return IoCKernel.GetService(typeof(IEventBus)) as IEventBus;
+                return NinjectContainer.GetService(typeof(IEventBus)) as IEventBus;
             }
         }
 
@@ -28,7 +28,7 @@ namespace Grit.CQRS
         {
             get
             {
-                return IoCKernel.GetService(typeof(IActionBus)) as IActionBus;
+                return NinjectContainer.GetService(typeof(IActionBus)) as IActionBus;
             }
         }
 
@@ -41,27 +41,27 @@ namespace Grit.CQRS
             {
                 lock (_lockThis)
                 {
-                    IoCKernel = new StandardKernel();
+                    NinjectContainer = new StandardKernel();
 
                     RabbitHutch.SetContainerFactory(() =>
                     {
-                        return new EasyNetQ.DI.NinjectAdapter(IoCKernel);
+                        return new EasyNetQ.DI.NinjectAdapter(NinjectContainer);
                     });
 
                     EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(queueConnectionString, x => x.Register<IEasyNetQLogger, NullLogger>());
 
-                    IoCKernel.Bind<ICommandHandlerFactory>().To<CommandHandlerFactory>().InSingletonScope();
-                    IoCKernel.Bind<ICommandBus>().To<CommandBus>().InSingletonScope();
+                    NinjectContainer.Bind<ICommandHandlerFactory>().To<CommandHandlerFactory>().InSingletonScope();
+                    NinjectContainer.Bind<ICommandBus>().To<CommandBus>().InSingletonScope();
                     
-                    IoCKernel.Bind<IEventHandlerFactory>().To<EventHandlerFactory>().InSingletonScope();
+                    NinjectContainer.Bind<IEventHandlerFactory>().To<EventHandlerFactory>().InSingletonScope();
                     // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
-                    IoCKernel.Bind<IEventBus>().To<EventBus>().InThreadScope();
+                    NinjectContainer.Bind<IEventBus>().To<EventBus>().InThreadScope();
                     
-                    IoCKernel.Bind<IActionHandlerFactory>().To<ActionHandlerFactory>().InSingletonScope();
+                    NinjectContainer.Bind<IActionHandlerFactory>().To<ActionHandlerFactory>().InSingletonScope();
                     // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
-                    IoCKernel.Bind<IActionBus>().To<ActionBus>().InSingletonScope();
+                    NinjectContainer.Bind<IActionBus>().To<ActionBus>().InThreadScope();
 
-                    CommandBus = IoCKernel.Get<ICommandBus>();
+                    CommandBus = NinjectContainer.Get<ICommandBus>();
                     _isInitialized = true;
                 }
             }
@@ -75,9 +75,9 @@ namespace Grit.CQRS
                 {
                     EasyNetQBus.Dispose();
                 }
-                if (IoCKernel != null)
+                if (NinjectContainer != null)
                 {
-                    IoCKernel.Dispose();
+                    NinjectContainer.Dispose();
                 }
             }
         }

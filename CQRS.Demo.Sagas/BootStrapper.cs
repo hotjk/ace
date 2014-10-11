@@ -33,20 +33,20 @@ namespace CQRS.Demo.Sagas
 
         private static void AddIocBindings()
         {
-            ServiceLocator.IoCKernel.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
-            ServiceLocator.IoCKernel.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
+            ServiceLocator.NinjectContainer.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
+            ServiceLocator.NinjectContainer.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
 
-            ServiceLocator.IoCKernel.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
-            ServiceLocator.IoCKernel.Bind<IInvestmentWriteRepository>().To<InvestmentWriteRepository>().InSingletonScope();
-            ServiceLocator.IoCKernel.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
-            ServiceLocator.IoCKernel.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
-            ServiceLocator.IoCKernel.Bind<IProjectWriteRepository>().To<ProjectWriteRepository>().InSingletonScope();
-            ServiceLocator.IoCKernel.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
-            ServiceLocator.IoCKernel.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
-            ServiceLocator.IoCKernel.Bind<IAccountWriteRepository>().To<AccountWriteRepository>().InSingletonScope();
-            ServiceLocator.IoCKernel.Bind<IAccountService>().To<AccountService>().InSingletonScope();
-            ServiceLocator.IoCKernel.Bind<IMessageWriteRepository>().To<MessageWriteRepository>().InSingletonScope();
-            ServiceLocator.IoCKernel.Bind<IAccountActivityWriteRepository>().To<AccountActivityWriteRepository>().InSingletonScope();
+            ServiceLocator.NinjectContainer.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
+            ServiceLocator.NinjectContainer.Bind<IInvestmentWriteRepository>().To<InvestmentWriteRepository>().InSingletonScope();
+            ServiceLocator.NinjectContainer.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
+            ServiceLocator.NinjectContainer.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
+            ServiceLocator.NinjectContainer.Bind<IProjectWriteRepository>().To<ProjectWriteRepository>().InSingletonScope();
+            ServiceLocator.NinjectContainer.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
+            ServiceLocator.NinjectContainer.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
+            ServiceLocator.NinjectContainer.Bind<IAccountWriteRepository>().To<AccountWriteRepository>().InSingletonScope();
+            ServiceLocator.NinjectContainer.Bind<IAccountService>().To<AccountService>().InSingletonScope();
+            ServiceLocator.NinjectContainer.Bind<IMessageWriteRepository>().To<MessageWriteRepository>().InSingletonScope();
+            ServiceLocator.NinjectContainer.Bind<IAccountActivityWriteRepository>().To<AccountActivityWriteRepository>().InSingletonScope();
         }
 
         private static void InitHandlerFactory()

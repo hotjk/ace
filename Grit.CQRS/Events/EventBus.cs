@@ -81,7 +81,7 @@ namespace Grit.CQRS
             }
         }
 
-        public void Handle<T>(T @event) where T : Event
+        public void Invoke<T>(T @event) where T : Event
         {
             log4net.LogManager.GetLogger("event.logger").Info(
                 string.Format("Event Handle {0}", @event.Id));
