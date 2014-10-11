@@ -58,7 +58,7 @@ namespace Grit.CQRS
                         }
                         catch (Exception ex)
                         {
-                            ServiceLocator.BusLogger.EventException(@event, ex);
+                            ServiceLocator.BusLogger.Exception(@event, ex);
                         }
                     });
                 }
@@ -73,7 +73,7 @@ namespace Grit.CQRS
             }
             catch (Exception ex)
             {
-                ServiceLocator.BusLogger.EventException(@event, ex);
+                ServiceLocator.BusLogger.Exception(@event, ex);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Grit.CQRS
                     }
                     catch (Exception ex)
                     {
-                        ServiceLocator.BusLogger.EventException(@event, ex);
+                        ServiceLocator.BusLogger.Exception(@event, ex);
                     }
                 }
             }
@@ -104,7 +104,7 @@ namespace Grit.CQRS
             _events.Clear();
         }
 
-        public void Handle(string subscriptionId, string topic)
+        public void Subscribe(string subscriptionId, string topic)
         {
             var worker = new EventWorker();
 
@@ -113,7 +113,7 @@ namespace Grit.CQRS
                 x => x.WithTopic(topic));
         }
 
-        public void HandleInParallel(string subscriptionId, string topic, int capacity)
+        public void SubscribeInParallel(string subscriptionId, string topic, int capacity)
         {
             var workers = new BlockingCollection<EventWorker>();
             for (int i = 0; i < capacity; i++)

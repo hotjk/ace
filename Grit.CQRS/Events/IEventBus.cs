@@ -35,8 +35,19 @@ namespace Grit.CQRS
         /// </summary>
         void Purge();
 
-        void Handle(string subscriptionId, string topic);
+        /// <summary>
+        /// Handle event from RabbitMQ.
+        /// </summary>
+        /// <param name="subscriptionId">A unique identifier for the subscription. Two subscriptions with the same subscriptionId and type will get messages delivered in turn. </param>
+        /// <param name="topic">RabbitMQ exchange routing key</param>
+        void Subscribe(string subscriptionId, string topic);
 
-        void HandleInParallel(string subscriptionId, string topic, int capacity);
+        /// <summary>
+        /// Handle event from RabbitMQ in parallel.
+        /// </summary>
+        /// <param name="subscriptionId"></param>
+        /// <param name="topic"></param>
+        /// <param name="capacity">Worker numbers</param>
+        void SubscribeInParallel(string subscriptionId, string topic, int capacity);
     }
 }

@@ -54,13 +54,13 @@ namespace Grit.CQRS
             return await ServiceLocator.EasyNetQBus.RequestAsync<Action, ActionResponse>(action);
         }
 
-        public void Handle()
+        public void Subscribe()
         {
             ActionWorker worker = new ActionWorker();
             ServiceLocator.EasyNetQBus.Respond<Grit.CQRS.Action, ActionResponse>(action => worker.Execute(action));
         }
 
-        public void HandleInParallel(int capacity)
+        public void SubscribeInParallel(int capacity)
         {
             var workers = new BlockingCollection<ActionWorker>();
             for (int i = 0; i < capacity; i++)

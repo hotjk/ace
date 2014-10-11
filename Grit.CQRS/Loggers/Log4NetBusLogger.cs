@@ -75,22 +75,12 @@ namespace Grit.CQRS.Loggers
                 string.Format("Event Handle {0}", @event.Id));
         }
 
-        public void ActionException(Action action, Exception ex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CommandException(Command command, Exception ex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void EventException(Event @event, Exception ex)
+        public void Exception(DomainMessage message, Exception ex)
         {
             ExceptionLogger.Error(
                                 new Exception(string.Format("{0} {1}",
-                                    @event.Type,
-                                    @event.Id),
+                                    message.Type,
+                                    message.Id),
                                     ex));
         }
 

@@ -6,11 +6,12 @@ DomainMesssage 也叫 DomainEvent，用于解耦服务。
 
 ### Action/ActionBus
 
-进程间通信 RPC 消息
+进程间 RPC 调用消息。
+前端通过 ActionBus 发送 Action 到消息总线（RabbitMQ），同时创建一个线程专用的匿名 Queue 用于接收 ActionResponse；业务处理中心（Saga）负责从队列中获取 Action，并执行具体的业务操作，操作完成后，Saga 要在 Action 指定的匿名 Queue 里发送 ActionResponse 应答。
 
 #### Send
 
-发送 Action 到外部的事件总线（RabbitMQ）。Send 方法是一种 RPC 调用，发送之前会在 RabbitMQ 创建一个线程专用的匿名 Queue 用于接收 ActionResponse；业务处理中心（Saga）负责从队列中获取 Action，并执行具体的业务操作，操作完成后，Saga 要在 Action 指定的匿名 Queue 里发送 ActionResponse 应答。
+发送 Action 到外部的事件总线。
 
 #### Handle
 
@@ -18,16 +19,17 @@ DomainMesssage 也叫 DomainEvent，用于解耦服务。
 
 #### Invoke
 
-收到 Action 后，可以在使用 Invoke 方法发送 Action 到特定的一个 ActionHandler 处理。
-如果不使用事件总线，可直接使用 Invoke 方法处理 Action。
+发送 Action 到特定的一个 ActionHandler 处理。
+如果不使用事件总线，可以直接使用 Invoke 方法处理 Action。
 
 ### Command/CommandBus
 
-线程内通信消息
+线程内通信消息。
+一个 Command 只能被一个特定的 CommandHandler 处理，MUST 在 UnitOfWork 内部调用该方法，发送的多个 Command 对象将在线程内顺序执行，且保持数据库事务一致性。
 
 #### Send
 
-发送 Command 对象，一个 Command 只能被一个特定的 CommandHandler 处理，MUST 在 UnitOfWork 内部调用该方法，发送的多个 Command 对象将在线程内顺序执行，且保持数据库事务一致性。
+发送 Command 对象。
 
 ### Event/EventBus
 
@@ -35,15 +37,19 @@ DomainMesssage 也叫 DomainEvent，用于解耦服务。
 
 #### Publish
 
-发送 Event 对象，一个 Event 对象可以被零到多个 EventHandler 处理；使用该方法需要在 UnitOfWork 内，比如 CommandHandler 内部；调用 publish 方法后，Event 对象将被缓存在线程的 Event 队列中，等待 Flush 方法将 Event 队列中的所有 Event 发布到线程池和事件总线（RabbitMQ）。
+发送 Event 对象，一个 Event 对象可以被零到多个 EventHandler 处理。
+使用该方法需要在 UnitOfWork 内，比如 CommandHandler 内部。
+调用 publish 方法后，Event 对象将被缓存在线程的 Event 队列中，等待 Flush 方法将 Event 队列中的所有 Event 发布到线程池和事件总线。
 
 #### Flush
 
-将 Event 队列中的所有 Event 发布到线程池和事件总线（RabbitMQ）；通常不需要显式的调用，Flush 方法会在 UnitOfWork 的 Complete 方法中自动调用。 
+将 Event 队列中的所有 Event 发布到线程池和事件总线。
+通常不需要显式的调用，Flush 方法会在 UnitOfWork 的 Complete 方法中自动调用。 
 
 #### Purge
 
-放弃 Event 队列中所有 Event，通常不需要显式的调用，Purge 方法会在 UnitOfWork 的 Dispose 方法中自动调用。
+放弃 Event 队列中所有 Event。
+通常不需要显式的调用，Purge 方法会在 UnitOfWork 的 Dispose 方法中自动调用。
 
 #### Handle
 
@@ -71,4 +77,5 @@ Event Consumer 收到来自事件队列的 Event 对象后，调用 Invoke 方�
 
 ## BootStrapper
 
-通过反射将 Action/Command/Event 和相应的 Handler 绑定；初始化 ServiceLocator。
+通过反射将 Action/Command/Event 和相应的 Handler 绑定。
+初始化 ServiceLocator。

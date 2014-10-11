@@ -18,7 +18,7 @@ namespace CQRS.Demo.EventConsumer
             log4net.Config.XmlConfigurator.Configure();
             BootStrapper.BootStrap();
 
-            ServiceLocator.EventBus.HandleInParallel("Account", "account.*.*", 20);
+            ServiceLocator.EventBus.SubscribeInParallel("Account", "account.*.*", 20);
             //ServiceLocator.EventBus.Handle("Account", "account.*.*");
             Thread.Sleep(Timeout.Infinite);
         }

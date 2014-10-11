@@ -17,9 +17,7 @@ namespace Grit.CQRS.Loggers
         void EventPublish(Event @event);
         void EventHandle(Event @event);
 
-        void ActionException(Action action, Exception ex);
-        void CommandException(Command command, Exception ex);
-        void EventException(Event @event, Exception ex);
+        void Exception(DomainMessage message, Exception ex);
 
         void Debug(string message);
     }

@@ -21,7 +21,7 @@ namespace CQRS.Demo.Sagas
             log4net.Config.XmlConfigurator.Configure();
             BootStrapper.BootStrap();
 
-            ServiceLocator.ActionBus.HandleInParallel(20);
+            ServiceLocator.ActionBus.SubscribeInParallel(20);
             //ServiceLocator.ActionBus.Handle();
             Thread.Sleep(Timeout.Infinite);
         }

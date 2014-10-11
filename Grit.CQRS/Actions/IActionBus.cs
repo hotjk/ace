@@ -35,11 +35,14 @@ namespace Grit.CQRS
         /// <returns></returns>
         Task<ActionResponse> SendAsync<T>(T action) where T : Action;
 
-        void Handle();
         /// <summary>
-        /// 
+        /// Handle action from RabbitMQ.
         /// </summary>
-        /// <param name="capacity"></param>
-        void HandleInParallel(int capacity);
+        void Subscribe();
+        /// <summary>
+        /// Handle action from RabbitMQ in parallel.
+        /// </summary>
+        /// <param name="capacity">Worker numbers</param>
+        void SubscribeInParallel(int capacity);
     }
 }
