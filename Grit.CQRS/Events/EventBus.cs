@@ -37,13 +37,7 @@ namespace Grit.CQRS
 
         private void FlushAnEvent<T>(T @event) where T : Event
         {
-            if (ServiceLocator.EventLogger.IsInfoEnabled)
-            {
-                ServiceLocator.EventLogger.Info(
-                    string.Format("Event Publish {0} {1}",
-                    @event,
-                    JsonConvert.SerializeObject(@event)));
-            }
+            ServiceLocator.BusLogger.EventPublish(@event);
 
             if (@event.Outer)
             {
@@ -64,12 +58,7 @@ namespace Grit.CQRS
                         }
                         catch (Exception ex)
                         {
-                            ServiceLocator.ExceptionLogger.Error(
-                                new Exception(string.Format("{0} {1} {2}",
-                                    handler.GetType().Name,
-                                    @event.Type,
-                                    @event.Id),
-                                    ex));
+                            ServiceLocator.BusLogger.EventException(@event, ex);
                         }
                     });
                 }
@@ -84,18 +73,13 @@ namespace Grit.CQRS
             }
             catch (Exception ex)
             {
-                ServiceLocator.ExceptionLogger.Error(
-                                    new Exception(string.Format("Flush {0} {1}",
-                                        @event.Type,
-                                        @event.Id),
-                                        ex));
+                ServiceLocator.BusLogger.EventException(@event, ex);
             }
         }
 
         public void Invoke<T>(T @event) where T : Event
         {
-            ServiceLocator.EventLogger.Info(
-                string.Format("Event Handle {0}", @event.Id));
+            ServiceLocator.BusLogger.EventHandle(@event);
 
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
@@ -109,12 +93,7 @@ namespace Grit.CQRS
                     }
                     catch (Exception ex)
                     {
-                        ServiceLocator.ExceptionLogger.Error(
-                                new Exception(string.Format("{0} {1} {2}",
-                                    handler.GetType().Name,
-                                    @event.Type,
-                                    @event.Id),
-                                    ex));
+                        ServiceLocator.BusLogger.EventException(@event, ex);
                     }
                 }
             }

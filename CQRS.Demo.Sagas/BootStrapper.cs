@@ -26,7 +26,8 @@ namespace CQRS.Demo.Sagas
             CQRS.Demo.Contracts.EnsoureAssemblyLoaded.Pike();
             CQRS.Demo.Applications.EnsoureAssemblyLoaded.Pike();
 
-            ServiceLocator.Init(Grit.Configuration.RabbitMQ.CQRSQueueConnectionString);
+            ServiceLocator.Init(Grit.Configuration.RabbitMQ.CQRSQueueConnectionString,
+                new Grit.CQRS.Loggers.Log4NetBusLogger());
             AddIocBindings();
             InitHandlerFactory();
         }

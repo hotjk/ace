@@ -75,18 +75,15 @@ namespace Grit.CQRS
 
         private static void Log(List<Type> commands)
         {
-            if (ServiceLocator.ActionLogger.IsInfoEnabled)
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("CommandBus:{0}", Environment.NewLine);
+            foreach (var command in commands)
             {
-                StringBuilder sb = new StringBuilder();
-                sb.AppendFormat("CommandBus:{0}", Environment.NewLine);
-                foreach (var command in commands)
-                {
-                    sb.AppendFormat("{0}{1}", command, Environment.NewLine);
-                    sb.AppendFormat("\t{0}{1}", _handlers[command], Environment.NewLine);
-                }
-                sb.AppendLine();
-                ServiceLocator.CommandLogger.Info(sb);
+                sb.AppendFormat("{0}{1}", command, Environment.NewLine);
+                sb.AppendFormat("\t{0}{1}", _handlers[command], Environment.NewLine);
             }
+            sb.AppendLine();
+            ServiceLocator.BusLogger.Debug(sb.ToString());
         }
 
         public ICommandHandler<T> GetHandler<T>() where T : Command

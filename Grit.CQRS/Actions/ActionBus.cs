@@ -28,16 +28,14 @@ namespace Grit.CQRS
             var handler = _actionHandlerFactory.GetHandler<T>();
             if (handler != null)
             {
-                ServiceLocator.ActionLogger.Info(
-                    string.Format("Action BeginInvoke {0}", action.Id));
+                ServiceLocator.BusLogger.ActionBeginInvoke(action);
                 try
                 {
                     handler.Invoke(action);
                 }
                 finally
                 {
-                    ServiceLocator.ActionLogger.Info(
-                        string.Format("Action EndInvoke {0}", action.Id));
+                    ServiceLocator.BusLogger.ActionEndInvoke(action);
                 }
             }
         }
@@ -51,12 +49,8 @@ namespace Grit.CQRS
 
         public async Task<ActionResponse> SendAsync<T>(T action) where T : Action
         {
-            if(ServiceLocator.ActionLogger.IsInfoEnabled)
-            {
-                ServiceLocator.ActionLogger.Info(
-                    string.Format("Action Send {0} {1}", action, 
-                    JsonConvert.SerializeObject(action)));
-            }
+            ServiceLocator.BusLogger.ActionSend(action);
+            
             return await ServiceLocator.EasyNetQBus.RequestAsync<Action, ActionResponse>(action);
         }
 

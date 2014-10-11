@@ -83,6 +83,8 @@
     <Compile Include="Exceptions\ConcurrencyException.cs" />
     <Compile Include="Exceptions\MoreThanOneDomainCommandHandlerException.cs" />
     <Compile Include="DomainMessage.cs" />
+    <Compile Include="Loggers\IBusLogger.cs" />
+    <Compile Include="Loggers\Log4NetBusLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Exceptions\UnregisteredDomainCommandException.cs" />
     <Compile Include="ServiceLocator.cs" />

@@ -95,22 +95,19 @@ namespace Grit.CQRS
 
         private static void Log(List<Type> actions)
         {
-            if (ServiceLocator.ActionLogger.IsInfoEnabled)
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("ActionBus:{0}", Environment.NewLine);
+            foreach (var action in actions)
             {
-                StringBuilder sb = new StringBuilder();
-                sb.AppendFormat("ActionBus:{0}", Environment.NewLine);
-                foreach (var action in actions)
+                sb.AppendFormat("{0}{1}", action, Environment.NewLine);
+                Type value;
+                if (_handlers.TryGetValue(action, out value))
                 {
-                    sb.AppendFormat("{0}{1}", action, Environment.NewLine);
-                    Type value;
-                    if (_handlers.TryGetValue(action, out value))
-                    {
-                        sb.AppendFormat("\t{0}{1}", value, Environment.NewLine);
-                    }
+                    sb.AppendFormat("\t{0}{1}", value, Environment.NewLine);
                 }
-                sb.AppendLine();
-                ServiceLocator.ActionLogger.Info(sb);
             }
+            sb.AppendLine();
+            ServiceLocator.BusLogger.Debug(sb.ToString());
         }
 
         public IActionHandler<T> GetHandler<T>() where T : Action

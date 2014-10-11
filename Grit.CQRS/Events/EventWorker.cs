@@ -16,7 +16,7 @@ namespace Grit.CQRS.Events
             }
             catch (Exception ex)
             {
-                ServiceLocator.ExceptionLogger.Error(ex);
+                ServiceLocator.BusLogger.EventException(@event, ex);
             }
         }
     }
