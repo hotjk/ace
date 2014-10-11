@@ -35,12 +35,22 @@ namespace Grit.CQRS
         private static bool _isInitialized;
         private static readonly object _lockThis = new object();
 
+        public static log4net.ILog CommandLogger { get; private set; }
+        public static log4net.ILog EventLogger { get; private set; }
+        public static log4net.ILog ActionLogger { get; private set; }
+        public static log4net.ILog ExceptionLogger { get; private set; }
+
         public static void Init(string queueConnectionString)
         {
             if (!_isInitialized)
             {
                 lock (_lockThis)
                 {
+                    CommandLogger = log4net.LogManager.GetLogger("command.logger");
+                    EventLogger = log4net.LogManager.GetLogger("event.logger");
+                    ActionLogger = log4net.LogManager.GetLogger("action.logger");
+                    ExceptionLogger = log4net.LogManager.GetLogger("exception.logger");
+
                     NinjectContainer = new StandardKernel();
 
                     RabbitHutch.SetContainerFactory(() =>

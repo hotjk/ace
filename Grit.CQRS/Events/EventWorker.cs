@@ -16,7 +16,7 @@ namespace Grit.CQRS.Events
             }
             catch (Exception ex)
             {
-                log4net.LogManager.GetLogger("exception.logger").Error(ex);
+                ServiceLocator.ExceptionLogger.Error(ex);
             }
         }
     }

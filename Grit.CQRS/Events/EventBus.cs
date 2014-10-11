@@ -37,9 +37,13 @@ namespace Grit.CQRS
 
         private void FlushAnEvent<T>(T @event) where T : Event
         {
-            string json = JsonConvert.SerializeObject(@event);
-            log4net.LogManager.GetLogger("event.logger").Info(
-                string.Format("Event Publish {0} {1}", @event, json));
+            if (ServiceLocator.EventLogger.IsInfoEnabled)
+            {
+                ServiceLocator.EventLogger.Info(
+                    string.Format("Event Publish {0} {1}",
+                    @event,
+                    JsonConvert.SerializeObject(@event)));
+            }
 
             if (@event.Outer)
             {
@@ -60,8 +64,12 @@ namespace Grit.CQRS
                         }
                         catch (Exception ex)
                         {
-                            log4net.LogManager.GetLogger("exception.logger").Error(
-                                new Exception(string.Format("{0} {1} {2}", handler.GetType().Name, @event.Type, @event.Id), ex));
+                            ServiceLocator.ExceptionLogger.Error(
+                                new Exception(string.Format("{0} {1} {2}",
+                                    handler.GetType().Name,
+                                    @event.Type,
+                                    @event.Id),
+                                    ex));
                         }
                     });
                 }
@@ -76,14 +84,17 @@ namespace Grit.CQRS
             }
             catch (Exception ex)
             {
-                log4net.LogManager.GetLogger("exception.logger").Error(
-                    new Exception(string.Format("Flush {0} {1}", @event.Type, @event.Id), ex));
+                ServiceLocator.ExceptionLogger.Error(
+                                    new Exception(string.Format("Flush {0} {1}",
+                                        @event.Type,
+                                        @event.Id),
+                                        ex));
             }
         }
 
         public void Invoke<T>(T @event) where T : Event
         {
-            log4net.LogManager.GetLogger("event.logger").Info(
+            ServiceLocator.EventLogger.Info(
                 string.Format("Event Handle {0}", @event.Id));
 
             var handlers = _eventHandlerFactory.GetHandlers<T>();
@@ -96,11 +107,14 @@ namespace Grit.CQRS
                         // handle event in current thread
                         handler.Handle(@event);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
-                        log4net.LogManager.GetLogger("exception.logger").Error(
-                            new Exception(string.Format("{0} {1} {2}",
-                            handler.GetType().Name, @event.Type, @event.Id), ex));
+                        ServiceLocator.ExceptionLogger.Error(
+                                new Exception(string.Format("{0} {1} {2}",
+                                    handler.GetType().Name,
+                                    @event.Type,
+                                    @event.Id),
+                                    ex));
                     }
                 }
             }

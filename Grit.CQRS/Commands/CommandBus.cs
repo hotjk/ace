@@ -18,10 +18,13 @@ namespace Grit.CQRS
 
         public ICommandBus Send<T>(T command) where T : Command
         {
-            string json = JsonConvert.SerializeObject(command);
-            log4net.LogManager.GetLogger("command.logger").Info(
-                string.Format("Command Send {0} {1}", command, json));
-
+            if(ServiceLocator.CommandLogger.IsInfoEnabled)
+            {
+                ServiceLocator.CommandLogger.Info(
+                    string.Format("Command Send {0} {1}", 
+                    command, 
+                    JsonConvert.SerializeObject(command)));;
+            }
             var handler = _commandHandlerFactory.GetHandler<T>();
             handler.Execute(command);
             return this;

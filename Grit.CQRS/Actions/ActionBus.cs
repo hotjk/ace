@@ -25,16 +25,21 @@ namespace Grit.CQRS
 
         public void Invoke<T>(T action) where T : Action
         {
-            log4net.LogManager.GetLogger("action.logger").Info(
-                string.Format("Action BeginInvoke {0}", action.Id));
-
             var handler = _actionHandlerFactory.GetHandler<T>();
             if (handler != null)
             {
-                handler.Invoke(action);
+                ServiceLocator.ActionLogger.Info(
+                    string.Format("Action BeginInvoke {0}", action.Id));
+                try
+                {
+                    handler.Invoke(action);
+                }
+                finally
+                {
+                    ServiceLocator.ActionLogger.Info(
+                        string.Format("Action EndInvoke {0}", action.Id));
+                }
             }
-            log4net.LogManager.GetLogger("action.logger").Info(
-                string.Format("Action EndInvoke {0}", action.Id));
         }
 
         public ActionResponse Send<T>(T action) where T : Action
@@ -46,10 +51,12 @@ namespace Grit.CQRS
 
         public async Task<ActionResponse> SendAsync<T>(T action) where T : Action
         {
-            string json = JsonConvert.SerializeObject(action);
-            log4net.LogManager.GetLogger("action.logger").Info(
-                string.Format("Action Send {0} {1}", action, json));
-
+            if(ServiceLocator.ActionLogger.IsInfoEnabled)
+            {
+                ServiceLocator.ActionLogger.Info(
+                    string.Format("Action Send {0} {1}", action, 
+                    JsonConvert.SerializeObject(action)));
+            }
             return await ServiceLocator.EasyNetQBus.RequestAsync<Action, ActionResponse>(action);
         }
 

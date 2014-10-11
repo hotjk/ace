@@ -90,22 +90,25 @@ namespace Grit.CQRS
 
         private static void Log(List<Type> events)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("EventBus:{0}", Environment.NewLine);
-            foreach (var @event in events)
+            if (ServiceLocator.ActionLogger.IsInfoEnabled)
             {
-                sb.AppendFormat("{0}{1}", @event, Environment.NewLine);
-                List<Type> handlers;
-                if (_handlers.TryGetValue(@event, out handlers))
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat("EventBus:{0}", Environment.NewLine);
+                foreach (var @event in events)
                 {
-                    foreach (var handler in handlers)
+                    sb.AppendFormat("{0}{1}", @event, Environment.NewLine);
+                    List<Type> handlers;
+                    if (_handlers.TryGetValue(@event, out handlers))
                     {
-                        sb.AppendFormat("\t{0}{1}", handler, Environment.NewLine);
+                        foreach (var handler in handlers)
+                        {
+                            sb.AppendFormat("\t{0}{1}", handler, Environment.NewLine);
+                        }
                     }
                 }
+                sb.AppendLine();
+                ServiceLocator.EventLogger.Info(sb);
             }
-            sb.AppendLine();
-            log4net.LogManager.GetLogger("event.logger").Debug(sb);
         }
 
         public IEnumerable<IEventHandler<T>> GetHandlers<T>() where T : Event
