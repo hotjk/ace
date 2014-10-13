@@ -12,6 +12,10 @@ namespace Grit.CQRS.Loggers
         void ActionBeginInvoke(Action action);
         void ActionEndInvoke(Action action);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command">Command is a big object, do not serialize it.</param>
         void CommandSend(Command command);
 
         void EventPublish(Event @event);

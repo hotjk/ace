@@ -22,7 +22,7 @@ namespace Grit.CQRS.Loggers
             EventLogger = log4net.LogManager.GetLogger("event.logger");
             ActionLogger = log4net.LogManager.GetLogger("action.logger");
             ExceptionLogger = log4net.LogManager.GetLogger("exception.logger");
-            DebugLogger = log4net.LogManager.GetLogger("exception.logger");
+            DebugLogger = log4net.LogManager.GetLogger("debug.logger");
         }
 
         public void ActionSend(Action action)

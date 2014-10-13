@@ -14,6 +14,8 @@
 
 >rabbitmqctl set_permissions -p grit guest ".*" ".*" ".*"
 
+>rabbitmqctl set_user_tags event_user administrator
+
 ### Setup MySQL ###
 
 * Install MySQL
