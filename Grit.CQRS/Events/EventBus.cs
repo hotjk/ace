@@ -39,11 +39,19 @@ namespace Grit.CQRS
         {
             ServiceLocator.BusLogger.EventPublish(@event);
 
-            if (@event.Outer)
+            if (ServiceLocator.DistributeEventToQueue && @event.Outer)
             {
-                FlushAnEventToOuter(@event);
+                DistributeAnEventToQueue(@event);
             }
 
+            if (ServiceLocator.DistributeEventInProcess)
+            {
+                DistributeEventInProcess<T>(@event);
+            }
+        }
+
+        private void DistributeEventInProcess<T>(T @event) where T : Event
+        {
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
             {
@@ -65,7 +73,7 @@ namespace Grit.CQRS
             }
         }
 
-        private static void FlushAnEventToOuter<T>(T @event) where T : Event
+        private static void DistributeAnEventToQueue<T>(T @event) where T : Event
         {
             try
             {

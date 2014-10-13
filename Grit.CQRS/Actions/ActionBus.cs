@@ -50,6 +50,11 @@ namespace Grit.CQRS
         public async Task<ActionResponse> SendAsync<T>(T action) where T : Action
         {
             ServiceLocator.BusLogger.ActionSend(action);
+
+            if (!ServiceLocator.DistributeActionToQueue)
+            {
+                throw new Exception("Action is not allow to distribute to queue, maybe you can direct invoke action in thread.");
+            }
             
             return await ServiceLocator.EasyNetQBus.RequestAsync<Action, ActionResponse>(action);
         }

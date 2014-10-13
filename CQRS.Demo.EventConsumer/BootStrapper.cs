@@ -24,8 +24,9 @@ namespace CQRS.Demo.EventConsumer
         {
             // Pike a dummy method to ensoure Command/Event assembly been loaded
             CQRS.Demo.Contracts.EnsoureAssemblyLoaded.Pike();
-            ServiceLocator.Init(Grit.Configuration.RabbitMQ.CQRSQueueConnectionString,
-                new Grit.CQRS.Loggers.Log4NetBusLogger());
+            ServiceLocator.Init(new Grit.CQRS.Loggers.Log4NetBusLogger(),
+                Grit.Configuration.RabbitMQ.CQRSQueueConnectionString,
+                false, false, false);
 
             AddIocBindings();
             InitHandlerFactory();

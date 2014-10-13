@@ -33,17 +33,36 @@ namespace Grit.CQRS
             }
         }
 
+        public static bool DistributeEventToQueue { get; private set; }
+        public static bool DistributeEventInProcess { get; private set; }
+        public static bool DistributeActionToQueue { get; private set; }
+
         private static bool _isInitialized;
         private static readonly object _lockThis = new object();
 
         public static IBusLogger BusLogger { get; private set; }
 
-        public static void Init(string queueConnectionString, IBusLogger logger)
+        public static void Init(
+            IBusLogger logger,
+            string queueConnectionString = null, 
+            bool distributeEventToQueue = false,
+            bool distributeEventInProcess = false,
+            bool distributeActionToQueue = false)
         {
             if (!_isInitialized)
             {
                 lock (_lockThis)
                 {
+                    DistributeEventToQueue = distributeEventToQueue;
+                    DistributeEventInProcess = distributeEventInProcess;
+                    DistributeActionToQueue = distributeActionToQueue;
+
+                    if (distributeActionToQueue && distributeEventToQueue && 
+                        string.IsNullOrEmpty(queueConnectionString))
+                    {
+                        throw new Exception("Queue connection string is required when distribute action/event to queue.");
+                    }
+
                     BusLogger = logger;
                     NinjectContainer = new StandardKernel();
 
@@ -52,7 +71,10 @@ namespace Grit.CQRS
                         return new EasyNetQ.DI.NinjectAdapter(NinjectContainer);
                     });
 
-                    EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(queueConnectionString, x => x.Register<IEasyNetQLogger, NullLogger>());
+                    if (!string.IsNullOrEmpty(queueConnectionString))
+                    {
+                        EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(queueConnectionString, x => x.Register<IEasyNetQLogger, NullLogger>());
+                    }
 
                     NinjectContainer.Bind<ICommandHandlerFactory>().To<CommandHandlerFactory>().InSingletonScope();
                     NinjectContainer.Bind<ICommandBus>().To<CommandBus>().InSingletonScope();

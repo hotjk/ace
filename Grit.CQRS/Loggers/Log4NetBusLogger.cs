@@ -14,7 +14,7 @@ namespace Grit.CQRS.Loggers
         public ILog EventLogger { get; private set; }
         public ILog ActionLogger { get; private set; }
         public ILog ExceptionLogger { get; private set; }
-        public ILog Logger { get; private set; }
+        public ILog DebugLogger { get; private set; }
 
         public Log4NetBusLogger()
         {
@@ -22,7 +22,7 @@ namespace Grit.CQRS.Loggers
             EventLogger = log4net.LogManager.GetLogger("event.logger");
             ActionLogger = log4net.LogManager.GetLogger("action.logger");
             ExceptionLogger = log4net.LogManager.GetLogger("exception.logger");
-            Logger = log4net.LogManager.GetLogger("exception.logger");
+            DebugLogger = log4net.LogManager.GetLogger("exception.logger");
         }
 
         public void ActionSend(Action action)
@@ -30,21 +30,20 @@ namespace Grit.CQRS.Loggers
             if (ActionLogger.IsInfoEnabled)
             {
                 ActionLogger.Info(
-                    string.Format("Action Send {0} {1}", action,
-                    JsonConvert.SerializeObject(action)));
+                    string.Format("Action Send {0} {1}", action, JsonConvert.SerializeObject(action)));
             }
         }
 
         public void ActionBeginInvoke(Action action)
         {
             ActionLogger.Info(
-                    string.Format("Action BeginInvoke {0}", action.Id));
+                    string.Format("Action BeginInvoke {0} {1}", action, JsonConvert.SerializeObject(action)));
         }
 
         public void ActionEndInvoke(Action action)
         {
             ActionLogger.Info(
-                        string.Format("Action EndInvoke {0}", action.Id));
+                        string.Format("Action EndInvoke {0} {1}", action, JsonConvert.SerializeObject(action)));
         }
 
         public void CommandSend(Command command)
@@ -52,9 +51,7 @@ namespace Grit.CQRS.Loggers
             if (CommandLogger.IsInfoEnabled)
             {
                 CommandLogger.Info(
-                    string.Format("Command Send {0} {1}",
-                    command,
-                    JsonConvert.SerializeObject(command))); ;
+                    string.Format("Command Send {0} {1}", command, JsonConvert.SerializeObject(command))); ;
             }
         }
 
@@ -63,30 +60,23 @@ namespace Grit.CQRS.Loggers
             if (EventLogger.IsInfoEnabled)
             {
                 EventLogger.Info(
-                    string.Format("Event Publish {0} {1}",
-                    @event,
-                    JsonConvert.SerializeObject(@event)));
+                    string.Format("Event Publish {0} {1}", @event, JsonConvert.SerializeObject(@event)));
             }
         }
 
         public void EventHandle(Event @event)
         {
-            EventLogger.Info(
-                string.Format("Event Handle {0}", @event.Id));
+            EventLogger.Info(string.Format("Event Handle {0} {1}", @event, JsonConvert.SerializeObject(@event)));
         }
 
         public void Exception(DomainMessage message, Exception ex)
         {
-            ExceptionLogger.Error(
-                                new Exception(string.Format("{0} {1}",
-                                    message.Type,
-                                    message.Id),
-                                    ex));
+            ExceptionLogger.Error(new Exception(string.Format("{0} {1}", message, message.Id), ex));
         }
 
         public void Debug(string message)
         {
-            Logger.Debug(message);
+            DebugLogger.Debug(message);
         }
     }
 }
