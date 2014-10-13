@@ -10,10 +10,24 @@ namespace Grit.CQRS
 {
     public class Event : DomainMessage, IEvent
     {
-        public Event(bool outer = true)
+        public Event(bool distributeToQueue = true)
         {
-            this.Outer = outer;
+            EventId = Guid.NewGuid();
+            this.DistributeToQueue = distributeToQueue;
         }
-        public bool Outer { get; set; }
+        
+        public bool DistributeToQueue { get; set; }
+
+        public override Guid Id
+        {
+            get
+            {
+                return EventId;
+            }
+        }
+
+        public Guid ActionId { get; set; }
+        public Guid CommandId { get; set; }
+        public Guid EventId { get; set; }
     }
 }

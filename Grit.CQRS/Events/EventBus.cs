@@ -39,7 +39,7 @@ namespace Grit.CQRS
         {
             ServiceLocator.BusLogger.EventPublish(@event);
 
-            if (ServiceLocator.DistributeEventToQueue && @event.Outer)
+            if (ServiceLocator.DistributeEventToQueue && @event.DistributeToQueue)
             {
                 DistributeAnEventToQueue(@event);
             }

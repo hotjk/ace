@@ -14,6 +14,11 @@ namespace Grit.CQRS.Actions
             NG = 1,
             Exception = 2,
         }
+        public override Guid Id
+        {
+            get { return ResponseId; }
+        }
+        public Guid ResponseId { get; set; }
         public ActionResponseResult Result { get; set; }
         public string Message { get; set; }
     }

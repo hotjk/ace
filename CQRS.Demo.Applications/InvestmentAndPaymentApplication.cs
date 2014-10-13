@@ -40,30 +40,30 @@ namespace CQRS.Demo.Applications
             AutoMapper.Mapper.CreateMap<InvestmentPayRequest, CompleteInvestment>();
         }
 
-        public void Invoke(InvestmentCreateRequest @event)
+        public void Invoke(InvestmentCreateRequest action)
         {
-            var account = _accountService.Get(@event.AccountId);
-            if (account.Amount < @event.Amount)
+            var account = _accountService.Get(action.AccountId);
+            if (account.Amount < action.Amount)
             {
                 throw new BusinessException("用户账户余额不足。");
             }
 
-            var project = _projectService.Get(@event.ProjectId);
-            if (project.Amount < @event.Amount)
+            var project = _projectService.Get(action.ProjectId);
+            if (project.Amount < action.Amount)
             {
                 throw new BusinessException("项目可投资金额不足。");
             }
 
             using (UnitOfWork u = new UnitOfWork())
             {
-                ServiceLocator.CommandBus.Send(AutoMapper.Mapper.Map<CreateInvestment>(@event));
+                ServiceLocator.CommandBus.Send(AutoMapper.Mapper.Map<CreateInvestment>(action));
                 u.Complete();
             }
         }
 
-        public void Invoke(InvestmentPayRequest @event)
+        public void Invoke(InvestmentPayRequest action)
         {
-            var investment = _investmentService.Get(@event.InvestmentId);
+            var investment = _investmentService.Get(action.InvestmentId);
             if (investment == null)
             {
                 throw new BusinessException("投资不存在。");
@@ -79,25 +79,30 @@ namespace CQRS.Demo.Applications
                 ServiceLocator.CommandBus
                     .Send(new CompleteInvestment
                     {
-                        InvestmentId = @event.InvestmentId
+                        ActionId = action.ActionId,
+                        InvestmentId = action.InvestmentId
                     })
                     .Send(new ChangeProjectAmount
                     {
+                        ActionId = action.ActionId,
                         ProjectId = project.ProjectId,
                         Change = 0 - investment.Amount
                     })
                     .Send(new ChangeAccountAmount
                     {
+                        ActionId = action.ActionId,
                         AccountId = investment.AccountId,
                         Change = 0 - investment.Amount
                     })
                     .Send(new ChangeAccountAmount
                     {
+                        ActionId = action.ActionId,
                         AccountId = project.BorrowerId,
                         Change = investment.Amount
                     })
                     .Send(new CreateAccountActivity
                     {
+                        ActionId = action.ActionId,
                         FromAccountId = investment.AccountId,
                         ToAccountId = project.BorrowerId,
                         Amount = investment.Amount

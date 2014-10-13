@@ -11,13 +11,10 @@ namespace Grit.CQRS
     /// <summary>
     /// ACE, Action/Command/Event
     /// </summary>
-    public class DomainMessage
+    public abstract class DomainMessage
     {
-        public Guid Id { get; private set; }
-        public DomainMessage()
-        {
-            this.Id = Guid.NewGuid();
-        }
+        [JsonIgnore]
+        public abstract Guid Id { get; }
 
         private static Regex _regexCamel = new Regex("[a-z][A-Z]");
 
@@ -39,14 +36,6 @@ namespace Grit.CQRS
         public static string ToCamelString(string str)
         {
             return string.Join("", str.Split(new char[] { '.' }).Select(n => char.ToUpper(n[0]) + n.Substring(1)));
-        }
-
-        public string Type
-        {
-            get
-            {
-                return this.GetType().Name;
-            }
         }
 
         [JsonIgnore]

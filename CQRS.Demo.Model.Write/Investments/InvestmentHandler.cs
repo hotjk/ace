@@ -49,7 +49,10 @@ namespace CQRS.Demo.Model.Investments
         {
             Investment investment = _repository.GetForUpdate(command.InvestmentId);
             _repository.Complete(command.InvestmentId);
-            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCompleted>(investment));
+            var @event = AutoMapper.Mapper.Map<InvestmentStatusCompleted>(investment);
+            @event.ActionId = command.ActionId;
+            @event.CommandId = command.CommandId;
+            ServiceLocator.EventBus.Publish(@event);
         }
     }
 }
