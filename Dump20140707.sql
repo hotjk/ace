@@ -18,13 +18,13 @@ USE `grit`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `cqrs_demo_account`
+-- Table structure for table `ace_demo_account`
 --
 
-DROP TABLE IF EXISTS `cqrs_demo_account`;
+DROP TABLE IF EXISTS `ace_demo_account`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cqrs_demo_account` (
+CREATE TABLE `ace_demo_account` (
   `AccountId` int(11) NOT NULL,
   `Amount` decimal(20,2) NOT NULL,
   PRIMARY KEY (`AccountId`)
@@ -32,23 +32,23 @@ CREATE TABLE `cqrs_demo_account` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `cqrs_demo_account`
+-- Dumping data for table `ace_demo_account`
 --
 
-LOCK TABLES `cqrs_demo_account` WRITE;
-/*!40000 ALTER TABLE `cqrs_demo_account` DISABLE KEYS */;
-INSERT INTO `cqrs_demo_account` VALUES (1,201.00),(2,9799.00);
-/*!40000 ALTER TABLE `cqrs_demo_account` ENABLE KEYS */;
+LOCK TABLES `ace_demo_account` WRITE;
+/*!40000 ALTER TABLE `ace_demo_account` DISABLE KEYS */;
+INSERT INTO `ace_demo_account` VALUES (1,201.00),(2,9799.00);
+/*!40000 ALTER TABLE `ace_demo_account` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `cqrs_demo_account_activity`
+-- Table structure for table `ace_demo_account_activity`
 --
 
-DROP TABLE IF EXISTS `cqrs_demo_account_activity`;
+DROP TABLE IF EXISTS `ace_demo_account_activity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cqrs_demo_account_activity` (
+CREATE TABLE `ace_demo_account_activity` (
   `ActivityId` int(11) NOT NULL AUTO_INCREMENT,
   `FromAccountId` int(11) DEFAULT NULL,
   `ToAccountId` int(11) DEFAULT NULL,
@@ -58,23 +58,23 @@ CREATE TABLE `cqrs_demo_account_activity` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `cqrs_demo_account_activity`
+-- Dumping data for table `ace_demo_account_activity`
 --
 
-LOCK TABLES `cqrs_demo_account_activity` WRITE;
-/*!40000 ALTER TABLE `cqrs_demo_account_activity` DISABLE KEYS */;
-INSERT INTO `cqrs_demo_account_activity` VALUES (18,2,1,100.00),(19,2,1,1.00),(20,2,1,100.00);
-/*!40000 ALTER TABLE `cqrs_demo_account_activity` ENABLE KEYS */;
+LOCK TABLES `ace_demo_account_activity` WRITE;
+/*!40000 ALTER TABLE `ace_demo_account_activity` DISABLE KEYS */;
+INSERT INTO `ace_demo_account_activity` VALUES (18,2,1,100.00),(19,2,1,1.00),(20,2,1,100.00);
+/*!40000 ALTER TABLE `ace_demo_account_activity` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `cqrs_demo_investment`
+-- Table structure for table `ace_demo_investment`
 --
 
-DROP TABLE IF EXISTS `cqrs_demo_investment`;
+DROP TABLE IF EXISTS `ace_demo_investment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cqrs_demo_investment` (
+CREATE TABLE `ace_demo_investment` (
   `InvestmentId` int(11) NOT NULL,
   `ProjectId` int(11) NOT NULL,
   `AccountId` int(11) NOT NULL,
@@ -85,23 +85,23 @@ CREATE TABLE `cqrs_demo_investment` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `cqrs_demo_investment`
+-- Dumping data for table `ace_demo_investment`
 --
 
-LOCK TABLES `cqrs_demo_investment` WRITE;
-/*!40000 ALTER TABLE `cqrs_demo_investment` DISABLE KEYS */;
-INSERT INTO `cqrs_demo_investment` VALUES (128,1,2,100.00,1),(138,1,2,1.00,1),(141,1,2,100.00,0),(142,1,2,100.00,0),(143,1,2,100.00,1);
-/*!40000 ALTER TABLE `cqrs_demo_investment` ENABLE KEYS */;
+LOCK TABLES `ace_demo_investment` WRITE;
+/*!40000 ALTER TABLE `ace_demo_investment` DISABLE KEYS */;
+INSERT INTO `ace_demo_investment` VALUES (128,1,2,100.00,1),(138,1,2,1.00,1),(141,1,2,100.00,0),(142,1,2,100.00,0),(143,1,2,100.00,1);
+/*!40000 ALTER TABLE `ace_demo_investment` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `cqrs_demo_message`
+-- Table structure for table `ace_demo_message`
 --
 
-DROP TABLE IF EXISTS `cqrs_demo_message`;
+DROP TABLE IF EXISTS `ace_demo_message`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cqrs_demo_message` (
+CREATE TABLE `ace_demo_message` (
   `MessageId` int(11) NOT NULL AUTO_INCREMENT,
   `AccountId` int(11) NOT NULL,
   `Content` varchar(1024) NOT NULL,
@@ -110,23 +110,23 @@ CREATE TABLE `cqrs_demo_message` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `cqrs_demo_message`
+-- Dumping data for table `ace_demo_message`
 --
 
-LOCK TABLES `cqrs_demo_message` WRITE;
-/*!40000 ALTER TABLE `cqrs_demo_message` DISABLE KEYS */;
-INSERT INTO `cqrs_demo_message` VALUES (145,2,'投资成功，投资金额100.00元。'),(146,2,'投资成功，投资金额100.00元。'),(147,2,'账户变动，变动金额-100.00元。'),(148,1,'账户变动，变动金额100.00元。'),(149,2,'账户变动，变动金额-100.00元。'),(150,1,'账户变动，变动金额100.00元。'),(151,2,'投资成功，投资金额1.00元。'),(152,2,'投资成功，投资金额1.00元。'),(153,2,'账户变动，变动金额-1.00元。'),(154,1,'账户变动，变动金额1.00元。'),(155,2,'账户变动，变动金额-1.00元。'),(156,1,'账户变动，变动金额1.00元。'),(157,2,'投资成功，投资金额100.00元。'),(158,2,'投资成功，投资金额100.00元。'),(159,2,'投资成功，投资金额100.00元。'),(160,2,'投资成功，投资金额100.00元。'),(161,2,'投资成功，投资金额100.00元。'),(162,2,'账户变动，变动金额-100.00元。'),(163,1,'账户变动，变动金额100.00元。');
-/*!40000 ALTER TABLE `cqrs_demo_message` ENABLE KEYS */;
+LOCK TABLES `ace_demo_message` WRITE;
+/*!40000 ALTER TABLE `ace_demo_message` DISABLE KEYS */;
+INSERT INTO `ace_demo_message` VALUES (145,2,'投资成功，投资金额100.00元。'),(146,2,'投资成功，投资金额100.00元。'),(147,2,'账户变动，变动金额-100.00元。'),(148,1,'账户变动，变动金额100.00元。'),(149,2,'账户变动，变动金额-100.00元。'),(150,1,'账户变动，变动金额100.00元。'),(151,2,'投资成功，投资金额1.00元。'),(152,2,'投资成功，投资金额1.00元。'),(153,2,'账户变动，变动金额-1.00元。'),(154,1,'账户变动，变动金额1.00元。'),(155,2,'账户变动，变动金额-1.00元。'),(156,1,'账户变动，变动金额1.00元。'),(157,2,'投资成功，投资金额100.00元。'),(158,2,'投资成功，投资金额100.00元。'),(159,2,'投资成功，投资金额100.00元。'),(160,2,'投资成功，投资金额100.00元。'),(161,2,'投资成功，投资金额100.00元。'),(162,2,'账户变动，变动金额-100.00元。'),(163,1,'账户变动，变动金额100.00元。');
+/*!40000 ALTER TABLE `ace_demo_message` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `cqrs_demo_project`
+-- Table structure for table `ace_demo_project`
 --
 
-DROP TABLE IF EXISTS `cqrs_demo_project`;
+DROP TABLE IF EXISTS `ace_demo_project`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cqrs_demo_project` (
+CREATE TABLE `ace_demo_project` (
   `ProjectId` int(11) NOT NULL,
   `Name` varchar(100) NOT NULL,
   `Amount` decimal(20,2) NOT NULL,
@@ -136,13 +136,13 @@ CREATE TABLE `cqrs_demo_project` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `cqrs_demo_project`
+-- Dumping data for table `ace_demo_project`
 --
 
-LOCK TABLES `cqrs_demo_project` WRITE;
-/*!40000 ALTER TABLE `cqrs_demo_project` DISABLE KEYS */;
-INSERT INTO `cqrs_demo_project` VALUES (1,'Test Project',9900.00,1);
-/*!40000 ALTER TABLE `cqrs_demo_project` ENABLE KEYS */;
+LOCK TABLES `ace_demo_project` WRITE;
+/*!40000 ALTER TABLE `ace_demo_project` DISABLE KEYS */;
+INSERT INTO `ace_demo_project` VALUES (1,'Test Project',9900.00,1);
+/*!40000 ALTER TABLE `ace_demo_project` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -166,7 +166,7 @@ CREATE TABLE `sequence` (
 
 LOCK TABLES `sequence` WRITE;
 /*!40000 ALTER TABLE `sequence` DISABLE KEYS */;
-INSERT INTO `sequence` VALUES (1,4155,'Test'),(100,3,'CQRS_Account'),(101,2,'CQRS_Project'),(102,144,'CQRS_Investment');
+INSERT INTO `sequence` VALUES (1,4155,'Test'),(100,3,'ace_Account'),(101,2,'ace_Project'),(102,144,'ace_Investment');
 /*!40000 ALTER TABLE `sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 

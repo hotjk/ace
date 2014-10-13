@@ -15,37 +15,37 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grit.Sequence.Repository.My
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grit.Configuration", "Grit.Configuration\Grit.Configuration.csproj", "{38BFF300-BE60-4A8B-886E-0C3DF4362657}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CQRS", "CQRS", "{9C7D4CD4-9C10-48E0-AAEE-83419CD8B19B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ACE", "ACE", "{9C7D4CD4-9C10-48E0-AAEE-83419CD8B19B}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grit.CQRS", "Grit.CQRS\Grit.CQRS.csproj", "{81569F0A-133A-4E07-A66B-9EFC8B5F7411}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grit.ACE", "Grit.ACE\Grit.ACE.csproj", "{81569F0A-133A-4E07-A66B-9EFC8B5F7411}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRS.Demo.Repositories", "CQRS.Demo.Repositories\CQRS.Demo.Repositories.csproj", "{FE904A73-61F7-4E93-8BD0-6AA4FD879BAF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.Demo.Repositories", "ACE.Demo.Repositories\ACE.Demo.Repositories.csproj", "{FE904A73-61F7-4E93-8BD0-6AA4FD879BAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRS.Demo.Contracts", "CQRS.Demo.Contracts\CQRS.Demo.Contracts.csproj", "{B9FCAD5A-3E1D-4D44-9C70-A1B0759DD9A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.Demo.Contracts", "ACE.Demo.Contracts\ACE.Demo.Contracts.csproj", "{B9FCAD5A-3E1D-4D44-9C70-A1B0759DD9A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRS.Demo.Model", "CQRS.Demo.Model\CQRS.Demo.Model.csproj", "{B2959BF3-9BAF-4452-A94F-CEE2886DAE07}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.Demo.Model", "ACE.Demo.Model\ACE.Demo.Model.csproj", "{B2959BF3-9BAF-4452-A94F-CEE2886DAE07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRS.Demo.Repositories.Write", "CQRS.Demo.Repositories.Write\CQRS.Demo.Repositories.Write.csproj", "{FCEADCAA-D1DC-478C-A032-F43064EA43C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.Demo.Repositories.Write", "ACE.Demo.Repositories.Write\ACE.Demo.Repositories.Write.csproj", "{FCEADCAA-D1DC-478C-A032-F43064EA43C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRS.Demo.Model.Write", "CQRS.Demo.Model.Write\CQRS.Demo.Model.Write.csproj", "{5CE82ECE-3D69-46C7-9F10-7F28CFA52271}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.Demo.Model.Write", "ACE.Demo.Model.Write\ACE.Demo.Model.Write.csproj", "{5CE82ECE-3D69-46C7-9F10-7F28CFA52271}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{BAF43B16-9BAD-4569-9E4D-CD7202BAB7C7}"
 	ProjectSection(SolutionItems) = preProject
 		INSTALL.md = INSTALL.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CQRS", "CQRS", "{82C2D6D9-5AD5-4FF7-A580-2F8E286BB913}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ACE", "ACE", "{82C2D6D9-5AD5-4FF7-A580-2F8E286BB913}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRS.Demo.Web", "CQRS.Demo.Web\CQRS.Demo.Web.csproj", "{7C729CE2-20EE-4BA9-8C12-C5070CD040A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.Demo.Web", "ACE.Demo.Web\ACE.Demo.Web.csproj", "{7C729CE2-20EE-4BA9-8C12-C5070CD040A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRS.Demo.Applications", "CQRS.Demo.Applications\CQRS.Demo.Applications.csproj", "{44F55475-7AB3-41F4-801E-E185294AB1F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.Demo.Applications", "ACE.Demo.Applications\ACE.Demo.Applications.csproj", "{44F55475-7AB3-41F4-801E-E185294AB1F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRS.Demo.Sagas", "CQRS.Demo.Sagas\CQRS.Demo.Sagas.csproj", "{AD7BB8C2-DB28-40C0-828F-7E1AF4A26527}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.Demo.Sagas", "ACE.Demo.Sagas\ACE.Demo.Sagas.csproj", "{AD7BB8C2-DB28-40C0-828F-7E1AF4A26527}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRS.Demo.EventConsumer", "CQRS.Demo.EventConsumer\CQRS.Demo.EventConsumer.csproj", "{17C333D5-5BC1-4BA8-B7FE-FAAFD9CD843D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.Demo.EventConsumer", "ACE.Demo.EventConsumer\ACE.Demo.EventConsumer.csproj", "{17C333D5-5BC1-4BA8-B7FE-FAAFD9CD843D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{9FB783B9-E949-402D-9EA2-931F01669874}"
 	ProjectSection(SolutionItems) = preProject

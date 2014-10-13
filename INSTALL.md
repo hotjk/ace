@@ -1,4 +1,4 @@
-# Grit.Demo.CQRS #
+# Grit.Demo.ACE #
 
 ### Setup RabbitMQ ###
 
@@ -23,6 +23,6 @@
 
 ### Run ###
 
-* CQRS.Demo.Sagas
-* CQRS.Demo.EventConsumer
-* CQRS.Demo.Web
+* ACE.Demo.Sagas
+* ACE.Demo.EventConsumer
+* ACE.Demo.Web
