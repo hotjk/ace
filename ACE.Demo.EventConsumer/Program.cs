@@ -20,6 +20,16 @@ namespace ACE.Demo.EventConsumer
 
             ServiceLocator.EventBus.SubscribeInParallel("Account", "account.*.*", 20);
             //ServiceLocator.EventBus.Subscribe("Account", "account.*.*");
+            
+            Console.WriteLine("Ctrl-C to exit");
+            Console.CancelKeyPress += (source, cancelKeyPressArgs) =>
+            {
+                Console.WriteLine("Shut down...");
+                ServiceLocator.Dispose();
+                Thread.Sleep(TimeSpan.FromSeconds(10));
+                Console.WriteLine("Shut down complete");
+            };
+
             Thread.Sleep(Timeout.Infinite);
         }
     }

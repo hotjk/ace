@@ -23,6 +23,16 @@ namespace ACE.Demo.Sagas
 
             ServiceLocator.ActionBus.SubscribeInParallel(20);
             //ServiceLocator.ActionBus.Subscribe();
+
+            Console.WriteLine("Ctrl-C to exit");
+            Console.CancelKeyPress += (source, cancelKeyPressArgs) =>
+            {
+                Console.WriteLine("Shut down...");
+                ServiceLocator.Dispose();
+                Thread.Sleep(TimeSpan.FromSeconds(10));
+                Console.WriteLine("Shut down complete");
+            };
+
             Thread.Sleep(Timeout.Infinite);
         }
     }
