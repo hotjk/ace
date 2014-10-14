@@ -15,7 +15,7 @@ namespace ACE.Demo.Repositories.Write
         {
             using (IDbConnection connection = OpenConnection())
             {
-                return 1 == connection.Execute("INSERT INTO ACE_demo_account_activity (FromAccountId, ToAccountId, Amount) VALUES (@FromAccountId, @ToAccountId, @Amount);",
+                return 1 == connection.Execute("INSERT INTO ace_demo_account_activity (FromAccountId, ToAccountId, Amount) VALUES (@FromAccountId, @ToAccountId, @Amount);",
                     activity);
             }
         }

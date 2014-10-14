@@ -16,7 +16,7 @@ namespace ACE.Demo.Repositories.Write
         {
             using (IDbConnection connection = OpenConnection())
             {
-                return 1 == connection.Execute("INSERT INTO ACE_demo_message (AccountId, Content) VALUES (@AccountId, @Content);",
+                return 1 == connection.Execute("INSERT INTO ace_demo_message (AccountId, Content) VALUES (@AccountId, @Content);",
                     message);
             }
         }

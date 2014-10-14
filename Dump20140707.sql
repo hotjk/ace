@@ -166,7 +166,7 @@ CREATE TABLE `sequence` (
 
 LOCK TABLES `sequence` WRITE;
 /*!40000 ALTER TABLE `sequence` DISABLE KEYS */;
-INSERT INTO `sequence` VALUES (1,4155,'Test'),(100,3,'ace_Account'),(101,2,'ace_Project'),(102,144,'ace_Investment');
+INSERT INTO `sequence` VALUES (1,4155,'Test'),(100,3,'ACE_Account'),(101,2,'ACE_Project'),(102,144,'ACE_Investment');
 /*!40000 ALTER TABLE `sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -16,7 +16,7 @@ namespace ACE.Demo.Repositories
             using (IDbConnection connection = OpenConnection())
             {
                 return connection.Query<Investment>(
-                    "SELECT InvestmentId, ProjectId, AccountId, Amount, Status FROM ACE_demo_investment WHERE InvestmentId = @InvestmentId;",
+                    "SELECT InvestmentId, ProjectId, AccountId, Amount, Status FROM ace_demo_investment WHERE InvestmentId = @InvestmentId;",
                     new { InvestmentId = id }).SingleOrDefault();
             }
         }
@@ -26,7 +26,7 @@ namespace ACE.Demo.Repositories
             using (IDbConnection connection = OpenConnection())
             {
                 return connection.Query<Investment>(
-                    "SELECT InvestmentId, ProjectId, AccountId, Amount, Status FROM ACE_demo_investment LIMIT 10;"
+                    "SELECT InvestmentId, ProjectId, AccountId, Amount, Status FROM ace_demo_investment LIMIT 10;"
                     );
             }
         }

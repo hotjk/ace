@@ -15,7 +15,7 @@ namespace ACE.Demo.Repositories
         {
             using (IDbConnection connection = OpenConnection())
             {
-                return connection.Query<Account>("SELECT AccountId, Amount FROM ACE_demo_account WHERE AccountId = @AccountId;",
+                return connection.Query<Account>("SELECT AccountId, Amount FROM ace_demo_account WHERE AccountId = @AccountId;",
                     new { AccountId = id }).SingleOrDefault();
             }
         }

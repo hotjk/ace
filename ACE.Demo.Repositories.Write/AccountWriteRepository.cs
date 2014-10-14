@@ -15,7 +15,7 @@ namespace ACE.Demo.Repositories.Write
         {
             using (IDbConnection connection = OpenConnection())
             {
-                return 1 == connection.Execute("INSERT INTO ACE_demo_account (AccountId, Amount) VALUES (@AccountId, @Amount);",
+                return 1 == connection.Execute("INSERT INTO ace_demo_account (AccountId, Amount) VALUES (@AccountId, @Amount);",
                     account);
             }
         }
@@ -24,7 +24,7 @@ namespace ACE.Demo.Repositories.Write
         {
             using (IDbConnection connection = OpenConnection())
             {
-                return 1 == connection.Execute("UPDATE ACE_demo_account SET Amount = Amount + @Amount WHERE AccountId = @AccountId AND Amount + @Amount >= 0;",
+                return 1 == connection.Execute("UPDATE ace_demo_account SET Amount = Amount + @Amount WHERE AccountId = @AccountId AND Amount + @Amount >= 0;",
                     new { AccountId = accountId, Amount = amount });
             }
         }

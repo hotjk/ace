@@ -18,7 +18,7 @@ namespace ACE.Demo.Repositories.Write
             using (IDbConnection connection = OpenConnection())
             {
                 return 1 == connection.Execute(
-                    "INSERT INTO ACE_demo_investment (InvestmentId, ProjectId, AccountId, Amount, Status) VALUES (@InvestmentId, @ProjectId, @AccountId, @Amount, @Status);",
+                    "INSERT INTO ace_demo_investment (InvestmentId, ProjectId, AccountId, Amount, Status) VALUES (@InvestmentId, @ProjectId, @AccountId, @Amount, @Status);",
                     investment);
             }
         }
@@ -29,7 +29,7 @@ namespace ACE.Demo.Repositories.Write
             {
                 return connection.Query<Investment>(
 @"SELECT InvestmentId, ProjectId, AccountId, Amount, Status 
-FROM ACE_demo_investment 
+FROM ace_demo_investment 
 WHERE InvestmentId = @InvestmentId 
 FOR UPDATE;",
                     new { InvestmentId = investmentId }).SingleOrDefault();
@@ -41,7 +41,7 @@ FOR UPDATE;",
             using (IDbConnection connection = OpenConnection())
             {
                 return 1 == connection.Execute(
-                    "UPDATE ACE_demo_investment SET Status = @Status WHERE InvestmentId = @InvestmentId;",
+                    "UPDATE ace_demo_investment SET Status = @Status WHERE InvestmentId = @InvestmentId;",
                     new { investmentId = investmentId, Status = InvestmentStatus.Paied });
             }
         }
