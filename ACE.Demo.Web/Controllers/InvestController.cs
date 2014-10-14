@@ -52,6 +52,7 @@ namespace ACE.Demo.Web.Controllers
             };
 
             var response = await ServiceLocator.ActionBus.SendAsync(action);
+            //var response = ServiceLocator.ActionBus.Send(action);
             TempData["ActionResponse"] = response;
             return RedirectToAction("Index", new { id = action.InvestmentId });
         }

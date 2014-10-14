@@ -19,7 +19,7 @@ namespace ACE.Demo.EventConsumer
             BootStrapper.BootStrap();
 
             ServiceLocator.EventBus.SubscribeInParallel("Account", "account.*.*", 20);
-            //ServiceLocator.EventBus.Handle("Account", "account.*.*");
+            //ServiceLocator.EventBus.Subscribe("Account", "account.*.*");
             Thread.Sleep(Timeout.Infinite);
         }
     }

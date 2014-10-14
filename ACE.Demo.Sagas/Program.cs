@@ -22,7 +22,7 @@ namespace ACE.Demo.Sagas
             BootStrapper.BootStrap();
 
             ServiceLocator.ActionBus.SubscribeInParallel(20);
-            //ServiceLocator.ActionBus.Handle();
+            //ServiceLocator.ActionBus.Subscribe();
             Thread.Sleep(Timeout.Infinite);
         }
     }
