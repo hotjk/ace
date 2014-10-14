@@ -42,9 +42,14 @@ namespace Grit.ACE
 
         public ActionResponse Send<T>(T action) where T : Action
         {
-            var task = SendAsync(action);
-            task.Wait();
-            return task.Result;
+            ServiceLocator.BusLogger.ActionSend(action);
+            
+            if (!ServiceLocator.DistributeActionToQueue)
+            {
+                throw new Exception("Action is not allow to distribute to queue, maybe you can direct invoke action in thread.");
+            }
+            
+            return ServiceLocator.EasyNetQBus.Request<Action, ActionResponse>(action);
         }
 
         public async Task<ActionResponse> SendAsync<T>(T action) where T : Action
