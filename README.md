@@ -18,6 +18,7 @@ DomainMesssage 也叫 DomainEvent，用于解耦服务。
 #### Handle
 
 从事件总线获取 Action，调用 Invoke 方法处理 Action，并回复应答到消息总线。
+在 ApplicationService 中 Handle Action，Handle 中再发送 Command 来进行具体的业务处理。
 
 #### Invoke
 
@@ -56,6 +57,9 @@ DomainMesssage 也叫 DomainEvent，用于解耦服务。
 #### Handle
 
 从事件总线获取 Event，调用 Invoke 进行 Event 处理。
+在 ApplicationService 中 Handle Event，Handle 中再发送 Command 来进行具体的业务处理。
+Event 是不需要应答的 Action。
+直接在 Handle 中处理业务在简单场景下也是可以的。
 
 #### Invoke
 
