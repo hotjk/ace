@@ -30,7 +30,7 @@ namespace ACE.Demo.Model.Projects
             {
                 throw new BusinessException("项目可投资金额不足。");
             }
-            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<ProjectAmountChanged>(command));
+            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<ProjectAmountChanged>(command), Grit.ACE.Events.EventPublishOptions.Queue);
         }
     }
 }

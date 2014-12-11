@@ -42,7 +42,7 @@ namespace ACE.Demo.Model.Investments
         public void Execute(CreateInvestment command)
         {
             _repository.Add(AutoMapper.Mapper.Map<Investment>(command));
-            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCreated>(command));
+            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCreated>(command), Grit.ACE.Events.EventPublishOptions.Queue);
         }
 
         public void Execute(CompleteInvestment command)
@@ -52,7 +52,7 @@ namespace ACE.Demo.Model.Investments
             var @event = AutoMapper.Mapper.Map<InvestmentStatusCompleted>(investment);
             @event.ActionId = command.ActionId;
             @event.CommandId = command.CommandId;
-            ServiceLocator.EventBus.Publish(@event);
+            ServiceLocator.EventBus.Publish(@event, Grit.ACE.Events.EventPublishOptions.Queue);
         }
     }
 }

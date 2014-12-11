@@ -14,43 +14,65 @@ namespace Grit.ACE
     public class EventBus : IEventBus
     {
         private IEventHandlerFactory _eventHandlerFactory;
-        private IList<Event> _events = new List<Event>();
+        private IList<Tuple<Event, EventPublishOptions>> _events = new List<Tuple<Event, EventPublishOptions>>();
 
         public EventBus(IEventHandlerFactory eventHandlerFactory)
         {
             _eventHandlerFactory = eventHandlerFactory;
         }
 
-        public void Publish<T>(T @event) where T : Event
+        public void Publish<T>(T @event, EventPublishOptions options = EventPublishOptions.BalckHole) where T : Event
         {
-            _events.Add(@event);
+            _events.Add(new Tuple<Event, EventPublishOptions>(@event, options));
         }
 
         public void Flush()
         {
-            foreach (Event @event in _events)
+            foreach (var tuple in _events)
             {
-                FlushAnEvent(@event);
+                FlushAnEvent(tuple.Item1, tuple.Item2);
             }
             _events.Clear();
         }
 
-        private void FlushAnEvent<T>(T @event) where T : Event
+        private void FlushAnEvent<T>(T @event, EventPublishOptions options) where T : Event
         {
             ServiceLocator.BusLogger.EventPublish(@event);
-
-            if (ServiceLocator.DistributeEventToQueue && @event.DistributeToQueue)
+            if ((options & EventPublishOptions.CurrentThread) == EventPublishOptions.CurrentThread)
+            {
+                DistributeEventInCurrentThread(@event);
+            }
+            if ((options & EventPublishOptions.ThreadPool) == EventPublishOptions.ThreadPool)
+            {
+                DistributeEventInThreadPool(@event);
+            }
+            if (ServiceLocator.DistributeEventToQueue && 
+                ((options & EventPublishOptions.CurrentThread) == EventPublishOptions.Queue))
             {
                 DistributeAnEventToQueue(@event);
             }
+        }
 
-            if (ServiceLocator.DistributeEventInProcess)
+        private void DistributeEventInCurrentThread<T>(T @event) where T : Event
+        {
+            var handlers = _eventHandlerFactory.GetHandlers<T>();
+            if (handlers != null)
             {
-                DistributeEventInProcess<T>(@event);
+                foreach (var handler in handlers)
+                {
+                    try
+                    {
+                        handler.Handle(@event);
+                    }
+                    catch (Exception ex)
+                    {
+                        ServiceLocator.BusLogger.Exception(@event, ex);
+                    }
+                }
             }
         }
 
-        private void DistributeEventInProcess<T>(T @event) where T : Event
+        private void DistributeEventInThreadPool<T>(T @event) where T : Event
         {
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)

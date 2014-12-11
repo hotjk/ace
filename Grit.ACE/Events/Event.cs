@@ -10,14 +10,11 @@ namespace Grit.ACE
 {
     public class Event : DomainMessage, IEvent
     {
-        public Event(bool distributeToQueue = true)
+        public Event()
         {
             EventId = Guid.NewGuid();
-            this.DistributeToQueue = distributeToQueue;
         }
         
-        public bool DistributeToQueue { get; set; }
-
         public override Guid Id
         {
             get

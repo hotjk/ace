@@ -31,7 +31,7 @@ namespace ACE.Demo.Model.Accounts
             {
                 throw new BusinessException("账户余额不足。");
             }
-            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<AccountAmountChanged>(command));
+            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<AccountAmountChanged>(command), Grit.ACE.Events.EventPublishOptions.Queue);
         }
 
         public void Execute(CreateAccount command)
@@ -40,7 +40,7 @@ namespace ACE.Demo.Model.Accounts
             {
                 throw new BusinessException("账户已存在。");
             }
-            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<AccountStatusCreated>(command));
+            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<AccountStatusCreated>(command), Grit.ACE.Events.EventPublishOptions.Queue);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Grit.ACE.Events;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Grit.ACE
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="event"></param>
-        void Publish<T>(T @event) where T : Event;
+        void Publish<T>(T @event, EventPublishOptions options = EventPublishOptions.BalckHole) where T : Event;
 
         /// <summary>
         /// Flush all cached events.
