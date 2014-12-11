@@ -16,7 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ACE.Demo.Sagas
+namespace ACE.Demo.Application
 {
     public static class BootStrapper
     {

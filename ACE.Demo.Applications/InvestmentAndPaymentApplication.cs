@@ -16,11 +16,11 @@ using System.Transactions;
 
 namespace ACE.Demo.Applications
 {
-    public class InvestmentAndPaymentApplication :
+    public class InvestmentAndPaymentProcessManager :
         IActionHandler<InvestmentCreateRequest>,
         IActionHandler<InvestmentPayRequest>
     {
-        public InvestmentAndPaymentApplication(
+        public InvestmentAndPaymentProcessManager(
             IAccountService accountService,
             IProjectService projectService,
             IInvestmentService investmentService)
@@ -34,7 +34,7 @@ namespace ACE.Demo.Applications
         private IProjectService _projectService;
         private IInvestmentService _investmentService;
 
-        static InvestmentAndPaymentApplication()
+        static InvestmentAndPaymentProcessManager()
         {
             AutoMapper.Mapper.CreateMap<InvestmentCreateRequest, CreateInvestment>();
             AutoMapper.Mapper.CreateMap<InvestmentPayRequest, CompleteInvestment>();

@@ -79,9 +79,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ACE.Demo.Applications\ACE.Demo.Applications.csproj">
+    <ProjectReference Include="..\ACE.Demo.Applications\ACE.Demo.ProcessManager.csproj">
       <Project>{44f55475-7ab3-41f4-801e-e185294ab1f3}</Project>
-      <Name>ACE.Demo.Applications</Name>
+      <Name>ACE.Demo.ProcessManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\ACE.Demo.Contracts\ACE.Demo.Contracts.csproj">
       <Project>{b9fcad5a-3e1d-4d44-9c70-a1b0759dd9a4}</Project>
