@@ -47,7 +47,7 @@ namespace Grit.ACE
                 DistributeEventInThreadPool(@event);
             }
             if (ServiceLocator.DistributeEventToQueue && 
-                ((options & EventPublishOptions.CurrentThread) == EventPublishOptions.Queue))
+                ((options & EventPublishOptions.Queue) == EventPublishOptions.Queue))
             {
                 DistributeAnEventToQueue(@event);
             }
