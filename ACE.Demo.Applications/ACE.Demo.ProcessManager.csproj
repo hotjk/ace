@@ -7,8 +7,8 @@
     <ProjectGuid>{44F55475-7AB3-41F4-801E-E185294AB1F3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ACE.Demo.Applications</RootNamespace>
-    <AssemblyName>ACE.Demo.Applications</AssemblyName>
+    <RootNamespace>ACE.Demo.ProcessManager</RootNamespace>
+    <AssemblyName>ACE.Demo.ProcessManager</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

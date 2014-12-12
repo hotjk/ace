@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 
-namespace ACE.Demo.Applications
+namespace ACE.Demo.ProcessManager
 {
     public class InvestmentAndPaymentProcessManager :
         IActionHandler<InvestmentCreateRequest>,

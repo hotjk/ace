@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ACE.Demo.Applications
+namespace ACE.Demo.ProcessManager
 {
     public static class EnsoureAssemblyLoaded
     {

@@ -7,8 +7,8 @@
     <ProjectGuid>{AD7BB8C2-DB28-40C0-828F-7E1AF4A26527}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ACE.Demo.Sagas</RootNamespace>
-    <AssemblyName>ACE.Demo.Sagas</AssemblyName>
+    <RootNamespace>ACE.Demo.Application</RootNamespace>
+    <AssemblyName>ACE.Demo.Application</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>
