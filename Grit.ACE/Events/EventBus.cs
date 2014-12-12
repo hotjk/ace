@@ -14,46 +14,46 @@ namespace Grit.ACE
     public class EventBus : IEventBus
     {
         private IEventHandlerFactory _eventHandlerFactory;
-        private IList<Tuple<Event, EventPublishOptions>> _events = new List<Tuple<Event, EventPublishOptions>>();
+        private IList<Event> _events = new List<Event>();
 
         public EventBus(IEventHandlerFactory eventHandlerFactory)
         {
             _eventHandlerFactory = eventHandlerFactory;
         }
 
-        public void Publish<T>(T @event, EventPublishOptions options = EventPublishOptions.BalckHole) where T : Event
+        public void Publish<T>(T @event) where T : Event
         {
-            _events.Add(new Tuple<Event, EventPublishOptions>(@event, options));
+            _events.Add(@event);
         }
 
         public void Flush()
         {
-            foreach (var tuple in _events)
+            foreach (var @event in _events)
             {
-                FlushAnEvent(tuple.Item1, tuple.Item2);
+                FlushAnEvent(@event);
             }
             _events.Clear();
         }
 
-        private void FlushAnEvent<T>(T @event, EventPublishOptions options) where T : Event
+        private void FlushAnEvent<T>(T @event) where T : Event
         {
             ServiceLocator.BusLogger.EventPublish(@event);
-            if ((options & EventPublishOptions.CurrentThread) == EventPublishOptions.CurrentThread)
+            if ((@event.DistributionOptions & EventDistributionOptions.CurrentThread) == EventDistributionOptions.CurrentThread)
             {
-                DistributeEventInCurrentThread(@event);
+                DistributeInCurrentThread(@event);
             }
-            if ((options & EventPublishOptions.ThreadPool) == EventPublishOptions.ThreadPool)
+            if ((@event.DistributionOptions & EventDistributionOptions.ThreadPool) == EventDistributionOptions.ThreadPool)
             {
-                DistributeEventInThreadPool(@event);
+                DistributeInThreadPool(@event);
             }
-            if (ServiceLocator.DistributeEventToQueue && 
-                ((options & EventPublishOptions.Queue) == EventPublishOptions.Queue))
+            if (ServiceLocator.DistributeEventToQueue &&
+                ((@event.DistributionOptions & EventDistributionOptions.Queue) == EventDistributionOptions.Queue))
             {
-                DistributeAnEventToQueue(@event);
+                DistributeToExternalQueue(@event);
             }
         }
 
-        private void DistributeEventInCurrentThread<T>(T @event) where T : Event
+        private void DistributeInCurrentThread<T>(T @event) where T : Event
         {
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
@@ -72,7 +72,7 @@ namespace Grit.ACE
             }
         }
 
-        private void DistributeEventInThreadPool<T>(T @event) where T : Event
+        private void DistributeInThreadPool<T>(T @event) where T : Event
         {
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
@@ -95,7 +95,7 @@ namespace Grit.ACE
             }
         }
 
-        private static void DistributeAnEventToQueue<T>(T @event) where T : Event
+        private static void DistributeToExternalQueue<T>(T @event) where T : Event
         {
             try
             {

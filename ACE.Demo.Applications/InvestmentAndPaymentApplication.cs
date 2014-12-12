@@ -79,30 +79,25 @@ namespace ACE.Demo.ProcessManager
                 ServiceLocator.CommandBus
                     .Send(new CompleteInvestment
                     {
-                        ActionId = action.ActionId,
                         InvestmentId = action.InvestmentId
                     })
                     .Send(new ChangeProjectAmount
                     {
-                        ActionId = action.ActionId,
                         ProjectId = project.ProjectId,
                         Change = 0 - investment.Amount
                     })
                     .Send(new ChangeAccountAmount
                     {
-                        ActionId = action.ActionId,
                         AccountId = investment.AccountId,
                         Change = 0 - investment.Amount
                     })
                     .Send(new ChangeAccountAmount
                     {
-                        ActionId = action.ActionId,
                         AccountId = project.BorrowerId,
                         Change = investment.Amount
                     })
                     .Send(new CreateAccountActivity
                     {
-                        ActionId = action.ActionId,
                         FromAccountId = investment.AccountId,
                         ToAccountId = project.BorrowerId,
                         Amount = investment.Amount

@@ -42,18 +42,14 @@ namespace ACE.Demo.Model.Investments
         public void Execute(CreateInvestment command)
         {
             _repository.Add(AutoMapper.Mapper.Map<Investment>(command));
-            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCreated>(command),
-                Grit.ACE.Events.EventPublishOptions.CurrentThread | Grit.ACE.Events.EventPublishOptions.Queue);
+            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCreated>(command).DistributeToExternalQueue());
         }
 
         public void Execute(CompleteInvestment command)
         {
             Investment investment = _repository.GetForUpdate(command.InvestmentId);
             _repository.Complete(command.InvestmentId);
-            var @event = AutoMapper.Mapper.Map<InvestmentStatusCompleted>(investment);
-            @event.ActionId = command.ActionId;
-            @event.CommandId = command.CommandId;
-            ServiceLocator.EventBus.Publish(@event, Grit.ACE.Events.EventPublishOptions.Queue);
+            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCompleted>(investment).DistributeToExternalQueue());
         }
     }
 }

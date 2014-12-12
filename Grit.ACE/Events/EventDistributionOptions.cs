@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Grit.ACE.Events
 {
-    public enum EventPublishOptions
+    public enum EventDistributionOptions
     {
         BalckHole = 0,
         CurrentThread = 1,

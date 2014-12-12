@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Grit.ACE.Events;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace Grit.ACE
         public Event()
         {
             EventId = Guid.NewGuid();
+            DistributionOptions = EventDistributionOptions.BalckHole;
         }
         
         public override Guid Id
@@ -23,8 +25,24 @@ namespace Grit.ACE
             }
         }
 
-        public Guid ActionId { get; set; }
-        public Guid CommandId { get; set; }
+        public EventDistributionOptions DistributionOptions { get; private set; }
+        public Event DistributeInCurrentThread()
+        {
+            this.DistributionOptions = this.DistributionOptions | EventDistributionOptions.CurrentThread;
+            return this;
+        }
+        public Event DistributeInThreadPool()
+        {
+            this.DistributionOptions = this.DistributionOptions | EventDistributionOptions.ThreadPool;
+            return this;
+        }
+
+        public Event DistributeToExternalQueue()
+        {
+            this.DistributionOptions = this.DistributionOptions | EventDistributionOptions.Queue;
+            return this;
+        }
+
         public Guid EventId { get; set; }
     }
 }

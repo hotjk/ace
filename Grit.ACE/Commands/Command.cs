@@ -20,7 +20,6 @@ namespace Grit.ACE
                 return CommandId;
             }
         }
-        public Guid ActionId { get; set; }
         public Guid CommandId { get; set; }
     }
 }
