@@ -25,7 +25,7 @@ namespace ACE.Demo.Light.Web
             ACE.Demo.Contracts.EnsoureAssemblyLoaded.Pike();
             ACE.Demo.Application.EnsoureAssemblyLoaded.Pike();
 
-            ServiceLocator.Init(new Grit.ACE.Loggers.Log4NetBusLogger(), null, false, true, false);
+            ServiceLocator.Init(new Grit.ACE.Loggers.NullBusLogger(), null, false, true, false);
             AddIoCBindings();
             InitHandlerFactory();
         }
