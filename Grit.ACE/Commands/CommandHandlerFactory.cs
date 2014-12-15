@@ -24,6 +24,8 @@ namespace Grit.ACE
                 {
                     _commandAssmblies = commandAssmblies;
                     _handlerAssmblies = handlerAssmblies;
+                    Utility.EnsoureAssemblyLoaded(_commandAssmblies);
+                    Utility.EnsoureAssemblyLoaded(_handlerAssmblies);
                     HookHandlers();
                     _isInitialized = true;
                 }

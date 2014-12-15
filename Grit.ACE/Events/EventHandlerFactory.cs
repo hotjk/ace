@@ -32,6 +32,8 @@ namespace Grit.ACE
                 {
                     _eventAssmblies = eventAssmblies;
                     _handlerAssmblies = handlerAssmblies;
+                    Utility.EnsoureAssemblyLoaded(_eventAssmblies);
+                    Utility.EnsoureAssemblyLoaded(_handlerAssmblies);
                     HookHandlers();
                     _isInitialized = true;
                 }

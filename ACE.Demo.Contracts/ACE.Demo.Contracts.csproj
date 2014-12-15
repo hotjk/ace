@@ -45,9 +45,6 @@
     <Compile Include="Commands\CreateAccountActivity.cs" />
     <Compile Include="Commands\CreateAccount.cs" />
     <Compile Include="Commands\CreateInvestment.cs" />
-    <Compile Include="EnsoureAssemblyLoaded.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Enum\InvestmentStatus.cs" />
     <Compile Include="Events\AccountAmountChanged.cs">
       <SubType>Code</SubType>

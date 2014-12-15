@@ -22,9 +22,6 @@ namespace ACE.Demo.Light.Web
     {
         public static void BootStrap()
         {
-            ACE.Demo.Contracts.EnsoureAssemblyLoaded.Pike();
-            ACE.Demo.Application.EnsoureAssemblyLoaded.Pike();
-
             ServiceLocator.Init(new Grit.ACE.Loggers.NullBusLogger(), null, false, true, false);
             AddIoCBindings();
             InitHandlerFactory();

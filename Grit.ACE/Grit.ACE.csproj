@@ -91,6 +91,7 @@
     <Compile Include="Exceptions\UnregisteredDomainCommandException.cs" />
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="UnitOfWork.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

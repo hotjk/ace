@@ -66,13 +66,12 @@ namespace Grit.ACE
                     BusLogger = logger;
                     NinjectContainer = new StandardKernel();
 
-                    RabbitHutch.SetContainerFactory(() =>
-                    {
-                        return new EasyNetQ.DI.NinjectAdapter(NinjectContainer);
-                    });
-
                     if (!string.IsNullOrEmpty(queueConnectionString))
                     {
+                        RabbitHutch.SetContainerFactory(() =>
+                        {
+                            return new EasyNetQ.DI.NinjectAdapter(NinjectContainer);
+                        });
                         EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(queueConnectionString, x => x.Register<IEasyNetQLogger, NullLogger>());
                     }
 

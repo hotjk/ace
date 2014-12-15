@@ -22,12 +22,9 @@ namespace ACE.Demo.EventConsumer
     {
         public static void BootStrap()
         {
-            // Pike a dummy method to ensoure Command/Event assembly been loaded
-            ACE.Demo.Contracts.EnsoureAssemblyLoaded.Pike();
             ServiceLocator.Init(new Grit.ACE.Loggers.Log4NetBusLogger(),
                 Grit.Configuration.RabbitMQ.ACEQueueConnectionString,
                 false, false, false);
-
             AddIocBindings();
             InitHandlerFactory();
         }

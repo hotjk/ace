@@ -19,9 +19,6 @@ namespace ACE.Demo.Web
     {
         public static void BootStrap()
         {
-            // Action a dummy method to ensoure Command/Event assembly been loaded
-            ACE.Demo.Contracts.EnsoureAssemblyLoaded.Pike();
-
             ServiceLocator.Init(new Grit.ACE.Loggers.Log4NetBusLogger(),
                 Grit.Configuration.RabbitMQ.ACEQueueConnectionString,
                 false, false, true);
