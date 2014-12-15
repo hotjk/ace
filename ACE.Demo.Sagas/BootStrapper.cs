@@ -16,7 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ACE.Demo.Application
+namespace ACE.Demo.MicroServices
 {
     public static class BootStrapper
     {
@@ -24,7 +24,7 @@ namespace ACE.Demo.Application
         {
             // Pike a dummy method to ensoure Command/Event assembly been loaded
             ACE.Demo.Contracts.EnsoureAssemblyLoaded.Pike();
-            ACE.Demo.ProcessManager.EnsoureAssemblyLoaded.Pike();
+            ACE.Demo.Application.EnsoureAssemblyLoaded.Pike();
 
             ServiceLocator.Init(new Grit.ACE.Loggers.Log4NetBusLogger(),
                 Grit.Configuration.RabbitMQ.ACEQueueConnectionString,
@@ -58,7 +58,7 @@ namespace ACE.Demo.Application
             EventHandlerFactory.Init(new string[] { "ACE.Demo.Contracts" },
                 new string[] { "ACE.Demo.Model.Write" } );
             ActionHandlerFactory.Init(new string[] { "ACE.Demo.Contracts" },
-                new string[] { "ACE.Demo.ProcessManager" });
+                new string[] { "ACE.Demo.Application" });
         }
     }
 }

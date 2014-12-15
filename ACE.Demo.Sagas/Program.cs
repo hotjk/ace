@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ACE.Demo.Application
+namespace ACE.Demo.MicroServices
 {
     class Program
     {
