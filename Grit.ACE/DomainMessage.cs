@@ -26,8 +26,6 @@ namespace Grit.ACE
 
         public Guid Id { get; set; }
 
-        public MessageRouteState RouteState { get; private set; }
-
         public string Type
         {
             get
@@ -36,10 +34,19 @@ namespace Grit.ACE
             }
         }
 
+        /// <summary>
+        /// Routing key is the RabbitMQ exchange routing topic.
+        /// ProjectAmountChanged -> project.amount.changed 
+        /// </summary>
+        /// <returns></returns>
         public string RoutingKey()
         {
             return ToDotString(this.GetType().Name);
         }
+
+        #region Route State
+
+        public MessageRouteState RouteState { get; private set; }
 
         public void Sent()
         {
@@ -50,6 +57,8 @@ namespace Grit.ACE
         {
             this.RouteState = DomainMessage.MessageRouteState.Received;
         }
+
+        #endregion
 
         #region Converter between dot to camel
 
