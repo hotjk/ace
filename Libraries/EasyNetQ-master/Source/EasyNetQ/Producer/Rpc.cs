@@ -17,8 +17,9 @@ namespace EasyNetQ.Producer
         protected readonly IConventions conventions;
         protected readonly IPublishExchangeDeclareStrategy publishExchangeDeclareStrategy;
         protected readonly IMessageDeliveryModeStrategy messageDeliveryModeStrategy;
-        protected readonly IConnectionConfiguration configuration;
+        private readonly ITimeoutStrategy timeoutStrategy;
 
+        private readonly object responseQueuesAddLock = new object();
         private readonly ConcurrentDictionary<RpcKey, string> responseQueues = new ConcurrentDictionary<RpcKey, string>();
         private readonly ConcurrentDictionary<string, ResponseAction> responseActions = new ConcurrentDictionary<string, ResponseAction>();
 
@@ -33,20 +34,20 @@ namespace EasyNetQ.Producer
             IConventions conventions,
             IPublishExchangeDeclareStrategy publishExchangeDeclareStrategy,
             IMessageDeliveryModeStrategy messageDeliveryModeStrategy,
-            IConnectionConfiguration configuration)
+            ITimeoutStrategy timeoutStrategy)
         {
             Preconditions.CheckNotNull(advancedBus, "advancedBus");
             Preconditions.CheckNotNull(eventBus, "eventBus");
             Preconditions.CheckNotNull(conventions, "conventions");
             Preconditions.CheckNotNull(publishExchangeDeclareStrategy, "publishExchangeDeclareStrategy");
             Preconditions.CheckNotNull(messageDeliveryModeStrategy, "messageDeliveryModeStrategy");
-            Preconditions.CheckNotNull(configuration, "configuration");
+            Preconditions.CheckNotNull(timeoutStrategy, "timeoutStrategy");
 
             this.advancedBus = advancedBus;
             this.conventions = conventions;
             this.publishExchangeDeclareStrategy = publishExchangeDeclareStrategy;
             this.messageDeliveryModeStrategy = messageDeliveryModeStrategy;
-            this.configuration = configuration;
+            this.timeoutStrategy = timeoutStrategy;
 
             eventBus.Subscribe<ConnectionCreatedEvent>(OnConnectionCreated);
         }
@@ -56,7 +57,7 @@ namespace EasyNetQ.Producer
             var copyOfResponseActions = responseActions.Values;
             responseActions.Clear();
             responseQueues.Clear();
-
+            
             // retry in-flight requests.
             foreach (var responseAction in copyOfResponseActions)
             {
@@ -80,12 +81,13 @@ namespace EasyNetQ.Producer
                         string.Format("Request timed out. CorrelationId: {0}", correlationId.ToString())));
                 });
 
-            timer.Change(TimeSpan.FromSeconds(configuration.Timeout), disablePeriodicSignaling);
 
+            var requestType = typeof (TRequest);
+            timer.Change(TimeSpan.FromSeconds(timeoutStrategy.GetTimeoutSeconds(requestType)), disablePeriodicSignaling);
             RegisterErrorHandling(correlationId, timer, tcs);
 
             var queueName = SubscribeToResponse<TRequest, TResponse>();
-            var routingKey = conventions.RpcRoutingKeyNamingConvention(typeof(TRequest));
+            var routingKey = conventions.RpcRoutingKeyNamingConvention(requestType);
             RequestPublish(request, routingKey, queueName, correlationId);
 
             return tcs.Task;
@@ -138,31 +140,31 @@ namespace EasyNetQ.Producer
             where TResponse : class
         {
             var rpcKey = new RpcKey {Request = typeof (TRequest), Response = typeof (TResponse)};
-
-            responseQueues.AddOrUpdate(rpcKey,
-                key =>
-                    {
-                        var queue = advancedBus.QueueDeclare(
+            string queueName;
+            if (responseQueues.TryGetValue(rpcKey, out queueName))
+                return queueName;
+            lock (responseQueuesAddLock)
+            {
+                if (responseQueues.TryGetValue(rpcKey, out queueName))
+                    return queueName;
+                var queue = advancedBus.QueueDeclare(
                             conventions.RpcReturnQueueNamingConvention(),
                             passive: false,
                             durable: false,
                             exclusive: true,
                             autoDelete: true);
 
-                        advancedBus.Consume<TResponse>(queue, (message, messageReceivedInfo) => Task.Factory.StartNew(() =>
-                            {
-                                ResponseAction responseAction;
-                                if(responseActions.TryRemove(message.Properties.CorrelationId, out responseAction))
-                                {
-                                    responseAction.OnSuccess(message);
-                                }
-                            }));
-
-                        return queue.Name;
-                    },
-                (_, queueName) => queueName);
-
-            return responseQueues[rpcKey];
+                advancedBus.Consume<TResponse>(queue, (message, messageReceivedInfo) => Task.Factory.StartNew(() =>
+                    {
+                        ResponseAction responseAction;
+                        if(responseActions.TryRemove(message.Properties.CorrelationId, out responseAction))
+                        {
+                            responseAction.OnSuccess(message);
+                        }
+                    }));
+                responseQueues.TryAdd(rpcKey, queue.Name);
+                return queue.Name;
+            }
         }
 
         protected struct RpcKey
@@ -180,15 +182,13 @@ namespace EasyNetQ.Producer
         protected virtual void RequestPublish<TRequest>(TRequest request, string routingKey, string returnQueueName, Guid correlationId)
             where TRequest : class
         {
-            var exchange = publishExchangeDeclareStrategy.DeclareExchange(
-                advancedBus, conventions.RpcExchangeNamingConvention(), ExchangeType.Direct);
-
-            var messageType = typeof(TRequest);
+            var exchange = publishExchangeDeclareStrategy.DeclareExchange(advancedBus, conventions.RpcExchangeNamingConvention(), ExchangeType.Direct);
+            var requestType = typeof(TRequest);
             var requestMessage = new Message<TRequest>(request);
             requestMessage.Properties.ReplyTo = returnQueueName;
             requestMessage.Properties.CorrelationId = correlationId.ToString();
-            requestMessage.Properties.Expiration = (configuration.Timeout*1000).ToString();
-            requestMessage.Properties.DeliveryMode = (byte)(messageDeliveryModeStrategy.IsPersistent(messageType) ? 2 : 1);
+            requestMessage.Properties.Expiration = (timeoutStrategy.GetTimeoutSeconds(requestType) * 1000).ToString();
+            requestMessage.Properties.DeliveryMode = (byte)(messageDeliveryModeStrategy.IsPersistent(requestType) ? 2 : 1);
 
             advancedBus.Publish(exchange, routingKey, false, false, requestMessage);
         }

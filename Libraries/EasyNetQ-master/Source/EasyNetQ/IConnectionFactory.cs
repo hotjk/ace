@@ -7,8 +7,8 @@ namespace EasyNetQ
     public interface IConnectionFactory
     {
         IConnection CreateConnection();
-        IConnectionConfiguration Configuration { get; }
-        IHostConfiguration CurrentHost { get; }
+        ConnectionConfiguration Configuration { get; }
+        HostConfiguration CurrentHost { get; }
         bool Next();
         void Success();
         void Reset();
@@ -17,10 +17,10 @@ namespace EasyNetQ
 
     public class ConnectionFactoryWrapper : IConnectionFactory
     {
-        public virtual IConnectionConfiguration Configuration { get; private set; }
+        public virtual ConnectionConfiguration Configuration { get; private set; }
         private readonly IClusterHostSelectionStrategy<ConnectionFactoryInfo> clusterHostSelectionStrategy;
 
-        public ConnectionFactoryWrapper(IConnectionConfiguration connectionConfiguration, IClusterHostSelectionStrategy<ConnectionFactoryInfo> clusterHostSelectionStrategy)
+        public ConnectionFactoryWrapper(ConnectionConfiguration connectionConfiguration, IClusterHostSelectionStrategy<ConnectionFactoryInfo> clusterHostSelectionStrategy)
         {
             this.clusterHostSelectionStrategy = clusterHostSelectionStrategy;
 
@@ -31,7 +31,13 @@ namespace EasyNetQ
 
             foreach (var hostConfiguration in Configuration.Hosts)
             {
-                var connectionFactory = new ConnectionFactory();
+                var connectionFactory = new ConnectionFactory
+                {
+                    UseBackgroundThreadsForIO = false,
+                    AutomaticRecoveryEnabled = false,
+                    TopologyRecoveryEnabled = false
+                };
+
                 if (connectionConfiguration.AMQPConnectionString != null)
                 {
                     connectionFactory.uri = connectionConfiguration.AMQPConnectionString;
@@ -60,22 +66,12 @@ namespace EasyNetQ
             }
         }
 
-        private static IDictionary ConvertToHashtable(IDictionary<string, string> clientProperties)
-        {
-            var dictionary = new Hashtable();
-            foreach (var clientProperty in clientProperties)
-            {
-                dictionary.Add(clientProperty.Key, clientProperty.Value);
-            }
-            return dictionary;
-        }
-
         public virtual IConnection CreateConnection()
         {
             return clusterHostSelectionStrategy.Current().ConnectionFactory.CreateConnection();
         }
 
-        public virtual IHostConfiguration CurrentHost
+        public virtual HostConfiguration CurrentHost
         {
             get { return clusterHostSelectionStrategy.Current().HostConfiguration; }
         }
@@ -103,14 +99,14 @@ namespace EasyNetQ
 
     public class ConnectionFactoryInfo
     {
-        public ConnectionFactoryInfo(ConnectionFactory connectionFactory, IHostConfiguration hostConfiguration)
+        public ConnectionFactoryInfo(ConnectionFactory connectionFactory, HostConfiguration hostConfiguration)
         {
             ConnectionFactory = connectionFactory;
             HostConfiguration = hostConfiguration;
         }
 
         public ConnectionFactory ConnectionFactory { get; private set; }
-        public IHostConfiguration HostConfiguration { get; private set; }
+        public HostConfiguration HostConfiguration { get; private set; }
     }
 
 }

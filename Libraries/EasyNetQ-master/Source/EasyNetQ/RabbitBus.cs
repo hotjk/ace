@@ -16,7 +16,7 @@ namespace EasyNetQ
         private readonly IMessageDeliveryModeStrategy messageDeliveryModeStrategy;
         private readonly IRpc rpc;
         private readonly ISendReceive sendReceive;
-        private readonly IConnectionConfiguration connectionConfiguration;
+        private readonly ConnectionConfiguration connectionConfiguration;
 
         public IEasyNetQLogger Logger
         {
@@ -36,7 +36,7 @@ namespace EasyNetQ
             IMessageDeliveryModeStrategy messageDeliveryModeStrategy,
             IRpc rpc,
             ISendReceive sendReceive,
-            IConnectionConfiguration connectionConfiguration)
+            ConnectionConfiguration connectionConfiguration)
         {
             Preconditions.CheckNotNull(logger, "logger");
             Preconditions.CheckNotNull(conventions, "conventions");
@@ -199,6 +199,12 @@ namespace EasyNetQ
             where T : class
         {
             sendReceive.Send(queue, message);
+        }
+
+        public virtual Task SendAsync<T>(string queue, T message)
+            where T : class
+        {
+            return sendReceive.SendAsync(queue, message);
         }
 
         public virtual IDisposable Receive<T>(string queue, Action<T> onMessage)

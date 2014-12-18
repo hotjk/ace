@@ -26,7 +26,7 @@ namespace EasyNetQ.Consumer
         private readonly IEasyNetQLogger logger;
         private readonly IConsumerDispatcher consumerDispatcher;
         private readonly IConventions conventions;
-        private readonly IConnectionConfiguration connectionConfiguration;
+        private readonly ConnectionConfiguration connectionConfiguration;
         private readonly IEventBus eventBus;
 
         private Func<byte[], MessageProperties, MessageReceivedInfo, Task> onMessage;
@@ -43,7 +43,7 @@ namespace EasyNetQ.Consumer
             IEasyNetQLogger logger,
             IConsumerDispatcher consumerDispatcher,
             IConventions conventions,
-            IConnectionConfiguration connectionConfiguration,
+            ConnectionConfiguration connectionConfiguration,
             IEventBus eventBus)
         {
             Preconditions.CheckNotNull(handlerRunner, "handlerRunner");
@@ -95,7 +95,7 @@ namespace EasyNetQ.Consumer
                     this);              // consumer
 
                 logger.InfoWrite("Declared Consumer. queue='{0}', consumer tag='{1}' prefetchcount={2} priority={3} x-cancel-on-ha-failover={4}",
-                                  queue.Name, consumerTag, connectionConfiguration.PrefetchCount, configuration.Priority, configuration.CancelOnHaFailover);
+                                  queue.Name, consumerTag, configuration.PrefetchCount, configuration.Priority, configuration.CancelOnHaFailover);
             }
             catch (Exception exception)
             {
@@ -173,7 +173,11 @@ namespace EasyNetQ.Consumer
             var messsageProperties = new MessageProperties(properties);
             var context = new ConsumerExecutionContext(onMessage, messageReceivedInfo, messsageProperties, body, this);
 
-            consumerDispatcher.QueueAction(() => handlerRunner.InvokeUserMessageHandler(context));
+            consumerDispatcher.QueueAction(() =>
+                {
+                    eventBus.Publish(new DeliveredMessageEvent(messageReceivedInfo, messsageProperties, body));
+                    handlerRunner.InvokeUserMessageHandler(context);
+                });
         }
 
         private bool disposed;
