@@ -9,17 +9,5 @@ namespace Grit.ACE
 {
     public class Action : DomainMessage, IAction
     {
-        public Action()
-        {
-            ActionId = Guid.NewGuid();
-        }
-        public override Guid Id
-        {
-            get
-            {
-                return ActionId;
-            }
-        }
-        public Guid ActionId { get; set; }
     }
 }

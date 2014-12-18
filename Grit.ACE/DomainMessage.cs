@@ -13,8 +13,18 @@ namespace Grit.ACE
     /// </summary>
     public abstract class DomainMessage
     {
-        [JsonIgnore]
-        public abstract Guid Id { get; }
+        public DomainMessage()
+        {
+            this.Id = Guid.NewGuid();
+        }
+        public Guid Id { get; set; }
+
+        public string RoutingKey()
+        {
+            return ToDotString(this.GetType().Name);
+        }
+
+        #region Converter between dot to camel
 
         private static Regex _regexCamel = new Regex("[a-z][A-Z]");
 
@@ -38,9 +48,6 @@ namespace Grit.ACE
             return string.Join("", str.Split(new char[] { '.' }).Select(n => char.ToUpper(n[0]) + n.Substring(1)));
         }
 
-        public string RoutingKey()
-        {
-            return ToDotString(this.GetType().Name);
-        }
+        #endregion
     }
 }

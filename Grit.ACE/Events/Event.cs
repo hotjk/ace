@@ -13,19 +13,11 @@ namespace Grit.ACE
     {
         public Event()
         {
-            EventId = Guid.NewGuid();
             DistributionOptions = EventDistributionOptions.BalckHole;
-        }
-        
-        public override Guid Id
-        {
-            get
-            {
-                return EventId;
-            }
         }
 
         public EventDistributionOptions DistributionOptions { get; private set; }
+        
         public Event DistributeInCurrentThread()
         {
             this.DistributionOptions = this.DistributionOptions | EventDistributionOptions.CurrentThread;
@@ -42,7 +34,5 @@ namespace Grit.ACE
             this.DistributionOptions = this.DistributionOptions | EventDistributionOptions.Queue;
             return this;
         }
-
-        public Guid EventId { get; set; }
     }
 }
