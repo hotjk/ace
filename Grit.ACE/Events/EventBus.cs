@@ -46,7 +46,7 @@ namespace Grit.ACE
             {
                 DistributeInThreadPool(@event);
             }
-            if (ServiceLocator.DistributeEventToQueue && @event.ShouldDistributeToExternalQueue())
+            if (ServiceLocator.EventShouldDistributeToExternalQueue && @event.ShouldDistributeToExternalQueue())
             {
                 DistributeToExternalQueue(@event);
             }

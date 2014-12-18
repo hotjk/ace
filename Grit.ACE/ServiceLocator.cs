@@ -24,7 +24,6 @@ namespace Grit.ACE
                 return NinjectContainer.GetService(typeof(IEventBus)) as IEventBus;
             }
         }
-
         public static IActionBus ActionBus
         {
             get
@@ -32,35 +31,59 @@ namespace Grit.ACE
                 return NinjectContainer.GetService(typeof(IActionBus)) as IActionBus;
             }
         }
-
-        public static bool DistributeEventToQueue { get; private set; }
-        public static bool DistributeEventInProcess { get; private set; }
-        public static bool DistributeActionToQueue { get; private set; }
+        public static IBusLogger BusLogger { get; private set; }
 
         private static bool _isInitialized;
         private static readonly object _lockThis = new object();
 
-        public static IBusLogger BusLogger { get; private set; }
+        #region distribution options
+
+        public static bool ActionShouldDistributeToExternalQueue { get; private set; }
+        public static Event.EventDistributionOptions _eventDistributionOptions;
+        
+        public static bool EventShouldDistributeInCurrentThread
+        {
+            get
+            {
+                return (_eventDistributionOptions & Event.EventDistributionOptions.CurrentThread) == Event.EventDistributionOptions.CurrentThread;
+            }
+        }
+        public static bool EventShouldDistributeInThreadPool
+        {
+            get
+            {
+                return (_eventDistributionOptions & Event.EventDistributionOptions.ThreadPool) == Event.EventDistributionOptions.ThreadPool;
+            }
+        }
+        public static bool EventShouldDistributeToExternalQueue
+        {
+            get
+            {
+                return (_eventDistributionOptions & Event.EventDistributionOptions.Queue) == Event.EventDistributionOptions.Queue;
+            }
+        }
+
+        #endregion
 
         public static void Init(
             IBusLogger logger,
-            string queueConnectionString = null, 
-            bool distributeEventToQueue = false,
-            bool distributeEventInProcess = false,
-            bool distributeActionToQueue = false)
+            string queueConnectionString = null,
+            bool actionShouldDistributeToExternalQueue = false,
+            Event.EventDistributionOptions eventDistributionOptions = Event.EventDistributionOptions.BalckHole)
         {
             if (!_isInitialized)
             {
                 lock (_lockThis)
                 {
-                    DistributeEventToQueue = distributeEventToQueue;
-                    DistributeEventInProcess = distributeEventInProcess;
-                    DistributeActionToQueue = distributeActionToQueue;
+                    ActionShouldDistributeToExternalQueue = actionShouldDistributeToExternalQueue;
+                    _eventDistributionOptions = eventDistributionOptions;
 
-                    if (distributeActionToQueue && distributeEventToQueue && 
-                        string.IsNullOrEmpty(queueConnectionString))
+                    if (string.IsNullOrEmpty(queueConnectionString))
                     {
-                        throw new Exception("Queue connection string is required when distribute action/event to queue.");
+                        if (ActionShouldDistributeToExternalQueue || EventShouldDistributeToExternalQueue)
+                        {
+                            throw new Exception("Queue connection string is required when distribute action/event to queue.");
+                        }
                     }
 
                     BusLogger = logger;

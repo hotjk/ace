@@ -24,14 +24,14 @@ namespace Grit.ACE
 
         public void Dispose()
         {
-            Grit.ACE.ServiceLocator.EventBus.Purge();
+            ServiceLocator.EventBus.Purge();
             scope.Dispose();
         }
 
         public void Complete()
         {
             scope.Complete();
-            Grit.ACE.ServiceLocator.EventBus.Flush();
+            ServiceLocator.EventBus.Flush();
         }
     }
 }

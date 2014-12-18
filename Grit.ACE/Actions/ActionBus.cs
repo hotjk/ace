@@ -24,7 +24,6 @@ namespace Grit.ACE
 
         public void Invoke<T>(T action) where T : Action
         {
-            
             var handler = _actionHandlerFactory.GetHandler<T>();
             if (handler != null)
             {
@@ -39,7 +38,7 @@ namespace Grit.ACE
             action.Sent();
             ServiceLocator.BusLogger.ActionSend(action);
             
-            if (!ServiceLocator.DistributeActionToQueue)
+            if (!ServiceLocator.ActionShouldDistributeToExternalQueue)
             {
                 throw new Exception("Action is not allow to distribute to queue, maybe you can direct invoke action in thread.");
             }
@@ -52,7 +51,7 @@ namespace Grit.ACE
             action.Sent();
             ServiceLocator.BusLogger.ActionSend(action);
 
-            if (!ServiceLocator.DistributeActionToQueue)
+            if (!ServiceLocator.ActionShouldDistributeToExternalQueue)
             {
                 throw new Exception("Action is not allow to distribute to queue, maybe you can direct invoke action in thread.");
             }
