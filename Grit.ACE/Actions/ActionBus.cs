@@ -24,23 +24,19 @@ namespace Grit.ACE
 
         public void Invoke<T>(T action) where T : Action
         {
+            
             var handler = _actionHandlerFactory.GetHandler<T>();
             if (handler != null)
             {
-                ServiceLocator.BusLogger.ActionBeginInvoke(action);
-                try
-                {
-                    handler.Invoke(action);
-                }
-                finally
-                {
-                    ServiceLocator.BusLogger.ActionEndInvoke(action);
-                }
+                action.Recevied();
+                ServiceLocator.BusLogger.ActionInvoke(action);
+                handler.Invoke(action);
             }
         }
 
         public ActionResponse Send<T>(T action) where T : Action
         {
+            action.Sent();
             ServiceLocator.BusLogger.ActionSend(action);
             
             if (!ServiceLocator.DistributeActionToQueue)
@@ -53,6 +49,7 @@ namespace Grit.ACE
 
         public async Task<ActionResponse> SendAsync<T>(T action) where T : Action
         {
+            action.Sent();
             ServiceLocator.BusLogger.ActionSend(action);
 
             if (!ServiceLocator.DistributeActionToQueue)

@@ -30,29 +30,20 @@ namespace Grit.ACE.Loggers
         {
             if (ActionLogger.IsInfoEnabled)
             {
-                ActionLogger.Info(
-                    string.Format("Action Send {0} {1}", action, JsonConvert.SerializeObject(action)));
+                ActionLogger.Info(string.Format("Action Send {0}", JsonConvert.SerializeObject(action)));
             }
         }
 
-        public void ActionBeginInvoke(Action action)
+        public void ActionInvoke(Action action)
         {
-            ActionLogger.Info(
-                    string.Format("Action BeginInvoke {0} {1}", action, JsonConvert.SerializeObject(action)));
-        }
-
-        public void ActionEndInvoke(Action action)
-        {
-            ActionLogger.Info(
-                        string.Format("Action EndInvoke {0} {1}", action, JsonConvert.SerializeObject(action)));
+            ActionLogger.Info(string.Format("Action Invoke {0}", JsonConvert.SerializeObject(action)));
         }
 
         public void CommandSend(Command command)
         {
             if (CommandLogger.IsInfoEnabled)
             {
-                CommandLogger.Info(
-                    string.Format("Command Send {0} {1}", command, JsonConvert.SerializeObject(command))); ;
+                CommandLogger.Info(string.Format("Command Send {0}", JsonConvert.SerializeObject(command))); ;
             }
         }
 
@@ -60,14 +51,13 @@ namespace Grit.ACE.Loggers
         {
             if (EventLogger.IsInfoEnabled)
             {
-                EventLogger.Info(
-                    string.Format("Event Publish {0} {1}", @event, JsonConvert.SerializeObject(@event)));
+                EventLogger.Info(string.Format("Event Publish {0}", JsonConvert.SerializeObject(@event)));
             }
         }
 
         public void EventHandle(Event @event)
         {
-            EventLogger.Info(string.Format("Event Handle {0} {1}", @event, JsonConvert.SerializeObject(@event)));
+            EventLogger.Info(string.Format("Event Handle {0}", JsonConvert.SerializeObject(@event)));
         }
 
         public void Exception(DomainMessage message, Exception ex)

@@ -12,11 +12,7 @@ namespace Grit.ACE.Loggers
         {
         }
 
-        public void ActionBeginInvoke(Action action)
-        {
-        }
-
-        public void ActionEndInvoke(Action action)
+        public void ActionInvoke(Action action)
         {
         }
 

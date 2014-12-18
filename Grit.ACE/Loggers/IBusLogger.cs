@@ -10,8 +10,7 @@ namespace Grit.ACE.Loggers
     public interface IBusLogger
     {
         void ActionSend(Action action);
-        void ActionBeginInvoke(Action action);
-        void ActionEndInvoke(Action action);
+        void ActionInvoke(Action action);
 
         /// <summary>
         /// 

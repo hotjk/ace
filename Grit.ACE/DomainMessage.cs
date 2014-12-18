@@ -13,15 +13,42 @@ namespace Grit.ACE
     /// </summary>
     public abstract class DomainMessage
     {
+        public enum MessageRouteState
+        {
+            Sent = 0,
+            Received = 1
+        }
+
         public DomainMessage()
         {
             this.Id = Guid.NewGuid();
         }
+
         public Guid Id { get; set; }
+
+        public MessageRouteState RouteState { get; private set; }
+
+        public string Type
+        {
+            get
+            {
+                return this.GetType().FullName;
+            }
+        }
 
         public string RoutingKey()
         {
             return ToDotString(this.GetType().Name);
+        }
+
+        public void Sent()
+        {
+            this.RouteState = DomainMessage.MessageRouteState.Sent;
+        }
+
+        public void Recevied()
+        {
+            this.RouteState = DomainMessage.MessageRouteState.Received;
         }
 
         #region Converter between dot to camel
