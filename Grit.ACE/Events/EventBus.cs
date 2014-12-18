@@ -99,7 +99,7 @@ namespace Grit.ACE
         {
             try
             {
-                ServiceLocator.EasyNetQBus.Publish(@event, @event.RoutingKey);
+                ServiceLocator.EasyNetQBus.Publish(@event, @event.RoutingKey());
             }
             catch (Exception ex)
             {

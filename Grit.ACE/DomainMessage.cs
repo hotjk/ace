@@ -38,13 +38,9 @@ namespace Grit.ACE
             return string.Join("", str.Split(new char[] { '.' }).Select(n => char.ToUpper(n[0]) + n.Substring(1)));
         }
 
-        [JsonIgnore]
-        public string RoutingKey
+        public string RoutingKey()
         {
-            get
-            {
-                return ToDotString(this.GetType().Name);
-            }
+            return ToDotString(this.GetType().Name);
         }
     }
 }

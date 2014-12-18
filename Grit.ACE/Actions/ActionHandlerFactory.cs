@@ -80,13 +80,7 @@ namespace Grit.ACE
                     }
                 }
             }
-            //foreach (var action in actions)
-            //{
-            //    if (!_handlers.ContainsKey(action))
-            //    {
-            //        throw new UnregisteredDomainCommandException("no handler registered for action: " + action.Name);
-            //    }
-            //}
+            
             _actionTypes = new Dictionary<string, Type>();
             foreach (Type type in actions)
             {
