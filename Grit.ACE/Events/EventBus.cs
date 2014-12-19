@@ -13,7 +13,7 @@ namespace Grit.ACE
     public class EventBus : IEventBus
     {
         private IEventHandlerFactory _eventHandlerFactory;
-        private IList<Event> _events = new List<Event>();
+        private IList<dynamic> _events = new List<dynamic>(); // todo: a child class push into list will pop a base class instance.
 
         public EventBus(IEventHandlerFactory eventHandlerFactory)
         {
