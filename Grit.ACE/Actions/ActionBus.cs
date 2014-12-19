@@ -29,7 +29,18 @@ namespace Grit.ACE
             {
                 action.Recevied();
                 ServiceLocator.BusLogger.ActionInvoke(action);
-                handler.Invoke(action);
+                try
+                {
+                    handler.Invoke(action);
+                }
+                catch(Exception ex)
+                {
+                    if(!(ex is Grit.ACE.Exceptions.BusinessException))
+                    {
+                        ServiceLocator.BusLogger.Exception(action, ex);
+                    }
+                    throw;
+                }
             }
         }
 

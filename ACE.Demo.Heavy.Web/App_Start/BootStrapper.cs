@@ -19,7 +19,7 @@ namespace ACE.Demo.Heavy.Web
     {
         public static void BootStrap()
         {
-            ServiceLocator.Init(new Grit.ACE.Loggers.Log4NetBusLogger(),
+            ServiceLocator.Init(new Grit.ACE.ESLogger.ElasticSearchLogger(),
                 Grit.Configuration.RabbitMQ.ACEQueueConnectionString, true,
                 Grit.ACE.Event.EventDistributionOptions.Queue);
             AddIoCBindings();

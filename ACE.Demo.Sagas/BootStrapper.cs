@@ -22,7 +22,7 @@ namespace ACE.Demo.MicroServices
     {
         public static void BootStrap()
         {
-            ServiceLocator.Init(new Grit.ACE.Loggers.Log4NetBusLogger(),
+            ServiceLocator.Init(new Grit.ACE.ESLogger.ElasticSearchLogger(),
                 Grit.Configuration.RabbitMQ.ACEQueueConnectionString, false,
                 Grit.ACE.Event.EventDistributionOptions.Queue);
             AddIocBindings();

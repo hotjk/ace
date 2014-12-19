@@ -42,14 +42,18 @@ namespace ACE.Demo.Model.Investments
         public void Execute(CreateInvestment command)
         {
             _repository.Add(AutoMapper.Mapper.Map<Investment>(command));
-            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCreated>(command).DistributeToExternalQueue());
+            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCreated>(command)
+                .DistributeInThreadPool()
+                .DistributeToExternalQueue());
         }
 
         public void Execute(CompleteInvestment command)
         {
             Investment investment = _repository.GetForUpdate(command.InvestmentId);
             _repository.Complete(command.InvestmentId);
-            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCompleted>(investment).DistributeToExternalQueue());
+            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCompleted>(investment)
+                .DistributeInThreadPool()
+                .DistributeToExternalQueue());
         }
     }
 }

@@ -108,14 +108,13 @@ namespace Grit.ACE
 
         public void Invoke<T>(T @event) where T : Event
         {
-            @event.Recevied();
-            ServiceLocator.BusLogger.EventHandle(@event);
-
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
             {
                 foreach (var handler in handlers)
                 {
+                    @event.Recevied();
+                    ServiceLocator.BusLogger.EventHandle(@event);
                     try
                     {
                         // handle event in current thread

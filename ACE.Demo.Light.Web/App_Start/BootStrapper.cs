@@ -22,7 +22,7 @@ namespace ACE.Demo.Light.Web
     {
         public static void BootStrap()
         {
-            ServiceLocator.Init(new Grit.ACE.Loggers.NullBusLogger(), null, false,
+            ServiceLocator.Init(new Grit.ACE.Loggers.Log4NetBusLogger(), null, false,
                 Grit.ACE.Event.EventDistributionOptions.ThreadPool);
             AddIoCBindings();
             InitHandlerFactory();
