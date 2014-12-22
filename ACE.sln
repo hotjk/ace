@@ -48,7 +48,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{9FB783B9-E949-402D-9EA2-931F01669874}"
 	ProjectSection(SolutionItems) = preProject
 		Dump20140707.sql = Dump20140707.sql
-		rabbit_grit_demo_2014-7-10.json = rabbit_grit_demo_2014-7-10.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{4F635C71-2834-4041-8F47-9FFF38190BD2}"

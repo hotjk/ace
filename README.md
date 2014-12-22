@@ -1,10 +1,11 @@
 ﻿# ACE
 
-## DomainMessage
+简单的微服务基础库。
+提供三种领域事件，Action/Command/Event，Action 用于前端和微服务之间通信，Command 用于 Aggregate 之间通信，Event 用于微服务之间通信。
 
-DomainMesssage 也叫 DomainEvent，用于解耦服务。
-
-> 参考 http://www.udidahan.com/2009/06/14/domain-events-salvation/
+> 参考
+> http://www.udidahan.com/2009/06/14/domain-events-salvation/
+> http://martinfowler.com/articles/microservices.html
 
 ### Action/ActionBus
 
@@ -14,6 +15,7 @@ DomainMesssage 也叫 DomainEvent，用于解耦服务。
 #### Send
 
 发送 Action 到外部的事件总线。
+MUST 为每个微服务承载的消息提供统一的基类（路由基类），RPC 专用的 Exchange 会使用 direct 路由方式把一个路由基类的所有消息路由到路由基类同名 Queue，特定微服务直接订阅特定路由基类 Queue。
 
 #### Handle
 
@@ -73,9 +75,9 @@ Event Consumer 收到来自事件队列的 Event 对象后，调用 Invoke 方�
 
 全局对象，承载 ActionBus/CommandBus/EventBus，Ninject Kernal，RabbitMQ Channel，ActionBus Exchange Name，ActionBus Queue Name，EventBus Exchange Name。
 
-## Saga
+## MicroService
 
-业务处理中心，消费 Action，发布 Command/Event
+微服务，业务处理中心，消费 Action，发布 Command/Event，返回 ActionResponse。
 
 ## Event Consumer
 
