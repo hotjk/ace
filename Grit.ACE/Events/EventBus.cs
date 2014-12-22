@@ -40,34 +40,15 @@ namespace Grit.ACE
             ServiceLocator.BusLogger.EventPublish(@event);
             if (@event.ShouldDistributeInCurrentThread())
             {
-                DistributeInCurrentThread(@event);
+                Invoke((dynamic)@event);
             }
             if (@event.ShouldDistributeInThreadPool())
             {
-                DistributeInThreadPool(@event);
+                DistributeInThreadPool((dynamic)@event);
             }
             if (ServiceLocator.EventShouldDistributeToExternalQueue && @event.ShouldDistributeToExternalQueue())
             {
                 DistributeToExternalQueue(@event);
-            }
-        }
-
-        private void DistributeInCurrentThread<T>(T @event) where T : Event
-        {
-            var handlers = _eventHandlerFactory.GetHandlers<T>();
-            if (handlers != null)
-            {
-                foreach (var handler in handlers)
-                {
-                    try
-                    {
-                        handler.Handle(@event);
-                    }
-                    catch (Exception ex)
-                    {
-                        ServiceLocator.BusLogger.Exception(@event, ex);
-                    }
-                }
             }
         }
 
@@ -76,6 +57,8 @@ namespace Grit.ACE
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
             {
+                @event.Recevied();
+                ServiceLocator.BusLogger.EventHandle(@event);
                 foreach (var handler in handlers)
                 {
                     // handle event in thread pool
@@ -111,10 +94,10 @@ namespace Grit.ACE
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
             {
+                @event.Recevied();
+                ServiceLocator.BusLogger.EventHandle(@event);
                 foreach (var handler in handlers)
                 {
-                    @event.Recevied();
-                    ServiceLocator.BusLogger.EventHandle(@event);
                     try
                     {
                         // handle event in current thread
