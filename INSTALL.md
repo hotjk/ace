@@ -6,15 +6,8 @@
 * Start RabbitMQ service
 * Add vhost/user/permission
 
->rabbitmqctl add_vhost grit
-
->rabbitmqctl add_user event_user event_password
-
->rabbitmqctl set_permissions -p grit event_user ".*" ".*" ".*"
-
->rabbitmqctl set_permissions -p grit guest ".*" ".*" ".*"
-
->rabbitmqctl set_user_tags event_user administrator
+rabbitmqctl add_vhost grit
+rabbitmqctl set_permissions -p grit guest ".*" ".*" ".*"
 
 ### Setup MySQL ###
 
@@ -23,6 +16,6 @@
 
 ### Run ###
 
-* ACE.Demo.Sagas
+* ACE.Demo.MicroServices
 * ACE.Demo.EventConsumer
-* ACE.Demo.Web
+* ACE.Demo.Heavy.Web

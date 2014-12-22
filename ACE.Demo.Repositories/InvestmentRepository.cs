@@ -26,7 +26,7 @@ namespace ACE.Demo.Repositories
             using (IDbConnection connection = OpenConnection())
             {
                 return connection.Query<Investment>(
-                    "SELECT InvestmentId, ProjectId, AccountId, Amount, Status FROM ace_demo_investment LIMIT 10;"
+                    "SELECT InvestmentId, ProjectId, AccountId, Amount, Status FROM ace_demo_investment ORDER BY InvestmentId DESC LIMIT 10;"
                     );
             }
         }

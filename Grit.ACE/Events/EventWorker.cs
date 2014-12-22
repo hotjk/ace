@@ -12,7 +12,7 @@ namespace Grit.ACE.Events
         {
             try
             {
-                ServiceLocator.EventBus.Invoke(@event);
+                ServiceLocator.EventBus.Invoke((dynamic)@event);
             }
             catch (Exception ex)
             {
