@@ -51,7 +51,7 @@ namespace ACE.Demo.Web.Controllers
                 Amount = vm.Amount
             };
 
-            var response = await ServiceLocator.ActionBus.SendAsync(action);
+            var response = await ServiceLocator.ActionBus.SendAsync<InvestmentActionBase, InvestmentCreateRequest>(action);
             //var response = ServiceLocator.ActionBus.Send(action);
             TempData["ActionResponse"] = response;
             return RedirectToAction("Index", new { id = action.InvestmentId });
@@ -70,7 +70,7 @@ namespace ACE.Demo.Web.Controllers
                 InvestmentId = id
             };
 
-            ActionResponse response = await ServiceLocator.ActionBus.SendAsync(action);
+            ActionResponse response = await ServiceLocator.ActionBus.SendAsync<InvestmentActionBase, InvestmentPayRequest>(action);
             TempData["ActionResponse"] = response;
             return RedirectToAction("Index", new { id = action.InvestmentId });
         }

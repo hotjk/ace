@@ -33,9 +33,9 @@ namespace Grit.ACE
                 {
                     handler.Invoke(action);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    if(!(ex is Grit.ACE.Exceptions.BusinessException))
+                    if (!(ex is Grit.ACE.Exceptions.BusinessException))
                     {
                         ServiceLocator.BusLogger.Exception(action, ex);
                     }
@@ -44,20 +44,9 @@ namespace Grit.ACE
             }
         }
 
-        public ActionResponse Send<T>(T action) where T : Action
-        {
-            action.Sent();
-            ServiceLocator.BusLogger.ActionSend(action);
-            
-            if (!ServiceLocator.ActionShouldDistributeToExternalQueue)
-            {
-                throw new Exception("Action is not allow to distribute to queue, maybe you can direct invoke action in thread.");
-            }
-            
-            return ServiceLocator.EasyNetQBus.Request<Action, ActionResponse>(action);
-        }
-
-        public async Task<ActionResponse> SendAsync<T>(T action) where T : Action
+        public ActionResponse Send<B, T>(T action)
+            where B : Action
+            where T : B
         {
             action.Sent();
             ServiceLocator.BusLogger.ActionSend(action);
@@ -66,17 +55,31 @@ namespace Grit.ACE
             {
                 throw new Exception("Action is not allow to distribute to queue, maybe you can direct invoke action in thread.");
             }
-            
-            return await ServiceLocator.EasyNetQBus.RequestAsync<Action, ActionResponse>(action);
+
+            return ServiceLocator.EasyNetQBus.Request<B, ActionResponse>(action);
         }
 
-        public void Subscribe()
+        public async Task<ActionResponse> SendAsync<B, T>(T action)
+            where B : Action
+            where T : B
+        {
+            ServiceLocator.BusLogger.ActionSend(action);
+
+            if (!ServiceLocator.ActionShouldDistributeToExternalQueue)
+            {
+                throw new Exception("Action is not allow to distribute to queue, maybe you can direct invoke action in thread.");
+            }
+
+            return await ServiceLocator.EasyNetQBus.RequestAsync<B, ActionResponse>(action);
+        }
+
+        public void Subscribe<T>() where T : Grit.ACE.Action
         {
             ActionWorker worker = new ActionWorker();
-            ServiceLocator.EasyNetQBus.Respond<Grit.ACE.Action, ActionResponse>(action => worker.Execute(action));
+            ServiceLocator.EasyNetQBus.Respond<T, ActionResponse>(action => worker.Execute(action));
         }
 
-        public void SubscribeInParallel(int capacity)
+        public void SubscribeInParallel<T>(int capacity) where T : Grit.ACE.Action
         {
             var workers = new BlockingCollection<ActionWorker>();
             for (int i = 0; i < capacity; i++)
@@ -84,7 +87,7 @@ namespace Grit.ACE
                 workers.Add(new ActionWorker());
             }
 
-            ServiceLocator.EasyNetQBus.RespondAsync<Grit.ACE.Action, ActionResponse>(action =>
+            ServiceLocator.EasyNetQBus.RespondAsync<T, ActionResponse>(action =>
                 Task.Factory.StartNew(() =>
                 {
                     var worker = workers.Take();

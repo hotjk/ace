@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ACE.Demo.Contracts.Actions
 {
-    public class InvestmentCreateRequest : Grit.ACE.Action
+    public class InvestmentCreateRequest : InvestmentActionBase
     {
         public int InvestmentId { get; set; }
         public int AccountId { get; set; }

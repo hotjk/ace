@@ -22,27 +22,33 @@ namespace Grit.ACE
         /// <summary>
         /// Send to RabbitMQ and waiting for response.
         /// </summary>
+        /// <typeparam name="B">The base class of request action class, base class will be the queue name.</typeparam>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
         /// <returns></returns>
-        ActionResponse Send<T>(T action) where T : Action;
+        ActionResponse Send<B, T>(T action)
+            where B : Action
+            where T : B;
 
         /// <summary>
         /// Send to RabbitMQ and waiting for response asyn.
         /// </summary>
+        /// <typeparam name="B">The base class of request action class, base class will be the queue name.</typeparam>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
         /// <returns></returns>
-        Task<ActionResponse> SendAsync<T>(T action) where T : Action;
+        Task<ActionResponse> SendAsync<B, T>(T action)
+            where B : Action
+            where T : B;
 
         /// <summary>
         /// Handle action from RabbitMQ.
         /// </summary>
-        void Subscribe();
+        void Subscribe<T>() where T : Grit.ACE.Action;
         /// <summary>
         /// Handle action from RabbitMQ in parallel.
         /// </summary>
         /// <param name="capacity">Worker numbers</param>
-        void SubscribeInParallel(int capacity);
+        void SubscribeInParallel<T>(int capacity) where T : Grit.ACE.Action;
     }
 }

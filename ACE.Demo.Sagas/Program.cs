@@ -21,7 +21,7 @@ namespace ACE.Demo.MicroServices
             log4net.Config.XmlConfigurator.Configure();
             BootStrapper.BootStrap();
 
-            ServiceLocator.ActionBus.SubscribeInParallel(20);
+            ServiceLocator.ActionBus.SubscribeInParallel<ACE.Demo.Contracts.Actions.InvestmentActionBase>(20);
             //ServiceLocator.ActionBus.Subscribe();
 
             Console.WriteLine("Ctrl-C to exit");
