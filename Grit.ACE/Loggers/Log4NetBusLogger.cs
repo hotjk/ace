@@ -1,4 +1,4 @@
-﻿using Grit.ACE.Events;
+﻿using ACE.Events;
 using log4net;
 using Newtonsoft.Json;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grit.ACE.Loggers
+namespace ACE.Loggers
 {
     public class Log4NetBusLogger : IBusLogger
     {
@@ -24,7 +24,7 @@ namespace Grit.ACE.Loggers
 
         public void Sent(DomainMessage message)
         {
-            message.Sent();
+            message.MarkedAsSent();
             if (MessageLogger.IsInfoEnabled)
             {
                 MessageLogger.Info(JsonConvert.SerializeObject(message));
@@ -33,7 +33,7 @@ namespace Grit.ACE.Loggers
 
         public void Received(DomainMessage message)
         {
-            message.Recevied();
+            message.MarkedAsReceived();
             if (MessageLogger.IsInfoEnabled)
             {
                 MessageLogger.Info(JsonConvert.SerializeObject(message));

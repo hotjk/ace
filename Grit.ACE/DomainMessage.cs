@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Grit.ACE
+namespace ACE
 {
     /// <summary>
     /// ACE, Action/Command/Event
@@ -47,15 +47,19 @@ namespace Grit.ACE
         #region Route State
 
         public MessageRouteState RouteState { get; private set; }
+        public DateTime? SendAt { get; private set; }
+        public DateTime? ReceiveAt { get; private set; }
 
-        public void Sent()
+        public void MarkedAsSent()
         {
             this.RouteState = DomainMessage.MessageRouteState.Sent;
+            this.SendAt = DateTime.Now;
         }
 
-        public void Recevied()
+        public void MarkedAsReceived()
         {
             this.RouteState = DomainMessage.MessageRouteState.Received;
+            this.ReceiveAt = DateTime.Now;
         }
 
         #endregion

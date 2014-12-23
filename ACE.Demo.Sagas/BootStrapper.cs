@@ -6,7 +6,7 @@ using ACE.Demo.Model.Write.AccountActivities;
 using ACE.Demo.Model.Write.Messages;
 using ACE.Demo.Repositories;
 using ACE.Demo.Repositories.Write;
-using Grit.ACE;
+using ACE;
 using Grit.Sequence;
 using Grit.Sequence.Repository.MySql;
 using Ninject;
@@ -22,9 +22,9 @@ namespace ACE.Demo.MicroServices
     {
         public static void BootStrap()
         {
-            ServiceLocator.Init(new Grit.ACE.Loggers.Log4NetBusLogger(),
+            ServiceLocator.Init(new ACE.Loggers.Log4NetBusLogger(),
                 Grit.Configuration.RabbitMQ.ACEQueueConnectionString, false,
-                Grit.ACE.Event.EventDistributionOptions.Queue);
+                ACE.Event.EventDistributionOptions.Queue);
             AddIocBindings();
             InitHandlerFactory();
         }

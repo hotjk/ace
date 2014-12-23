@@ -72,9 +72,9 @@
       <Project>{fe904a73-61f7-4e93-8bd0-6aa4fd879baf}</Project>
       <Name>ACE.Demo.Repositories</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Grit.ACE\Grit.ACE.csproj">
+    <ProjectReference Include="..\Grit.ACE\ACE.csproj">
       <Project>{81569f0a-133a-4e07-a66b-9efc8b5f7411}</Project>
-      <Name>Grit.ACE</Name>
+      <Name>ACE</Name>
     </ProjectReference>
     <ProjectReference Include="..\Grit.Sequence.Repository.Mysql\Grit.Sequence.Repository.MySql.csproj">
       <Project>{c8223ccd-75f4-4b9e-813b-b8a5a83ff758}</Project>

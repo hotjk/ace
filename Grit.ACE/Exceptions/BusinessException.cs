@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grit.ACE.Exceptions
+namespace ACE.Exceptions
 {
     public class BusinessException : Exception
     {

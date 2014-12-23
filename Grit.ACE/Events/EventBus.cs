@@ -1,4 +1,4 @@
-﻿using Grit.ACE.Events;
+﻿using ACE.Events;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Grit.ACE
+namespace ACE
 {
     public class EventBus : IEventBus
     {
@@ -79,7 +79,7 @@ namespace Grit.ACE
         {
             try
             {
-                ServiceLocator.EasyNetQBus.Publish<Grit.ACE.Event>(@event, @event.RoutingKey());
+                ServiceLocator.EasyNetQBus.Publish<ACE.Event>(@event, @event.RoutingKey());
             }
             catch (Exception ex)
             {

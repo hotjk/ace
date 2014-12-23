@@ -1,4 +1,4 @@
-﻿using Grit.ACE.Actions;
+﻿using ACE.Actions;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Grit.ACE
+namespace ACE
 {
     public class ActionBus : IActionBus
     {
@@ -27,7 +27,7 @@ namespace Grit.ACE
             var handler = _actionHandlerFactory.GetHandler<T>();
             if (handler != null)
             {
-                action.Recevied();
+                action.MarkedAsReceived();
                 ServiceLocator.BusLogger.Received(action);
                 try
                 {
@@ -35,7 +35,7 @@ namespace Grit.ACE
                 }
                 catch (Exception ex)
                 {
-                    if (!(ex is Grit.ACE.Exceptions.BusinessException))
+                    if (!(ex is ACE.Exceptions.BusinessException))
                     {
                         ServiceLocator.BusLogger.Exception(action, ex);
                     }
@@ -68,13 +68,13 @@ namespace Grit.ACE
             return await ServiceLocator.EasyNetQBus.RequestAsync<B, ActionResponse>(action);
         }
 
-        public void Subscribe<T>() where T : Grit.ACE.Action
+        public void Subscribe<T>() where T : ACE.Action
         {
             ActionWorker worker = new ActionWorker();
             ServiceLocator.EasyNetQBus.Respond<T, ActionResponse>(action => worker.Execute(action));
         }
 
-        public void SubscribeInParallel<T>(int capacity) where T : Grit.ACE.Action
+        public void SubscribeInParallel<T>(int capacity) where T : ACE.Action
         {
             var workers = new BlockingCollection<ActionWorker>();
             for (int i = 0; i < capacity; i++)

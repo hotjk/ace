@@ -1,15 +1,15 @@
-﻿using Grit.ACE.Exceptions;
+﻿using ACE.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grit.ACE.Actions
+namespace ACE.Actions
 {
     public class ActionWorker
     {
-        public ActionResponse Execute(Grit.ACE.Action action)
+        public ActionResponse Execute(ACE.Action action)
         {
             ActionResponse response = new ActionResponse { Result = ActionResponse.ActionResponseResult.OK };
             try

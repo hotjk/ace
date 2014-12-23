@@ -1,4 +1,4 @@
-﻿using Grit.ACE.Loggers;
+﻿using ACE.Loggers;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grit.ACE.ESLogger
+namespace ACE.ESLogger
 {
     public class ElasticSearchLogger : IBusLogger
     {
@@ -30,7 +30,7 @@ namespace Grit.ACE.ESLogger
 
         public void Sent(DomainMessage message)
         {
-            message.Sent();
+            message.MarkedAsSent();
             var repsonse = client.Index(message, i => i
                .Id(message.Id.ToString())
                .Index(messageIndex));
@@ -38,7 +38,7 @@ namespace Grit.ACE.ESLogger
 
         public void Received(DomainMessage message)
         {
-            message.Recevied();
+            message.MarkedAsReceived();
             var reponse = client.Update<DomainMessage, object>(i => i
                 .Id(message.Id.ToString())
                 .Index(messageIndex)

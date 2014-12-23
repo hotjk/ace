@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grit.ACE.Events
+namespace ACE.Events
 {
     public class EventWorker
     {
-        public void Execute(Grit.ACE.Event @event)
+        public void Execute(ACE.Event @event)
         {
             try
             {

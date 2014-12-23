@@ -1,5 +1,5 @@
-﻿using Grit.ACE;
-using Grit.ACE.Exceptions;
+﻿using ACE;
+using ACE.Exceptions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -18,7 +18,7 @@ namespace ACE.Demo.EventConsumer
             log4net.Config.XmlConfigurator.Configure();
             BootStrapper.BootStrap();
 
-            ServiceLocator.EventBus.SubscribeInParallel("Account", "account.*.*", 10);
+            ServiceLocator.EventBus.SubscribeInParallel("account_event", "account.*.*", 10);
             
             Console.WriteLine("Ctrl-C to exit");
             Console.CancelKeyPress += (source, cancelKeyPressArgs) =>

@@ -119,9 +119,9 @@
       <Project>{38bff300-be60-4a8b-886e-0c3df4362657}</Project>
       <Name>Grit.Configuration</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Grit.ACE\Grit.ACE.csproj">
+    <ProjectReference Include="..\Grit.ACE\ACE.csproj">
       <Project>{81569f0a-133a-4e07-a66b-9efc8b5f7411}</Project>
-      <Name>Grit.ACE</Name>
+      <Name>ACE</Name>
     </ProjectReference>
     <ProjectReference Include="..\Grit.Sequence.Repository.Mysql\Grit.Sequence.Repository.MySql.csproj">
       <Project>{c8223ccd-75f4-4b9e-813b-b8a5a83ff758}</Project>

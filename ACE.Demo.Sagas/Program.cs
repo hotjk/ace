@@ -1,8 +1,8 @@
 ﻿using ACE.Demo.Contracts;
 using ACE.Demo.Contracts.Events;
-using Grit.ACE;
-using Grit.ACE.Actions;
-using Grit.ACE.Exceptions;
+using ACE;
+using ACE.Actions;
+using ACE.Exceptions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;

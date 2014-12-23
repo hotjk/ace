@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Grit.ACE;
+using ACE;
 using ACE.Demo.Model.Investments;
 using ACE.Demo.Model.Projects;
-using Grit.ACE.Exceptions;
+using ACE.Exceptions;
 using ACE.Demo.Model.Accounts;
 
 namespace ACE.Demo.Model.Investments

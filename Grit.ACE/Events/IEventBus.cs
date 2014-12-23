@@ -1,11 +1,11 @@
-﻿using Grit.ACE.Events;
+﻿using ACE.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grit.ACE
+namespace ACE
 {
     /// <summary>
     /// EventBus instance MUST be thread scope, since published event should be cached in thread variable and flushed when UnitOfWork completed

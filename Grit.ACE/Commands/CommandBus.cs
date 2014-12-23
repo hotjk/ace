@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grit.ACE
+namespace ACE
 {
     public class CommandBus : ICommandBus
     {
@@ -18,7 +18,7 @@ namespace Grit.ACE
 
         public ICommandBus Send<T>(T command) where T : Command
         {
-            command.Sent();
+            command.MarkedAsSent();
             ServiceLocator.BusLogger.Sent(command);
 
             var handler = _commandHandlerFactory.GetHandler<T>();

@@ -1,6 +1,6 @@
 ﻿using ACE.Demo.Contracts.Events;
 using ACE.Demo.Model.Messages;
-using Grit.ACE;
+using ACE;
 using System;
 using System.Collections.Generic;
 using System.Linq;

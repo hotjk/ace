@@ -6,7 +6,7 @@ using ACE.Demo.Model.Write.AccountActivities;
 using ACE.Demo.Model.Write.Messages;
 using ACE.Demo.Repositories;
 using ACE.Demo.Repositories.Write;
-using Grit.ACE;
+using ACE;
 using Grit.Sequence;
 using Grit.Sequence.Repository.MySql;
 using Ninject;
@@ -22,8 +22,8 @@ namespace ACE.Demo.Light.Web
     {
         public static void BootStrap()
         {
-            ServiceLocator.Init(new Grit.ACE.Loggers.Log4NetBusLogger(), null, false,
-                Grit.ACE.Event.EventDistributionOptions.ThreadPool);
+            ServiceLocator.Init(new ACE.Loggers.Log4NetBusLogger(), null, false,
+                ACE.Event.EventDistributionOptions.ThreadPool);
             AddIoCBindings();
             InitHandlerFactory();
         }

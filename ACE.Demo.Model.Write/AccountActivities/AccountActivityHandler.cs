@@ -1,7 +1,7 @@
 ﻿using ACE.Demo.Contracts.Commands;
 using ACE.Demo.Model.AccountActivities;
-using Grit.ACE;
-using Grit.ACE.Exceptions;
+using ACE;
+using ACE.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

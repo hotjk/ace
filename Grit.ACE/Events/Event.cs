@@ -1,4 +1,4 @@
-﻿using Grit.ACE.Events;
+﻿using ACE.Events;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Grit.ACE
+namespace ACE
 {
     public class Event : DomainMessage, IEvent
     {

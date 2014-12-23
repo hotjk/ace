@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Grit.ACE;
-using Grit.ACE.Exceptions;
+using ACE;
+using ACE.Exceptions;
 
 namespace ACE.Demo.Model.Accounts
 {

@@ -1,7 +1,7 @@
 ﻿using EasyNetQ;
 using EasyNetQ.Loggers;
-using Grit.ACE;
-using Grit.ACE.Loggers;
+using ACE;
+using ACE.Loggers;
 using Ninject;
 using RabbitMQ.Client;
 using System;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grit.ACE
+namespace ACE
 {
     public static class ServiceLocator
     {

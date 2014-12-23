@@ -7,8 +7,8 @@
     <ProjectGuid>{81569F0A-133A-4E07-A66B-9EFC8B5F7411}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Grit.ACE</RootNamespace>
-    <AssemblyName>Grit.ACE</AssemblyName>
+    <RootNamespace>ACE</RootNamespace>
+    <AssemblyName>ACE</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -4,18 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grit.ACE.Loggers
+namespace ACE.Loggers
 {
     public class NullBusLogger : IBusLogger
     {
         public void Sent(DomainMessage message)
         {
-            message.Sent();
+            message.MarkedAsSent();
         }
 
         public void Received(DomainMessage message)
         {
-            message.Recevied();
+            message.MarkedAsReceived();
         }
 
         public void Exception(DomainMessage message, Exception ex)

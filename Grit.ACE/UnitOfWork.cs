@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 
-namespace Grit.ACE
+namespace ACE
 {
     public class UnitOfWork : IDisposable
     {

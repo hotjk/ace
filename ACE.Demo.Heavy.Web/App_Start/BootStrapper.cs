@@ -3,7 +3,7 @@ using ACE.Demo.Model.Accounts;
 using ACE.Demo.Model.Investments;
 using ACE.Demo.Model.Projects;
 using ACE.Demo.Repositories;
-using Grit.ACE;
+using ACE;
 using Grit.Sequence;
 using Grit.Sequence.Repository.MySql;
 using Ninject;
@@ -19,9 +19,9 @@ namespace ACE.Demo.Heavy.Web
     {
         public static void BootStrap()
         {
-            ServiceLocator.Init(new Grit.ACE.Loggers.Log4NetBusLogger(),
+            ServiceLocator.Init(new ACE.Loggers.Log4NetBusLogger(),
                 Grit.Configuration.RabbitMQ.ACEQueueConnectionString, true,
-                Grit.ACE.Event.EventDistributionOptions.Queue);
+                ACE.Event.EventDistributionOptions.Queue);
             AddIoCBindings();
         }
 

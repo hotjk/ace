@@ -1,11 +1,11 @@
-﻿using Grit.ACE.Actions;
+﻿using ACE.Actions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grit.ACE
+namespace ACE
 {
     /// <summary>
     /// ActionBus instance MUST be thread scope, since each thread will keep an anonymous RabbitMQ reply queue.
@@ -44,11 +44,11 @@ namespace Grit.ACE
         /// <summary>
         /// Handle action from RabbitMQ.
         /// </summary>
-        void Subscribe<T>() where T : Grit.ACE.Action;
+        void Subscribe<T>() where T : ACE.Action;
         /// <summary>
         /// Handle action from RabbitMQ in parallel.
         /// </summary>
         /// <param name="capacity">Worker numbers</param>
-        void SubscribeInParallel<T>(int capacity) where T : Grit.ACE.Action;
+        void SubscribeInParallel<T>(int capacity) where T : ACE.Action;
     }
 }

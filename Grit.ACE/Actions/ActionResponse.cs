@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grit.ACE.Actions
+namespace ACE.Actions
 {
     public class ActionResponse : DomainMessage
     {

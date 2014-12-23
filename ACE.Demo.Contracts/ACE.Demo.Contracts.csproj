@@ -62,9 +62,9 @@
     <Compile Include="SequenceID.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Grit.ACE\Grit.ACE.csproj">
+    <ProjectReference Include="..\Grit.ACE\ACE.csproj">
       <Project>{81569f0a-133a-4e07-a66b-9efc8b5f7411}</Project>
-      <Name>Grit.ACE</Name>
+      <Name>ACE</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

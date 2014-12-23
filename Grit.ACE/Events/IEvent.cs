@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grit.ACE
+namespace ACE
 {
     /// <summary>
     /// Event can be handled by multiple method.
