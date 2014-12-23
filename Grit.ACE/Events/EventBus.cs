@@ -29,7 +29,6 @@ namespace Grit.ACE
         {
             foreach (var @event in _events)
             {
-                @event.Sent();
                 FlushAnEvent(@event);
             }
             _events.Clear();
@@ -37,7 +36,7 @@ namespace Grit.ACE
 
         private void FlushAnEvent<T>(T @event) where T : Event
         {
-            ServiceLocator.BusLogger.EventPublish(@event);
+            ServiceLocator.BusLogger.Sent(@event);
             if (@event.ShouldDistributeInCurrentThread())
             {
                 Invoke((dynamic)@event);
@@ -57,8 +56,7 @@ namespace Grit.ACE
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
             {
-                @event.Recevied();
-                ServiceLocator.BusLogger.EventHandle(@event);
+                ServiceLocator.BusLogger.Received(@event);
                 foreach (var handler in handlers)
                 {
                     // handle event in thread pool
@@ -94,8 +92,7 @@ namespace Grit.ACE
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
             {
-                @event.Recevied();
-                ServiceLocator.BusLogger.EventHandle(@event);
+                ServiceLocator.BusLogger.Received(@event);
                 foreach (var handler in handlers)
                 {
                     try

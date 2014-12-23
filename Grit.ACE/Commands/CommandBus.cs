@@ -19,7 +19,7 @@ namespace Grit.ACE
         public ICommandBus Send<T>(T command) where T : Command
         {
             command.Sent();
-            ServiceLocator.BusLogger.CommandSend(command);
+            ServiceLocator.BusLogger.Sent(command);
 
             var handler = _commandHandlerFactory.GetHandler<T>();
             handler.Execute(command);

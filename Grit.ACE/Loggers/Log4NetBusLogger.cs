@@ -11,58 +11,38 @@ namespace Grit.ACE.Loggers
 {
     public class Log4NetBusLogger : IBusLogger
     {
-        public ILog CommandLogger { get; private set; }
-        public ILog EventLogger { get; private set; }
-        public ILog ActionLogger { get; private set; }
+        public ILog MessageLogger { get; private set; }
         public ILog ExceptionLogger { get; private set; }
         public ILog DebugLogger { get; private set; }
 
         public Log4NetBusLogger()
         {
-            CommandLogger = log4net.LogManager.GetLogger("command.logger");
-            EventLogger = log4net.LogManager.GetLogger("event.logger");
-            ActionLogger = log4net.LogManager.GetLogger("action.logger");
+            MessageLogger = log4net.LogManager.GetLogger("message.logger");
             ExceptionLogger = log4net.LogManager.GetLogger("exception.logger");
             DebugLogger = log4net.LogManager.GetLogger("debug.logger");
         }
 
-        public void ActionSend(Action action)
+        public void Sent(DomainMessage message)
         {
-            if (ActionLogger.IsInfoEnabled)
+            message.Sent();
+            if (MessageLogger.IsInfoEnabled)
             {
-                ActionLogger.Info(string.Format("Action Send {0}", JsonConvert.SerializeObject(action)));
+                MessageLogger.Info(JsonConvert.SerializeObject(message));
             }
         }
 
-        public void ActionInvoke(Action action)
+        public void Received(DomainMessage message)
         {
-            ActionLogger.Info(string.Format("Action Invoke {0}", JsonConvert.SerializeObject(action)));
-        }
-
-        public void CommandSend(Command command)
-        {
-            if (CommandLogger.IsInfoEnabled)
+            message.Recevied();
+            if (MessageLogger.IsInfoEnabled)
             {
-                CommandLogger.Info(string.Format("Command Send {0}", JsonConvert.SerializeObject(command))); ;
+                MessageLogger.Info(JsonConvert.SerializeObject(message));
             }
-        }
-
-        public void EventPublish(Event @event)
-        {
-            if (EventLogger.IsInfoEnabled)
-            {
-                EventLogger.Info(string.Format("Event Publish {0}", JsonConvert.SerializeObject(@event)));
-            }
-        }
-
-        public void EventHandle(Event @event)
-        {
-            EventLogger.Info(string.Format("Event Handle {0}", JsonConvert.SerializeObject(@event)));
         }
 
         public void Exception(DomainMessage message, Exception ex)
         {
-            ExceptionLogger.Error(new Exception(string.Format("{0} {1}", message, message.Id), ex));
+            ExceptionLogger.Error(JsonConvert.SerializeObject(message), ex);
         }
 
         public void Debug(string message)

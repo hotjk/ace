@@ -10,11 +10,8 @@ namespace Grit.ACE.ESLogger
 {
     public class ElasticSearchLogger : IBusLogger
     {
-        private const string actionIndex = "action";
-        private const string commandIndex = "command";
-        private const string eventIndex = "event";
+        private const string messageIndex = "message";
         private const string exceptionIndex = "exception";
-
         private ElasticClient client;
         
         public ElasticSearchLogger(string connectionString = "http://localhost:9200")
@@ -24,50 +21,29 @@ namespace Grit.ACE.ESLogger
             client = new ElasticClient(settings);
         }
 
-        public void ActionSend(Action action)
-        {
-            var repsonse = client.Index(action, i=>i
-                .Id(action.Id.ToString())
-                .Index(actionIndex));
-        }
-
-        public void ActionInvoke(Action action)
-        {
-            var reponse = client.Update<Action, object>(i => i
-                .Id(action.Id.ToString())
-                .Index(actionIndex)
-                .Doc(new { RouteState = action.RouteState })
-                .DocAsUpsert());
-        }
-
-        public void CommandSend(Command command)
-        {
-            var repsonse = client.Index(command, i => i
-                .Id(command.Id.ToString())
-                .Index(commandIndex));
-        }
-
-        public void EventPublish(Event @event)
-        {
-            var repsonse = client.Index(@event, i => i
-                .Id(@event.Id.ToString())
-                .Index(eventIndex));
-        }
-
-        public void EventHandle(Event @event)
-        {
-            var reponse = client.Update<Action, object>(i => i
-                .Id(@event.Id.ToString())
-                .Index(eventIndex)
-                .Doc(new { RouteState = @event.RouteState })
-                .DocAsUpsert());
-        }
-
         public class DomainMessageException
         {
             public string ExceptionMessage { get; set; }
             public string StackTrace { get; set; }
             public DomainMessage Message { get; set; }
+        }
+
+        public void Sent(DomainMessage message)
+        {
+            message.Sent();
+            var repsonse = client.Index(message, i => i
+               .Id(message.Id.ToString())
+               .Index(messageIndex));
+        }
+
+        public void Received(DomainMessage message)
+        {
+            message.Recevied();
+            var reponse = client.Update<DomainMessage, object>(i => i
+                .Id(message.Id.ToString())
+                .Index(messageIndex)
+                .Doc(new { RouteState = message.RouteState })
+                .DocAsUpsert());
         }
 
         public void Exception(DomainMessage message, Exception ex)

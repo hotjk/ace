@@ -28,7 +28,7 @@ namespace Grit.ACE
             if (handler != null)
             {
                 action.Recevied();
-                ServiceLocator.BusLogger.ActionInvoke(action);
+                ServiceLocator.BusLogger.Received(action);
                 try
                 {
                     handler.Invoke(action);
@@ -48,14 +48,11 @@ namespace Grit.ACE
             where B : Action
             where T : B
         {
-            action.Sent();
-            ServiceLocator.BusLogger.ActionSend(action);
-
             if (!ServiceLocator.ActionShouldDistributeToExternalQueue)
             {
                 throw new Exception("Action is not allow to distribute to queue, maybe you can direct invoke action in thread.");
             }
-
+            ServiceLocator.BusLogger.Sent(action);
             return ServiceLocator.EasyNetQBus.Request<B, ActionResponse>(action);
         }
 
@@ -63,13 +60,11 @@ namespace Grit.ACE
             where B : Action
             where T : B
         {
-            ServiceLocator.BusLogger.ActionSend(action);
-
             if (!ServiceLocator.ActionShouldDistributeToExternalQueue)
             {
                 throw new Exception("Action is not allow to distribute to queue, maybe you can direct invoke action in thread.");
             }
-
+            ServiceLocator.BusLogger.Sent(action);
             return await ServiceLocator.EasyNetQBus.RequestAsync<B, ActionResponse>(action);
         }
 

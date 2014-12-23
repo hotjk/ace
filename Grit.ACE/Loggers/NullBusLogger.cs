@@ -8,24 +8,14 @@ namespace Grit.ACE.Loggers
 {
     public class NullBusLogger : IBusLogger
     {
-        public void ActionSend(Action action)
+        public void Sent(DomainMessage message)
         {
+            message.Sent();
         }
 
-        public void ActionInvoke(Action action)
+        public void Received(DomainMessage message)
         {
-        }
-
-        public void CommandSend(Command command)
-        {
-        }
-
-        public void EventPublish(Event @event)
-        {
-        }
-
-        public void EventHandle(Event @event)
-        {
+            message.Recevied();
         }
 
         public void Exception(DomainMessage message, Exception ex)
