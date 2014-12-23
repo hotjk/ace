@@ -7,8 +7,8 @@
     <ProjectGuid>{0D2BC216-5017-4182-9A2C-0E71A0BB95E4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Grit.ACE.ESLogger</RootNamespace>
-    <AssemblyName>Grit.ACE.ESLogger</AssemblyName>
+    <RootNamespace>Grit.ACE.Logger</RootNamespace>
+    <AssemblyName>Grit.ACE.Logger</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ElasticSearchLogger.cs" />
+    <Compile Include="ElasticSearchBusLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

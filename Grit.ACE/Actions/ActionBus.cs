@@ -27,7 +27,6 @@ namespace ACE
             var handler = _actionHandlerFactory.GetHandler<T>();
             if (handler != null)
             {
-                action.MarkedAsReceived();
                 ServiceLocator.BusLogger.Received(action);
                 try
                 {

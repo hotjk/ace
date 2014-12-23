@@ -60,7 +60,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{C06DD931-22D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{FDFAFEC7-BFDD-4862-A8EF-4D2162E2412A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grit.ACE.ESLogger", "Grit.ACE.ESLogger\Grit.ACE.ESLogger.csproj", "{0D2BC216-5017-4182-9A2C-0E71A0BB95E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grit.ACE.Logger", "Grit.ACE.ESLogger\Grit.ACE.Logger.csproj", "{0D2BC216-5017-4182-9A2C-0E71A0BB95E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

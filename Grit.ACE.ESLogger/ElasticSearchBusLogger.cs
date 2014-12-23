@@ -1,20 +1,19 @@
-﻿using ACE.Loggers;
-using Nest;
+﻿using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ACE.ESLogger
+namespace ACE.Loggers
 {
-    public class ElasticSearchLogger : IBusLogger
+    public class ElasticSearchBusLogger : IBusLogger
     {
         private const string messageIndex = "message";
         private const string exceptionIndex = "exception";
         private ElasticClient client;
         
-        public ElasticSearchLogger(string connectionString = "http://localhost:9200")
+        public ElasticSearchBusLogger(string connectionString = "http://localhost:9200")
         {
             var node = new Uri(connectionString);
             var settings = new ConnectionSettings(node);
@@ -31,25 +30,42 @@ namespace ACE.ESLogger
         public void Sent(DomainMessage message)
         {
             message.MarkedAsSent();
-            var repsonse = client.Index(message, i => i
-               .Id(message.Id.ToString())
-               .Index(messageIndex));
+            try
+            {
+                var repsonse = client.Index(message, i => i
+                   .Id(message.Id.ToString())
+                   .Index(messageIndex));
+            }
+            catch
+            {
+            }
         }
 
         public void Received(DomainMessage message)
         {
             message.MarkedAsReceived();
+            try
+            { 
             var reponse = client.Update<DomainMessage, object>(i => i
                 .Id(message.Id.ToString())
                 .Index(messageIndex)
-                .Doc(new { RouteState = message.RouteState })
-                .DocAsUpsert());
+                .Upsert(message));
+            }
+            catch
+            {
+            }
         }
 
         public void Exception(DomainMessage message, Exception ex)
         {
-            var repsonse = client.Index(new DomainMessageException { ExceptionMessage = ex.Message, StackTrace = ex.StackTrace, Message = message},
-                i => i.Id(message.Id.ToString()).Index(exceptionIndex));
+            try
+            {
+                var repsonse = client.Index(new DomainMessageException { ExceptionMessage = ex.Message, StackTrace = ex.StackTrace, Message = message },
+                    i => i.Id(message.Id.ToString()).Index(exceptionIndex));
+            }
+            catch
+            {
+            }
         }
 
         public void Debug(string message)

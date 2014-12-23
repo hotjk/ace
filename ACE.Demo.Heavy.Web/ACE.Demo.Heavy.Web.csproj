@@ -203,9 +203,9 @@
       <Project>{fe904a73-61f7-4e93-8bd0-6aa4fd879baf}</Project>
       <Name>ACE.Demo.Repositories</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Grit.ACE.ESLogger\Grit.ACE.ESLogger.csproj">
+    <ProjectReference Include="..\Grit.ACE.ESLogger\Grit.ACE.Logger.csproj">
       <Project>{0d2bc216-5017-4182-9a2c-0e71a0bb95e4}</Project>
-      <Name>Grit.ACE.ESLogger</Name>
+      <Name>Grit.ACE.Logger</Name>
     </ProjectReference>
     <ProjectReference Include="..\Grit.ACE\ACE.csproj">
       <Project>{81569f0a-133a-4e07-a66b-9efc8b5f7411}</Project>
