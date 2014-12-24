@@ -39,9 +39,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{BAF43B16-9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ACE", "ACE", "{82C2D6D9-5AD5-4FF7-A580-2F8E286BB913}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.Demo.Application", "ACE.Demo.Applications\ACE.Demo.Application.csproj", "{44F55475-7AB3-41F4-801E-E185294AB1F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.Demo.Application", "ACE.Demo.Application\ACE.Demo.Application.csproj", "{44F55475-7AB3-41F4-801E-E185294AB1F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.Demo.MicroServices", "ACE.Demo.Sagas\ACE.Demo.MicroServices.csproj", "{AD7BB8C2-DB28-40C0-828F-7E1AF4A26527}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.Demo.MicroServices", "ACE.Demo.MicroServices\ACE.Demo.MicroServices.csproj", "{AD7BB8C2-DB28-40C0-828F-7E1AF4A26527}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.Demo.EventConsumer", "ACE.Demo.EventConsumer\ACE.Demo.EventConsumer.csproj", "{17C333D5-5BC1-4BA8-B7FE-FAAFD9CD843D}"
 EndProject
