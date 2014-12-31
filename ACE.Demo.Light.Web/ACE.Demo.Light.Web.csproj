@@ -184,7 +184,7 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ACE.Demo.Applications\ACE.Demo.Application.csproj">
+    <ProjectReference Include="..\ACE.Demo.Application\ACE.Demo.Application.csproj">
       <Project>{44f55475-7ab3-41f4-801e-e185294ab1f3}</Project>
       <Name>ACE.Demo.Application</Name>
     </ProjectReference>
