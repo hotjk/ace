@@ -41,7 +41,7 @@ namespace ACE
         /// </summary>
         /// <param name="subscriptionId">A unique identifier for the subscription. Two subscriptions with the same subscriptionId and type will get messages delivered in turn. </param>
         /// <param name="topic">RabbitMQ exchange routing key</param>
-        void Subscribe(string subscriptionId, string topic);
+        void Subscribe(string subscriptionId, string[] topics);
 
         /// <summary>
         /// Handle event from RabbitMQ in parallel.
@@ -49,6 +49,6 @@ namespace ACE
         /// <param name="subscriptionId"></param>
         /// <param name="topic"></param>
         /// <param name="capacity">Worker numbers</param>
-        void SubscribeInParallel(string subscriptionId, string topic, int capacity);
+        void SubscribeInParallel(string subscriptionId, string[] topics, int capacity);
     }
 }

@@ -113,16 +113,18 @@ namespace ACE
             _events.Clear();
         }
 
-        public void Subscribe(string subscriptionId, string topic)
+        public void Subscribe(string subscriptionId, string[] topics)
         {
             var worker = new EventWorker();
-
-            ServiceLocator.EasyNetQBus.Subscribe<Event>(subscriptionId,
-                @event => worker.Execute(@event),
-                x => x.WithTopic(topic));
+            foreach (var topic in topics)
+            {
+                ServiceLocator.EasyNetQBus.Subscribe<Event>(subscriptionId,
+                    @event => worker.Execute(@event),
+                    x => x.WithTopic(topic));
+            }
         }
 
-        public void SubscribeInParallel(string subscriptionId, string topic, int capacity)
+        public void SubscribeInParallel(string subscriptionId, string[] topics, int capacity)
         {
             var workers = new BlockingCollection<EventWorker>();
             for (int i = 0; i < capacity; i++)
@@ -130,20 +132,23 @@ namespace ACE
                 workers.Add(new EventWorker());
             }
 
-            ServiceLocator.EasyNetQBus.SubscribeAsync<Event>(subscriptionId,
-                @event => Task.Factory.StartNew(() =>
-                {
-                    var worker = workers.Take();
-                    try
+            foreach (var topic in topics)
+            {
+                ServiceLocator.EasyNetQBus.SubscribeAsync<Event>(subscriptionId,
+                    @event => Task.Factory.StartNew(() =>
                     {
-                        worker.Execute(@event);
-                    }
-                    finally
-                    {
-                        workers.Add(worker);
-                    }
-                }),
-                x => x.WithTopic(topic));
+                        var worker = workers.Take();
+                        try
+                        {
+                            worker.Execute(@event);
+                        }
+                        finally
+                        {
+                            workers.Add(worker);
+                        }
+                    }),
+                    x => x.WithTopic(topic));
+            };
         }
     }
 }
