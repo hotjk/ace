@@ -10,12 +10,12 @@ namespace ACE.Loggers
     {
         public void Sent(DomainMessage message)
         {
-            message.MarkedAsSent();
+            message.MarkAsSent();
         }
 
         public void Received(DomainMessage message)
         {
-            message.MarkedAsReceived();
+            message.MarkAsReceived();
         }
 
         public void Exception(DomainMessage message, Exception ex)

@@ -21,39 +21,39 @@ namespace ACE
 
         public Event()
         {
-            DistributionOptions = EventDistributionOptions.BalckHole;
+            _options = EventDistributionOptions.BalckHole;
         }
 
         #region Distribution Options
 
-        public EventDistributionOptions DistributionOptions { get; private set; }
+        public EventDistributionOptions _options { get; private set; }
 
         public bool ShouldDistributeInCurrentThread()
         {
-            return (this.DistributionOptions & EventDistributionOptions.CurrentThread) == EventDistributionOptions.CurrentThread;
+            return (this._options & EventDistributionOptions.CurrentThread) == EventDistributionOptions.CurrentThread;
         }
         public bool ShouldDistributeInThreadPool()
         {
-            return (this.DistributionOptions & EventDistributionOptions.ThreadPool) == EventDistributionOptions.ThreadPool;
+            return (this._options & EventDistributionOptions.ThreadPool) == EventDistributionOptions.ThreadPool;
         }
         public bool ShouldDistributeToExternalQueue()
         {
-            return (this.DistributionOptions & EventDistributionOptions.Queue) == EventDistributionOptions.Queue;
+            return (this._options & EventDistributionOptions.Queue) == EventDistributionOptions.Queue;
         }
 
         public Event DistributeInCurrentThread()
         {
-            this.DistributionOptions = this.DistributionOptions | EventDistributionOptions.CurrentThread;
+            this._options = this._options | EventDistributionOptions.CurrentThread;
             return this;
         }
         public Event DistributeInThreadPool()
         {
-            this.DistributionOptions = this.DistributionOptions | EventDistributionOptions.ThreadPool;
+            this._options = this._options | EventDistributionOptions.ThreadPool;
             return this;
         }
         public Event DistributeToExternalQueue()
         {
-            this.DistributionOptions = this.DistributionOptions | EventDistributionOptions.Queue;
+            this._options = this._options | EventDistributionOptions.Queue;
             return this;
         }
 

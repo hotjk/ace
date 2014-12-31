@@ -16,9 +16,9 @@ namespace ACE.Demo.Model.Accounts
     {
         static AccountHandler()
         {
-            AutoMapper.Mapper.CreateMap<ChangeAccountAmount, AccountAmountChanged>().ForMember(dest => dest.Id, opt => opt.Ignore());
+            AutoMapper.Mapper.CreateMap<ChangeAccountAmount, AccountAmountChanged>().ForMember(dest => dest._id, opt => opt.Ignore());
             AutoMapper.Mapper.CreateMap<CreateAccount, Account>();
-            AutoMapper.Mapper.CreateMap<CreateAccount, AccountStatusCreated>().ForMember(dest => dest.Id, opt => opt.Ignore());
+            AutoMapper.Mapper.CreateMap<CreateAccount, AccountStatusCreated>().ForMember(dest => dest._id, opt => opt.Ignore());
         }
         private IAccountWriteRepository _repository;
         public AccountHandler(IAccountWriteRepository repository)
