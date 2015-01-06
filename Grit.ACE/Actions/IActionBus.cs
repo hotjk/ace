@@ -31,7 +31,7 @@ namespace ACE
             where T : B;
 
         /// <summary>
-        /// Send to RabbitMQ and waiting for response asyn.
+        /// Send to RabbitMQ and waiting for response in async.
         /// </summary>
         /// <typeparam name="B">The base class of request action class, base class will be the queue name.</typeparam>
         /// <typeparam name="T"></typeparam>
@@ -42,11 +42,12 @@ namespace ACE
             where T : B;
 
         /// <summary>
-        /// Handle action from RabbitMQ.
+        /// Subscribe action from RabbitMQ.
         /// </summary>
         void Subscribe<T>() where T : ACE.Action;
+
         /// <summary>
-        /// Handle action from RabbitMQ in parallel.
+        /// Subscribe action from RabbitMQ in parallel.
         /// </summary>
         /// <param name="capacity">Worker numbers</param>
         void SubscribeInParallel<T>(int capacity) where T : ACE.Action;

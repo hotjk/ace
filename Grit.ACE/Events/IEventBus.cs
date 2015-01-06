@@ -37,14 +37,14 @@ namespace ACE
         void Purge();
 
         /// <summary>
-        /// Handle event from RabbitMQ.
+        /// Subscribe event from RabbitMQ.
         /// </summary>
         /// <param name="subscriptionId">A unique identifier for the subscription. Two subscriptions with the same subscriptionId and type will get messages delivered in turn. </param>
         /// <param name="topic">RabbitMQ exchange routing key</param>
         void Subscribe(string subscriptionId, string[] topics);
 
         /// <summary>
-        /// Handle event from RabbitMQ in parallel.
+        /// Subscribe event from RabbitMQ in parallel.
         /// </summary>
         /// <param name="subscriptionId"></param>
         /// <param name="topic"></param>

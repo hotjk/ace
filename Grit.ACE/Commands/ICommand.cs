@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace ACE
 {
     /// <summary>
-    /// Command is used to decoupe the aggragate.
-    /// Single command MUST be handle by single method.
+    /// Command is used to decoupe the aggragate service.
+    /// One command MUST be handle by one method.
     /// Command SHOULD run in UnitOfWork(TransactionScope).
     /// Command never be sent to RabbitMQ.
     /// Command MAY send event, all events will real flush when UnitOfWork completed.
