@@ -15,7 +15,7 @@ namespace ACE.Demo.Model.Projects
     {
         static ProjectHandler()
         {
-            AutoMapper.Mapper.CreateMap<ChangeProjectAmount, ProjectAmountChanged>().ForMember(dest => dest.Id, opt => opt.Ignore());
+            AutoMapper.Mapper.CreateMap<ChangeProjectAmount, ProjectAmountChanged>().ForMember(dest => dest._id, opt => opt.Ignore());
         }
 
         private IProjectWriteRepository _repository;

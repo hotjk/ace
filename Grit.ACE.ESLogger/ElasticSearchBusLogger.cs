@@ -33,7 +33,7 @@ namespace ACE.Loggers
             try
             {
                 var repsonse = client.Index(message, i => i
-                   .Id(message.Id.ToString())
+                   .Id(message._id.ToString())
                    .Index(messageIndex));
             }
             catch
@@ -47,7 +47,7 @@ namespace ACE.Loggers
             try
             { 
             var reponse = client.Update<DomainMessage, object>(i => i
-                .Id(message.Id.ToString())
+                .Id(message._id.ToString())
                 .Index(messageIndex)
                 .Upsert(message));
             }
@@ -61,7 +61,7 @@ namespace ACE.Loggers
             try
             {
                 var repsonse = client.Index(new DomainMessageException { ExceptionMessage = ex.Message, StackTrace = ex.StackTrace, Message = message },
-                    i => i.Id(message.Id.ToString()).Index(exceptionIndex));
+                    i => i.Id(message._id.ToString()).Index(exceptionIndex));
             }
             catch
             {

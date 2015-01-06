@@ -20,10 +20,10 @@ namespace ACE.Demo.Model.Investments
         static InvestmentHandler()
         {
             AutoMapper.Mapper.CreateMap<CreateInvestment, Investment>();
-            AutoMapper.Mapper.CreateMap<CreateInvestment, InvestmentStatusCreated>().ForMember(dest => dest.Id, opt => opt.Ignore());
-            AutoMapper.Mapper.CreateMap<Investment, ChangeAccountAmount>().ForMember(dest => dest.Id, opt => opt.Ignore());
-            AutoMapper.Mapper.CreateMap<Investment, ChangeProjectAmount>().ForMember(dest => dest.Id, opt => opt.Ignore());
-            AutoMapper.Mapper.CreateMap<Investment, InvestmentStatusCompleted>().ForMember(dest => dest.Id, opt => opt.Ignore());
+            AutoMapper.Mapper.CreateMap<CreateInvestment, InvestmentStatusCreated>().ForMember(dest => dest._id, opt => opt.Ignore());
+            AutoMapper.Mapper.CreateMap<Investment, ChangeAccountAmount>().ForMember(dest => dest._id, opt => opt.Ignore());
+            AutoMapper.Mapper.CreateMap<Investment, ChangeProjectAmount>().ForMember(dest => dest._id, opt => opt.Ignore());
+            AutoMapper.Mapper.CreateMap<Investment, InvestmentStatusCompleted>().ForMember(dest => dest._id, opt => opt.Ignore());
         }
 
         private IInvestmentWriteRepository _repository;

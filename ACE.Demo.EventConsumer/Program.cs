@@ -18,7 +18,8 @@ namespace ACE.Demo.EventConsumer
             log4net.Config.XmlConfigurator.Configure();
             BootStrapper.BootStrap();
 
-            ServiceLocator.EventBus.SubscribeInParallel("account_event", "account.*.*", 10);
+            ServiceLocator.EventBus.SubscribeInParallel("EventConsumer", 
+                new string[]{ "account.*.*", "*.*.created"}, 10);
             
             Console.WriteLine("Ctrl-C to exit");
             Console.CancelKeyPress += (source, cancelKeyPressArgs) =>

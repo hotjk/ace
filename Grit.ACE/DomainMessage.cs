@@ -21,12 +21,12 @@ namespace ACE
 
         public DomainMessage()
         {
-            this.Id = Guid.NewGuid();
+            this._id = Guid.NewGuid();
         }
 
-        public Guid Id { get; set; }
+        public Guid _id { get; set; }
 
-        public string Type
+        public string _type
         {
             get
             {
@@ -46,20 +46,20 @@ namespace ACE
 
         #region Route State
 
-        public MessageRouteState RouteState { get; private set; }
-        public DateTime? SendAt { get; private set; }
-        public DateTime? ReceiveAt { get; private set; }
+        public MessageRouteState _state { get; private set; }
+        public DateTime? _sendAt { get; private set; }
+        public DateTime? _receiveAt { get; private set; }
 
         public void MarkAsSent()
         {
-            this.RouteState = DomainMessage.MessageRouteState.Sent;
-            this.SendAt = DateTime.Now;
+            this._state = DomainMessage.MessageRouteState.Sent;
+            this._sendAt = DateTime.Now;
         }
 
         public void MarkAsReceived()
         {
-            this.RouteState = DomainMessage.MessageRouteState.Received;
-            this.ReceiveAt = DateTime.Now;
+            this._state = DomainMessage.MessageRouteState.Received;
+            this._receiveAt = DateTime.Now;
         }
 
         #endregion
