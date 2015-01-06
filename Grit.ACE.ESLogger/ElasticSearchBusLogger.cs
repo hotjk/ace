@@ -29,7 +29,7 @@ namespace ACE.Loggers
 
         public void Sent(DomainMessage message)
         {
-            message.MarkedAsSent();
+            message.MarkAsSent();
             try
             {
                 var repsonse = client.Index(message, i => i
@@ -43,7 +43,7 @@ namespace ACE.Loggers
 
         public void Received(DomainMessage message)
         {
-            message.MarkedAsReceived();
+            message.MarkAsReceived();
             try
             { 
             var reponse = client.Update<DomainMessage, object>(i => i

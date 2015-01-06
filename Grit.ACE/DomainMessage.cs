@@ -50,13 +50,13 @@ namespace ACE
         public DateTime? SendAt { get; private set; }
         public DateTime? ReceiveAt { get; private set; }
 
-        public void MarkedAsSent()
+        public void MarkAsSent()
         {
             this.RouteState = DomainMessage.MessageRouteState.Sent;
             this.SendAt = DateTime.Now;
         }
 
-        public void MarkedAsReceived()
+        public void MarkAsReceived()
         {
             this.RouteState = DomainMessage.MessageRouteState.Received;
             this.ReceiveAt = DateTime.Now;

@@ -24,7 +24,7 @@ namespace ACE.Loggers
 
         public void Sent(DomainMessage message)
         {
-            message.MarkedAsSent();
+            message.MarkAsSent();
             if (MessageLogger.IsInfoEnabled)
             {
                 MessageLogger.Info(JsonConvert.SerializeObject(message));
@@ -33,7 +33,7 @@ namespace ACE.Loggers
 
         public void Received(DomainMessage message)
         {
-            message.MarkedAsReceived();
+            message.MarkAsReceived();
             if (MessageLogger.IsInfoEnabled)
             {
                 MessageLogger.Info(JsonConvert.SerializeObject(message));
