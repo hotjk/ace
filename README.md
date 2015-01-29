@@ -3,7 +3,7 @@
 简单的微服务基础库。
 提供三种领域事件，Action/Command/Event，Action 用于前端和微服务之间通信，Command 用于 Aggregate 之间通信，Event 用于微服务之间通信。
 
-![ace](https://github.com/hotjk/ace/blob/master/ace.png)
+![ace](https://github.com/hotjk/ace/blob/master/ace.jpg)
 
 > 参考
 > http://www.udidahan.com/2009/06/14/domain-events-salvation/
