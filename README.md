@@ -75,7 +75,7 @@ Event Consumer 收到来自事件队列的 Event 对象后，调用 Invoke 方�
 
 ## ServiceLocator
 
-全局对象，承载 ActionBus/CommandBus/EventBus，Ninject Kernal，RabbitMQ Channel，ActionBus Exchange Name，ActionBus Queue Name，EventBus Exchange Name。
+全局对象，承载 ActionBus/CommandBus/EventBus，Ninject Kernal，RabbitMQ Connection。
 
 ## MicroService
 
