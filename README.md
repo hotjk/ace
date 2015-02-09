@@ -12,7 +12,7 @@
 ### Action/ActionBus
 
 进程间 RPC 调用消息。
-前端通过 ActionBus 发送 Action 到消息总线（RabbitMQ），同时创建一个线程专用的匿名 Queue 用于接收 ActionResponse；业务处理中心（Saga）负责从队列中获取 Action，并执行具体的业务操作，操作完成后，Saga 要在 Action 指定的匿名 Queue 里发送 ActionResponse 应答。
+前端通过 ActionBus 发送 Action 到消息总线（RabbitMQ），同时创建一个线程专用的匿名 Queue 用于接收 ActionResponse；业务处理中心（MicroServices）负责从队列中获取 Action，并执行具体的业务操作，操作完成后，MicroServices 要在 Action 指定的匿名 Queue 里发送 ActionResponse 应答。
 
 #### Send
 
