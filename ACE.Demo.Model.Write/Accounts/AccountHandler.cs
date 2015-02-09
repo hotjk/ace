@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ACE;
 using ACE.Exceptions;
+using ACE.Demo.Contracts;
 
 namespace ACE.Demo.Model.Accounts
 {
@@ -29,7 +30,7 @@ namespace ACE.Demo.Model.Accounts
         {
             if (!_repository.ChangeAmount(command.AccountId, command.Change))
             {
-                throw new BusinessException("账户余额不足。");
+                throw new BusinessException(BusinessExceptionType.AccountBalanceOverflow, "账户余额不足。");
             }
             ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<AccountAmountChanged>(command).DistributeInThreadPool().DistributeToExternalQueue());
         }
@@ -38,7 +39,7 @@ namespace ACE.Demo.Model.Accounts
         {
             if (!_repository.Create(AutoMapper.Mapper.Map<Account>(command)))
             {
-                throw new BusinessException("账户已存在。");
+                throw new BusinessException(BusinessExceptionType.AccountExist, "账户已存在。");
             }
             ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<AccountStatusCreated>(command).DistributeInThreadPool().DistributeToExternalQueue());
         }

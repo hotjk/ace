@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ACE;
 using ACE.Exceptions;
+using ACE.Demo.Contracts;
 
 namespace ACE.Demo.Model.Projects
 {
@@ -28,7 +29,7 @@ namespace ACE.Demo.Model.Projects
         {
             if (!_repository.ChangeAmount(command.ProjectId, command.Change))
             {
-                throw new BusinessException("项目可投资金额不足。");
+                throw new BusinessException(BusinessExceptionType.ProjectBalanceOverflow, "项目可投资金额不足。");
             }
             ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<ProjectAmountChanged>(command).DistributeToExternalQueue());
         }

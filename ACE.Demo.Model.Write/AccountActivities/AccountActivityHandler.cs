@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ACE.Demo.Contracts;
 
 namespace ACE.Demo.Model.Write.AccountActivities
 {
@@ -25,7 +26,7 @@ namespace ACE.Demo.Model.Write.AccountActivities
         {
             if(command.FromAccountId == null && command.ToAccountId == null)
             {
-                throw new BusinessException("账户交易双方不能同时为空。");
+                throw new BusinessException(BusinessExceptionType.AccountActivityNoUser, "账户交易双方不能同时为空。");
             }
             _repository.Save(AutoMapper.Mapper.Map<AccountActivity>(command));
         }

@@ -8,8 +8,10 @@ namespace ACE.Exceptions
 {
     public class BusinessException : Exception
     {
-        public BusinessException(string message) : base(message) 
-        { 
+        public int Type { get; private set; }
+        public BusinessException(int type, string message) : base(message) 
+        {
+            this.Type = type;
         }
     }
 }
