@@ -27,6 +27,7 @@ namespace ACE
                     Utility.EnsoureAssemblyLoaded(_commandAssmblies);
                     Utility.EnsoureAssemblyLoaded(_handlerAssmblies);
                     HookHandlers();
+                    BindHandlers();
                     _isInitialized = true;
                 }
             }
@@ -73,6 +74,14 @@ namespace ACE
                 }
             }
             Log(commands);
+        }
+
+        private static void BindHandlers()
+        {
+            foreach (var kv in _handlers)
+            {
+                ServiceLocator.NinjectContainer.Bind(kv.Key).To(kv.Value).InSingletonScope();
+            }
         }
 
         private static void Log(List<Type> commands)

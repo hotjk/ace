@@ -35,6 +35,7 @@ namespace ACE
                     Utility.EnsoureAssemblyLoaded(_eventAssmblies);
                     Utility.EnsoureAssemblyLoaded(_handlerAssmblies);
                     HookHandlers();
+                    BindHandlers();
                     _isInitialized = true;
                 }
             }
@@ -88,6 +89,17 @@ namespace ACE
                 _eventTypes[type.Name] = type;
             }
             Log(events);
+        }
+
+        private static void BindHandlers()
+        {
+            foreach (var kv in _handlers)
+            {
+                foreach (var type in kv.Value)
+                {
+                    ServiceLocator.NinjectContainer.Bind(kv.Key).To(type).InSingletonScope();
+                }
+            }
         }
 
         private static void Log(List<Type> events)
