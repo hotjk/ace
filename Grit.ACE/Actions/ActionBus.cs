@@ -101,7 +101,6 @@ namespace ACE
                     var worker = workers.Take();
                     try
                     {
-                        Console.WriteLine(worker);
                         return Work(action);
                     }
                     finally
