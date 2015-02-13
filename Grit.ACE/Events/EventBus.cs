@@ -1,5 +1,4 @@
-﻿using ACE.Events;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -113,23 +112,34 @@ namespace ACE
             _events.Clear();
         }
 
+        private void Work(ACE.Event @event)
+        {
+            try
+            {
+                Invoke((dynamic)@event);
+            }
+            catch (Exception ex)
+            {
+                ServiceLocator.BusLogger.Exception(@event, ex);
+            }
+        }
+
         public void Subscribe(string subscriptionId, string[] topics)
         {
-            var worker = new EventWorker();
             foreach (var topic in topics)
             {
                 ServiceLocator.EasyNetQBus.Subscribe<Event>(subscriptionId,
-                    @event => worker.Execute(@event),
+                    @event => Work(@event),
                     x => x.WithTopic(topic));
             }
         }
 
         public void SubscribeInParallel(string subscriptionId, string[] topics, int capacity)
         {
-            var workers = new BlockingCollection<EventWorker>();
+            var workers = new BlockingCollection<int>(capacity);
             for (int i = 0; i < capacity; i++)
             {
-                workers.Add(new EventWorker());
+                workers.Add(i);
             }
 
             foreach (var topic in topics)
@@ -140,7 +150,7 @@ namespace ACE
                         var worker = workers.Take();
                         try
                         {
-                            worker.Execute(@event);
+                            Work(@event);
                         }
                         finally
                         {

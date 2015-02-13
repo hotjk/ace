@@ -67,18 +67,32 @@ namespace ACE
             return await ServiceLocator.EasyNetQBus.RequestAsync<B, ActionResponse>(action);
         }
 
+        private ActionResponse Work(ACE.Action action)
+        {
+            ActionResponse response = new ActionResponse { Result = ActionResponse.ActionResponseResult.OK };
+            try
+            {
+                Invoke((dynamic)action);
+            }
+            catch (ACE.Exceptions.BusinessException ex)
+            {
+                response.Result = ActionResponse.ActionResponseResult.NG;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
         public void Subscribe<T>() where T : ACE.Action
         {
-            ActionWorker worker = new ActionWorker();
-            ServiceLocator.EasyNetQBus.Respond<T, ActionResponse>(action => worker.Execute(action));
+            ServiceLocator.EasyNetQBus.Respond<T, ActionResponse>(action => Work(action));
         }
 
         public void SubscribeInParallel<T>(int capacity) where T : ACE.Action
         {
-            var workers = new BlockingCollection<ActionWorker>();
+            var workers = new BlockingCollection<int>(capacity);
             for (int i = 0; i < capacity; i++)
             {
-                workers.Add(new ActionWorker());
+                workers.Add(i);
             }
 
             ServiceLocator.EasyNetQBus.RespondAsync<T, ActionResponse>(action =>
@@ -87,7 +101,8 @@ namespace ACE
                     var worker = workers.Take();
                     try
                     {
-                        return worker.Execute(action);
+                        Console.WriteLine(worker);
+                        return Work(action);
                     }
                     finally
                     {
