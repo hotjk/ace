@@ -58,7 +58,7 @@ namespace ACE
                 ServiceLocator.BusLogger.Received(@event);
                 foreach (var handler in handlers)
                 {
-                    Task.Run(() =>
+                    Task.Factory.StartNew(() =>
                     {
                         try
                         {
