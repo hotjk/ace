@@ -49,7 +49,7 @@ namespace ACE
         {
             if (!ServiceLocator.ActionShouldDistributeToExternalQueue)
             {
-                throw new Exception("Action is not allow to distribute to queue, maybe you can direct invoke action in thread.");
+                throw new Exception("Action is not configure to distribute to queue, maybe you can direct invoke action in thread.");
             }
             ServiceLocator.BusLogger.Sent(action);
             return ServiceLocator.EasyNetQBus.Request<B, ActionResponse>(action);

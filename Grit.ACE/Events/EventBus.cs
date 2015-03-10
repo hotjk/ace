@@ -12,7 +12,7 @@ namespace ACE
     public class EventBus : IEventBus
     {
         private IEventHandlerFactory _eventHandlerFactory;
-        private IList<dynamic> _events = new List<dynamic>(); // todo: a child class push into list will pop a base class instance.
+        private IList<dynamic> _events = new List<dynamic>();
 
         public EventBus(IEventHandlerFactory eventHandlerFactory)
         {
@@ -58,8 +58,7 @@ namespace ACE
                 ServiceLocator.BusLogger.Received(@event);
                 foreach (var handler in handlers)
                 {
-                    // handle event in thread pool
-                    ThreadPool.QueueUserWorkItem(x =>
+                    Task.Run(() =>
                     {
                         try
                         {
