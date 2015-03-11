@@ -113,14 +113,7 @@ namespace ACE
 
         private void Work(ACE.Event @event)
         {
-            try
-            {
-                Invoke((dynamic)@event);
-            }
-            catch (Exception ex)
-            {
-                ServiceLocator.BusLogger.Exception(@event, ex);
-            }
+            Invoke((dynamic)@event);
         }
 
         public void Subscribe(string subscriptionId, string[] topics)
