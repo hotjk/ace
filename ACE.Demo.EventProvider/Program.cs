@@ -17,11 +17,14 @@ namespace ACE.Demo.EventProvider
             BootStrapper.BootStrap();
 
             InvestmentStatusCreated investmentStatusCreated = new InvestmentStatusCreated { AccountId = 1, Amount = 2, InvestmentId = 3, ProjectId = 4 };
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 10000000; i++)
             {
                 ServiceLocator.EventBus.Publish(investmentStatusCreated.DistributeToExternalQueue());
                 ServiceLocator.EventBus.Flush();
-                Thread.Sleep(100);
+                if (i % 10000 == 0)
+                {
+                    Console.WriteLine(i);
+                }
             }
         }
     }
