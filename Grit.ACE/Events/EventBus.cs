@@ -98,9 +98,13 @@ namespace ACE
                         // handle event in current thread
                         handler.Handle(@event);
                     }
+                    catch(ACE.Exceptions.BusinessException)
+                    {
+                    }
                     catch (Exception ex)
                     {
                         ServiceLocator.BusLogger.Exception(@event, ex);
+                        throw;
                     }
                 }
             }

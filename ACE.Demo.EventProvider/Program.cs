@@ -17,7 +17,7 @@ namespace ACE.Demo.EventProvider
             BootStrapper.BootStrap();
 
             InvestmentStatusCreated investmentStatusCreated = new InvestmentStatusCreated { AccountId = 1, Amount = 2, InvestmentId = 3, ProjectId = 4 };
-            for (int i = 0; i < 10000000; i++)
+            for (int i = 0; i < 3600*100; i++)
             {
                 ServiceLocator.EventBus.Publish(investmentStatusCreated.DistributeToExternalQueue());
                 ServiceLocator.EventBus.Flush();
@@ -25,6 +25,7 @@ namespace ACE.Demo.EventProvider
                 {
                     Console.WriteLine(i);
                 }
+                Thread.Sleep(10);
             }
         }
     }

@@ -22,7 +22,7 @@ namespace ACE.Demo.EventConsumer
     {
         public static void BootStrap()
         {
-            ServiceLocator.Init(new ACE.Loggers.NullBusLogger(),
+            ServiceLocator.Init(new ACE.Loggers.Log4NetBusLogger(),
                 Grit.Configuration.RabbitMQ.ACEQueueConnectionString);
             AddIocBindings();
             InitHandlerFactory();
