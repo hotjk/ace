@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ACE.Loggers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,11 +13,13 @@ namespace ACE
     public class EventBus : IEventBus
     {
         private IEventHandlerFactory _eventHandlerFactory;
+        private IBusLogger _busLogger;
         private IList<dynamic> _events = new List<dynamic>();
 
-        public EventBus(IEventHandlerFactory eventHandlerFactory)
+        public EventBus(IEventHandlerFactory eventHandlerFactory, IBusLogger busLogger)
         {
             _eventHandlerFactory = eventHandlerFactory;
+            _busLogger = busLogger;
         }
 
         public void Publish<T>(T @event) where T : Event
@@ -35,7 +38,7 @@ namespace ACE
 
         private void FlushAnEvent<T>(T @event) where T : Event
         {
-            ServiceLocator.BusLogger.Sent(@event);
+            _busLogger.Sent(@event);
             if (@event.ShouldDistributeInCurrentThread())
             {
                 Invoke((dynamic)@event);
@@ -55,7 +58,7 @@ namespace ACE
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
             {
-                ServiceLocator.BusLogger.Received(@event);
+                _busLogger.Received(@event);
                 foreach (var handler in handlers)
                 {
                     Task.Factory.StartNew(() =>
@@ -66,14 +69,14 @@ namespace ACE
                         }
                         catch (Exception ex)
                         {
-                            ServiceLocator.BusLogger.Exception(@event, ex);
+                            _busLogger.Exception(@event, ex);
                         }
                     });
                 }
             }
         }
 
-        private static void DistributeToExternalQueue<T>(T @event) where T : Event
+        private void DistributeToExternalQueue<T>(T @event) where T : Event
         {
             try
             {
@@ -81,7 +84,7 @@ namespace ACE
             }
             catch (Exception ex)
             {
-                ServiceLocator.BusLogger.Exception(@event, ex);
+                _busLogger.Exception(@event, ex);
             }
         }
 
@@ -90,7 +93,7 @@ namespace ACE
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
             {
-                ServiceLocator.BusLogger.Received(@event);
+                _busLogger.Received(@event);
                 foreach (var handler in handlers)
                 {
                     try
@@ -103,7 +106,7 @@ namespace ACE
                     }
                     catch (Exception ex)
                     {
-                        ServiceLocator.BusLogger.Exception(@event, ex);
+                        _busLogger.Exception(@event, ex);
                         throw;
                     }
                 }

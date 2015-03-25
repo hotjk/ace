@@ -1,4 +1,5 @@
 ﻿using ACE.Actions;
+using ACE.Loggers;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -16,10 +17,12 @@ namespace ACE
     public class ActionBus : IActionBus
     {
         private IActionHandlerFactory _actionHandlerFactory;
+        private IBusLogger _busLogger;
 
-        public ActionBus(IActionHandlerFactory ActionHandlerFactory)
+        public ActionBus(IActionHandlerFactory ActionHandlerFactory, IBusLogger busLogger)
         {
             _actionHandlerFactory = ActionHandlerFactory;
+            _busLogger = busLogger;
         }
 
         public void Invoke<T>(T action) where T : Action
@@ -27,7 +30,7 @@ namespace ACE
             var handler = _actionHandlerFactory.GetHandler<T>();
             if (handler != null)
             {
-                ServiceLocator.BusLogger.Received(action);
+                _busLogger.Received(action);
                 try
                 {
                     handler.Invoke(action);
@@ -36,7 +39,7 @@ namespace ACE
                 {
                     if (!(ex is ACE.Exceptions.BusinessException))
                     {
-                        ServiceLocator.BusLogger.Exception(action, ex);
+                        _busLogger.Exception(action, ex);
                     }
                     throw;
                 }
@@ -51,7 +54,7 @@ namespace ACE
             {
                 throw new Exception("Action is not configure to distribute to queue, maybe you can direct invoke action in thread.");
             }
-            ServiceLocator.BusLogger.Sent(action);
+            _busLogger.Sent(action);
             return ServiceLocator.EasyNetQBus.Request<B, ActionResponse>(action);
         }
 
@@ -63,7 +66,7 @@ namespace ACE
             {
                 throw new Exception("Action is not allow to distribute to queue, maybe you can direct invoke action in thread.");
             }
-            ServiceLocator.BusLogger.Sent(action);
+            _busLogger.Sent(action);
             return await ServiceLocator.EasyNetQBus.RequestAsync<B, ActionResponse>(action);
         }
 

@@ -98,6 +98,8 @@ namespace ACE
                         EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(queueConnectionString, x => x.Register<IEasyNetQLogger, NullLogger>());
                     }
 
+                    NinjectContainer.Bind<IBusLogger>().ToConstant(logger);
+
                     NinjectContainer.Bind<ICommandHandlerFactory>().To<CommandHandlerFactory>().InSingletonScope();
                     NinjectContainer.Bind<ICommandBus>().To<CommandBus>().InSingletonScope();
                     
