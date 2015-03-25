@@ -73,7 +73,7 @@ namespace ACE
             }
         }
 
-        private static void DistributeToExternalQueue<T>(T @event) where T : Event
+        private void DistributeToExternalQueue<T>(T @event) where T : Event
         {
             try
             {
