@@ -32,7 +32,7 @@ namespace ACE.Demo.Light.Web
         {
             Container.Settings.AllowNullInjection = true;
 
-            Container.Bind<ACE.Loggers.IBusLogger>().To<ACE.Loggers.Log4NetBusLogger>();
+            Container.Bind<ACE.Loggers.IBusLogger>().To<ACE.Loggers.Log4NetBusLogger>().InSingletonScope();
             Container.Bind<ICommandHandlerFactory>().To<CommandHandlerFactory>()
                 .InSingletonScope()
                 .WithConstructorArgument("commandAssmblies", new string[] { "ACE.Demo.Contracts" })

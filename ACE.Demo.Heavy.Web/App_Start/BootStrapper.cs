@@ -12,30 +12,67 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EasyNetQ;
+using EasyNetQ.Loggers;
 
 namespace ACE.Demo.Heavy.Web
 {
     public static class BootStrapper
     {
+        public static Ninject.IKernel Container { get; private set; }
+        public static EasyNetQ.IBus EasyNetQBus { get; private set; }
         public static void BootStrap()
         {
-            ServiceLocator.Init(new ACE.Loggers.Log4NetBusLogger(),
-                Grit.Configuration.RabbitMQ.ACEQueueConnectionString, true,
-                ACE.Event.EventDistributionOptions.Queue);
-            AddIoCBindings();
+            Container = new StandardKernel();
+
+            RabbitHutch.SetContainerFactory(() => { return new EasyNetQ.DI.NinjectAdapter(Container); });
+            EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(Grit.Configuration.RabbitMQ.ACEQueueConnectionString,
+                x => x.Register<IEasyNetQLogger, NullLogger>());
+
+            BindFrameworkObjects();
+            BindBusinessObjects();
         }
 
-        private static void AddIoCBindings()
+        private static void BindFrameworkObjects()
         {
-            ServiceLocator.NinjectContainer.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
+            Container.Settings.AllowNullInjection = true;
 
-            ServiceLocator.NinjectContainer.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IAccountService>().To<AccountService>().InSingletonScope();
+            Container.Bind<ACE.Loggers.IBusLogger>().To<ACE.Loggers.Log4NetBusLogger>().InSingletonScope();
+
+            // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
+            Container.Bind<IEventBus>().To<EventBus>()
+                .InThreadScope()
+                .WithConstructorArgument("eventDistributionOptions", ACE.Event.EventDistributionOptions.Queue);
+
+            // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
+            Container.Bind<IActionBus>().To<ActionBus>()
+                .InThreadScope()
+                .WithConstructorArgument("actionShouldDistributeToExternalQueue", true);
+        }
+
+        private static void BindBusinessObjects()
+        {
+            Container.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
+            Container.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
+
+            Container.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
+            Container.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
+            Container.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
+            Container.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
+            Container.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
+            Container.Bind<IAccountService>().To<AccountService>().InSingletonScope();
+        }
+
+        public static void Dispose()
+        {
+            if (EasyNetQBus != null)
+            {
+                EasyNetQBus.Dispose();
+            }
+            if (Container != null)
+            {
+                Container.Dispose();
+            }
         }
     }
 }

@@ -21,11 +21,11 @@ namespace ACE.Demo.Application
         IActionHandler<InvestmentCreateRequest>,
         IActionHandler<InvestmentPayRequest>
     {
-        public InvestmentAndPaymentProcessManager(ICommandBus commandBus,
+        public InvestmentAndPaymentProcessManager(ICommandBus commandBus, IEventBus eventBus,
             IAccountService accountService,
             IProjectService projectService,
             IInvestmentService investmentService)
-            : base(commandBus)
+            : base(commandBus, eventBus)
         {
             _accountService = accountService;
             _projectService = projectService;
@@ -56,7 +56,7 @@ namespace ACE.Demo.Application
                 throw new BusinessException(BusinessExceptionType.ProjectBalanceOverflow, "项目可投资金额不足。");
             }
 
-            using (UnitOfWork u = new UnitOfWork())
+            using (UnitOfWork u = new UnitOfWork(EventBus))
             {
                 CommandBus.Send(AutoMapper.Mapper.Map<CreateInvestment>(action));
                 u.Complete();
@@ -76,7 +76,7 @@ namespace ACE.Demo.Application
             }
             Project project = _projectService.Get(investment.ProjectId);
 
-            using (UnitOfWork u = new UnitOfWork())
+            using (UnitOfWork u = new UnitOfWork(EventBus))
             {
                 CommandBus
                     .Send(new CompleteInvestment

@@ -21,19 +21,20 @@ namespace ACE
         private IBusLogger _busLogger;
         public bool ActionShouldDistributeToExternalQueue { get; private set; }
 
-        public ActionBus(IActionHandlerFactory ActionHandlerFactory, 
-            IBusLogger busLogger, 
+        public ActionBus(IBusLogger busLogger, 
+            IActionHandlerFactory ActionHandlerFactory = null,
             bool actionShouldDistributeToExternalQueue = false, 
             EasyNetQ.IBus bus = null)
         {
             ActionShouldDistributeToExternalQueue = actionShouldDistributeToExternalQueue;
+            _actionHandlerFactory = ActionHandlerFactory;
+            _bus = bus;
+            _busLogger = busLogger;
+
             if (ActionShouldDistributeToExternalQueue && _bus == null)
             {
                 throw new Exception("IBus is required when distribute action to queue.");
             }
-            _actionHandlerFactory = ActionHandlerFactory;
-            _bus = bus;
-            _busLogger = busLogger;
         }
 
         public void Invoke<T>(T action) where T : Action

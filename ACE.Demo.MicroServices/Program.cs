@@ -21,13 +21,13 @@ namespace ACE.Demo.MicroServices
             log4net.Config.XmlConfigurator.Configure();
             BootStrapper.BootStrap();
 
-            ServiceLocator.ActionBus.SubscribeInParallel<ACE.Demo.Contracts.Actions.InvestmentActionBase>(10);
+            BootStrapper.ActionBus.SubscribeInParallel<ACE.Demo.Contracts.Actions.InvestmentActionBase>(10);
 
             Console.WriteLine("Ctrl-C to exit");
             Console.CancelKeyPress += (source, cancelKeyPressArgs) =>
             {
                 Console.WriteLine("Shut down...");
-                ServiceLocator.Dispose();
+                BootStrapper.Dispose();
                 Thread.Sleep(TimeSpan.FromSeconds(5));
                 Console.WriteLine("Shut down completed");
             };
