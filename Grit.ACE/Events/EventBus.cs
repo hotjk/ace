@@ -39,10 +39,17 @@ namespace ACE
             }
         }
 
-        public EventBus(IEventHandlerFactory eventHandlerFactory, IBusLogger busLogger)//, EasyNetQ.IBus bus = null)
+        public EventBus(IEventHandlerFactory eventHandlerFactory, IBusLogger busLogger, 
+            Event.EventDistributionOptions eventDistributionOptions = Event.EventDistributionOptions.BalckHole,
+            EasyNetQ.IBus bus = null)
         {
+            _eventDistributionOptions = eventDistributionOptions;
+            if (EventShouldDistributeToExternalQueue && _bus == null)
+            {
+                throw new Exception("IBus is required when distribute event to queue.");
+            }
             _eventHandlerFactory = eventHandlerFactory;
-            //_bus = bus;
+            _bus = bus;
             _busLogger = busLogger;
         }
 

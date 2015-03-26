@@ -30,6 +30,8 @@ namespace ACE.Demo.Light.Web
 
         private static void BindFrameworkObjects()
         {
+            Container.Settings.AllowNullInjection = true;
+
             Container.Bind<ACE.Loggers.IBusLogger>().To<ACE.Loggers.Log4NetBusLogger>();
             Container.Bind<ICommandHandlerFactory>().To<CommandHandlerFactory>()
                 .InSingletonScope()
