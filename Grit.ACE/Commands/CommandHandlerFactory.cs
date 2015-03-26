@@ -71,7 +71,6 @@ namespace ACE
                     throw new UnregisteredDomainCommandException("no handler registered for command: " + command.Name);
                 }
             }
-            //Log(commands);
         }
 
         private void BindHandlers()
@@ -82,19 +81,18 @@ namespace ACE
             }
         }
 
-        //private  void Log(List<Type> commands)
-        //{
-        //    StringBuilder sb = new StringBuilder();
-        //    sb.AppendFormat("CommandBus:{0}", Environment.NewLine);
-        //    foreach (var command in commands)
-        //    {
-        //        sb.AppendFormat("{0}{1}", command, Environment.NewLine);
-        //        sb.AppendFormat("\t{0}{1}", _handlers[command], Environment.NewLine);
-        //    }
-        //    sb.AppendLine();
-
-        //    ServiceLocator.BusLogger.Debug(sb.ToString());
-        //}
+        private string Log()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("CommandBus:{0}", Environment.NewLine);
+            foreach(var kv in this._handlers)
+            {
+                sb.AppendFormat("{0}{1}", kv.Key, Environment.NewLine);
+                sb.AppendFormat("\t{0}{1}", kv.Value, Environment.NewLine);
+            }
+            sb.AppendLine();
+            return sb.ToString();
+        }
 
         public ICommandHandler<T> GetHandler<T>() where T : Command
         {

@@ -80,7 +80,6 @@ namespace ACE
             {
                 _eventTypes[type.Name] = type;
             }
-            //Log(events);
         }
 
         private void BindHandlers()
@@ -94,25 +93,24 @@ namespace ACE
             }
         }
 
-        //private  void Log(List<Type> events)
-        //{
-        //    StringBuilder sb = new StringBuilder();
-        //    sb.AppendFormat("EventBus:{0}", Environment.NewLine);
-        //    foreach (var @event in events)
-        //    {
-        //        sb.AppendFormat("{0}{1}", @event, Environment.NewLine);
-        //        List<Type> handlers;
-        //        if (_handlers.TryGetValue(@event, out handlers))
-        //        {
-        //            foreach (var handler in handlers)
-        //            {
-        //                sb.AppendFormat("\t{0}{1}", handler, Environment.NewLine);
-        //            }
-        //        }
-        //    }
-        //    sb.AppendLine();
-        //    ServiceLocator.BusLogger.Debug(sb.ToString());
-        //}
+        private string Log()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("EventBus:{0}", Environment.NewLine);
+            foreach (var kv in this._handlers)
+            {
+                sb.AppendFormat("{0}{1}", kv.Key, Environment.NewLine);
+                if(kv.Value != null)
+                {
+                    foreach(var handler in kv.Value)
+                    {
+                        sb.AppendFormat("\t{0}{1}", handler, Environment.NewLine);
+                    }
+                }
+            }
+            sb.AppendLine();
+            return sb.ToString();
+        }
 
         public IEnumerable<IEventHandler<T>> GetHandlers<T>() where T : Event
         {

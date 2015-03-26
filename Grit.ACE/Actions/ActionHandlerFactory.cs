@@ -77,7 +77,6 @@ namespace ACE
             {
                 _actionTypes[type.Name] = type;
             }
-            //Log(actions);
         }
 
         private void BindHandlers()
@@ -88,22 +87,18 @@ namespace ACE
             }
         }
 
-        //private  void Log(List<Type> actions)
-        //{
-        //    StringBuilder sb = new StringBuilder();
-        //    sb.AppendFormat("ActionBus:{0}", Environment.NewLine);
-        //    foreach (var action in actions)
-        //    {
-        //        sb.AppendFormat("{0}{1}", action, Environment.NewLine);
-        //        Type value;
-        //        if (_handlers.TryGetValue(action, out value))
-        //        {
-        //            sb.AppendFormat("\t{0}{1}", value, Environment.NewLine);
-        //        }
-        //    }
-        //    sb.AppendLine();
-        //    ServiceLocator.BusLogger.Debug(sb.ToString());
-        //}
+        private string Log()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("ActionBus:{0}", Environment.NewLine);
+            foreach (var kv in this._handlers)
+            {
+                sb.AppendFormat("{0}{1}", kv.Key, Environment.NewLine);
+                sb.AppendFormat("\t{0}{1}", kv.Value, Environment.NewLine);
+            }
+            sb.AppendLine();
+            return sb.ToString();
+        }
 
         public IActionHandler<T> GetHandler<T>() where T : Action
         {
