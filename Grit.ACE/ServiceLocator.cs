@@ -15,7 +15,7 @@ namespace ACE
     public static class ServiceLocator
     {
         public static Ninject.IKernel NinjectContainer { get; private set; }
-        public static EasyNetQ.IBus EasyNetQBus { get; private set; }
+        //public static EasyNetQ.IBus EasyNetQBus { get; private set; }
         public static ICommandBus CommandBus { get; private set; }
         public static IEventBus EventBus
         {
@@ -31,7 +31,6 @@ namespace ACE
                 return NinjectContainer.GetService(typeof(IActionBus)) as IActionBus;
             }
         }
-        public static IBusLogger BusLogger { get; private set; }
 
         private static bool _isInitialized;
         private static readonly object _lockThis = new object();
@@ -86,17 +85,17 @@ namespace ACE
                         }
                     }
 
-                    BusLogger = logger;
                     NinjectContainer = new StandardKernel();
-
                     if (!string.IsNullOrEmpty(queueConnectionString))
                     {
                         RabbitHutch.SetContainerFactory(() =>
                         {
                             return new EasyNetQ.DI.NinjectAdapter(NinjectContainer);
                         });
-                        EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(queueConnectionString, x => x.Register<IEasyNetQLogger, NullLogger>());
+                        EasyNetQ.IBus EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(queueConnectionString, x => x.Register<IEasyNetQLogger, NullLogger>());
+                        NinjectContainer.Bind<IBus>().ToConstant(EasyNetQBus);
                     }
+                    
 
                     NinjectContainer.Bind<IBusLogger>().ToConstant(logger);
 
@@ -121,10 +120,10 @@ namespace ACE
         {
             lock (_lockThis)
             {
-                if (EasyNetQBus != null)
-                {
-                    EasyNetQBus.Dispose();
-                }
+                //if (EasyNetQBus != null)
+                //{
+                //    EasyNetQBus.Dispose();
+                //}
                 if (NinjectContainer != null)
                 {
                     NinjectContainer.Dispose();

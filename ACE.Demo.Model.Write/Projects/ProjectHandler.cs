@@ -11,7 +11,7 @@ using ACE.Demo.Contracts;
 
 namespace ACE.Demo.Model.Projects
 {
-    public class ProjectHandler : 
+    public class ProjectHandler : HandlerBase,
         ICommandHandler<ChangeProjectAmount>
     {
         static ProjectHandler()
@@ -20,7 +20,9 @@ namespace ACE.Demo.Model.Projects
         }
 
         private IProjectWriteRepository _repository;
-        public ProjectHandler(IProjectWriteRepository repository)
+        public ProjectHandler(IEventBus eventBus,
+            IProjectWriteRepository repository)
+            : base(eventBus)
         {
             _repository = repository;
         }
@@ -31,7 +33,7 @@ namespace ACE.Demo.Model.Projects
             {
                 throw new BusinessException(BusinessExceptionType.ProjectBalanceOverflow, "项目可投资金额不足。");
             }
-            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<ProjectAmountChanged>(command).DistributeToExternalQueue());
+            EventBus.Publish(AutoMapper.Mapper.Map<ProjectAmountChanged>(command).DistributeToExternalQueue());
         }
     }
 }

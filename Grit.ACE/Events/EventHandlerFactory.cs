@@ -10,34 +10,26 @@ namespace ACE
 {
     public class EventHandlerFactory : IEventHandlerFactory
     {
-        private static IEnumerable<string> _eventAssmblies;
-        private static IEnumerable<string> _handlerAssmblies;
-        private static IDictionary<Type, List<Type>> _handlers;
-        private static bool _isInitialized;
-        private static readonly object _lockThis = new object();
+        private IKernel _container;
+        private IEnumerable<string> _eventAssmblies;
+        private IEnumerable<string> _handlerAssmblies;
+        private IDictionary<Type, List<Type>> _handlers;
+        private readonly object _lockThis = new object();
+        private IDictionary<string, Type> _eventTypes;
 
-        private static IDictionary<string, Type> _eventTypes;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="eventAssmblies">The assmbly name list that keep the domain command/event.</param>
-        /// <param name="handlerAssmblies">The assmbly name list that keep the domain command/event handlers</param>
-        public static void Init(IEnumerable<string> eventAssmblies,
+        public EventHandlerFactory(IKernel container,
+            IEnumerable<string> eventAssmblies,
             IEnumerable<string> handlerAssmblies)
         {
-            if (!_isInitialized)
+            lock (_lockThis)
             {
-                lock (_lockThis)
-                {
-                    _eventAssmblies = eventAssmblies;
-                    _handlerAssmblies = handlerAssmblies;
-                    Utility.EnsoureAssemblyLoaded(_eventAssmblies);
-                    Utility.EnsoureAssemblyLoaded(_handlerAssmblies);
-                    HookHandlers();
-                    BindHandlers();
-                    _isInitialized = true;
-                }
+                _container = container;
+                _eventAssmblies = eventAssmblies;
+                _handlerAssmblies = handlerAssmblies;
+                Utility.EnsoureAssemblyLoaded(_eventAssmblies);
+                Utility.EnsoureAssemblyLoaded(_handlerAssmblies);
+                HookHandlers();
+                BindHandlers();
             }
         }
 
@@ -46,10 +38,10 @@ namespace ACE
             return _eventTypes[eventName];
         }
 
-        private static void HookHandlers()
+        private void HookHandlers()
         {
             _handlers = new Dictionary<Type, List<Type>>();
-            
+
             List<Type> events = new List<Type>();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
@@ -84,50 +76,50 @@ namespace ACE
                 }
             }
             _eventTypes = new Dictionary<string, Type>();
-            foreach(Type type in events)
+            foreach (Type type in events)
             {
                 _eventTypes[type.Name] = type;
             }
-            Log(events);
+            //Log(events);
         }
 
-        private static void BindHandlers()
+        private void BindHandlers()
         {
             foreach (var kv in _handlers)
             {
                 foreach (var type in kv.Value)
                 {
-                    ServiceLocator.NinjectContainer.Bind(kv.Key).To(type).InSingletonScope();
+                    _container.Bind(kv.Key).To(type).InSingletonScope();
                 }
             }
         }
 
-        private static void Log(List<Type> events)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("EventBus:{0}", Environment.NewLine);
-            foreach (var @event in events)
-            {
-                sb.AppendFormat("{0}{1}", @event, Environment.NewLine);
-                List<Type> handlers;
-                if (_handlers.TryGetValue(@event, out handlers))
-                {
-                    foreach (var handler in handlers)
-                    {
-                        sb.AppendFormat("\t{0}{1}", handler, Environment.NewLine);
-                    }
-                }
-            }
-            sb.AppendLine();
-            ServiceLocator.BusLogger.Debug(sb.ToString());
-        }
+        //private  void Log(List<Type> events)
+        //{
+        //    StringBuilder sb = new StringBuilder();
+        //    sb.AppendFormat("EventBus:{0}", Environment.NewLine);
+        //    foreach (var @event in events)
+        //    {
+        //        sb.AppendFormat("{0}{1}", @event, Environment.NewLine);
+        //        List<Type> handlers;
+        //        if (_handlers.TryGetValue(@event, out handlers))
+        //        {
+        //            foreach (var handler in handlers)
+        //            {
+        //                sb.AppendFormat("\t{0}{1}", handler, Environment.NewLine);
+        //            }
+        //        }
+        //    }
+        //    sb.AppendLine();
+        //    ServiceLocator.BusLogger.Debug(sb.ToString());
+        //}
 
         public IEnumerable<IEventHandler<T>> GetHandlers<T>() where T : Event
         {
             List<Type> handlers;
-            if(_handlers.TryGetValue(typeof(T), out handlers))
+            if (_handlers.TryGetValue(typeof(T), out handlers))
             {
-                return handlers.Select(handler => (IEventHandler<T>)ServiceLocator.NinjectContainer.GetService(handler)).ToList();
+                return handlers.Select(handler => (IEventHandler<T>)_container.GetService(handler)).ToList();
             }
             return null;
         }

@@ -17,14 +17,15 @@ using ACE.Demo.Contracts;
 
 namespace ACE.Demo.Application
 {
-    public class InvestmentAndPaymentProcessManager :
+    public class InvestmentAndPaymentProcessManager : ProcessManagerBase,
         IActionHandler<InvestmentCreateRequest>,
         IActionHandler<InvestmentPayRequest>
     {
-        public InvestmentAndPaymentProcessManager(
+        public InvestmentAndPaymentProcessManager(ICommandBus commandBus,
             IAccountService accountService,
             IProjectService projectService,
             IInvestmentService investmentService)
+            : base(commandBus)
         {
             _accountService = accountService;
             _projectService = projectService;
@@ -46,7 +47,7 @@ namespace ACE.Demo.Application
             var account = _accountService.Get(action.AccountId);
             if (account.Amount < action.Amount)
             {
-                throw new BusinessException(BusinessExceptionType.UserBalanceOverflow,"用户账户余额不足。");
+                throw new BusinessException(BusinessExceptionType.UserBalanceOverflow, "用户账户余额不足。");
             }
 
             var project = _projectService.Get(action.ProjectId);
@@ -57,7 +58,7 @@ namespace ACE.Demo.Application
 
             using (UnitOfWork u = new UnitOfWork())
             {
-                ServiceLocator.CommandBus.Send(AutoMapper.Mapper.Map<CreateInvestment>(action));
+                CommandBus.Send(AutoMapper.Mapper.Map<CreateInvestment>(action));
                 u.Complete();
             }
         }
@@ -77,7 +78,7 @@ namespace ACE.Demo.Application
 
             using (UnitOfWork u = new UnitOfWork())
             {
-                ServiceLocator.CommandBus
+                CommandBus
                     .Send(new CompleteInvestment
                     {
                         InvestmentId = action.InvestmentId

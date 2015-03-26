@@ -11,27 +11,36 @@ namespace ACE
     {
         private static TransactionOptions defaultTransactionOptions = new TransactionOptions() { IsolationLevel = IsolationLevel.RepeatableRead };
         private TransactionScope scope;
+        private IEventBus _eventBus;
 
-        public UnitOfWork()
+        public UnitOfWork(IEventBus eventBus = null)
         {
             scope = new TransactionScope(TransactionScopeOption.RequiresNew, defaultTransactionOptions);
+            _eventBus = eventBus;
         }
 
-        public UnitOfWork(TransactionScopeOption transactionScopeOption)
+        public UnitOfWork(TransactionScopeOption transactionScopeOption, IEventBus eventBus = null)
         {
             scope = new TransactionScope(transactionScopeOption, defaultTransactionOptions);
+            _eventBus = eventBus;
         }
 
         public void Dispose()
         {
-            ServiceLocator.EventBus.Purge();
+            if (_eventBus != null)
+            {
+                _eventBus.Purge();
+            }
             scope.Dispose();
         }
 
         public void Complete()
         {
             scope.Complete();
-            ServiceLocator.EventBus.Flush();
+            if(_eventBus != null)
+            {
+                _eventBus.Flush();
+            }
         }
     }
 }

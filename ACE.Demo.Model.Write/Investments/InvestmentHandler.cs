@@ -13,7 +13,7 @@ using ACE.Demo.Model.Accounts;
 
 namespace ACE.Demo.Model.Investments
 {
-    public class InvestmentHandler :
+    public class InvestmentHandler : HandlerBase,
         ICommandHandler<CreateInvestment>,
         ICommandHandler<CompleteInvestment>
     {
@@ -30,9 +30,11 @@ namespace ACE.Demo.Model.Investments
         private IProjectService _projectService;
         private IAccountService _accountService;
 
-        public InvestmentHandler(IInvestmentWriteRepository repository,
+        public InvestmentHandler(IEventBus eventBus,
+            IInvestmentWriteRepository repository,
             IProjectService projectService,
             IAccountService accountService)
+            : base(eventBus)
         {
             _repository = repository;
             _projectService = projectService;
@@ -42,7 +44,7 @@ namespace ACE.Demo.Model.Investments
         public void Execute(CreateInvestment command)
         {
             _repository.Add(AutoMapper.Mapper.Map<Investment>(command));
-            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCreated>(command)
+            EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCreated>(command)
                 .DistributeInThreadPool()
                 .DistributeToExternalQueue());
         }
@@ -51,7 +53,7 @@ namespace ACE.Demo.Model.Investments
         {
             Investment investment = _repository.GetForUpdate(command.InvestmentId);
             _repository.Complete(command.InvestmentId);
-            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCompleted>(investment)
+            EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCompleted>(investment)
                 .DistributeInThreadPool()
                 .DistributeToExternalQueue());
         }

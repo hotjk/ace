@@ -8,11 +8,10 @@ namespace ACE.Demo.Model
 {
     public class HandlerBase
     {
-        protected IServiceLocator ServiceLocator { get; private set; }
-
-        public HandlerBase(IServiceLocator serviceLocator)
+        protected IEventBus EventBus { get; private set; }
+        public HandlerBase(IEventBus eventBus)
         {
-            ServiceLocator = serviceLocator;
+            EventBus = eventBus;
         }
     }
 }

@@ -10,36 +10,26 @@ namespace ACE
 {
     public class ActionHandlerFactory : IActionHandlerFactory
     {
-        private static IEnumerable<string> _actionAssmblies;
-        private static IEnumerable<string> _handlerAssmblies;
-        private static IDictionary<Type, Type> _handlers;
-        private static bool _isInitialized;
-        private static readonly object _lockThis = new object();
+        private IKernel _container;
+        private IEnumerable<string> _actionAssmblies;
+        private IEnumerable<string> _handlerAssmblies;
+        private IDictionary<Type, Type> _handlers;
+        private readonly object _lockThis = new object();
+        private IDictionary<string, Type> _actionTypes;
 
-        private static IDictionary<string, Type> _actionTypes;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="actionAssmblies">The assmbly name list that keep the domain command/action.</param>
-        /// <param name="handlerAssmblies">The assmbly name list that keep the domain command/action handlers</param>
-        /// <param name="channel">RabbitMQ queue channel</param>
-        /// <param name="queue">RabbitMQ exchange name</param>
-        public static void Init(IEnumerable<string> actionAssmblies,
+        public ActionHandlerFactory(IKernel container,
+            IEnumerable<string> actionAssmblies,
             IEnumerable<string> handlerAssmblies)
         {
-            if (!_isInitialized)
+            lock (_lockThis)
             {
-                lock (_lockThis)
-                {
-                    _actionAssmblies = actionAssmblies;
-                    _handlerAssmblies = handlerAssmblies;
-                    Utility.EnsoureAssemblyLoaded(_actionAssmblies);
-                    Utility.EnsoureAssemblyLoaded(_handlerAssmblies);
-                    HookHandlers();
-                    BindHandlers();
-                    _isInitialized = true;
-                }
+                _container = container;
+                _actionAssmblies = actionAssmblies;
+                _handlerAssmblies = handlerAssmblies;
+                Utility.EnsoureAssemblyLoaded(_actionAssmblies);
+                Utility.EnsoureAssemblyLoaded(_handlerAssmblies);
+                HookHandlers();
+                BindHandlers();
             }
         }
 
@@ -48,7 +38,7 @@ namespace ACE
             return _actionTypes[actionName];
         }
 
-        private static void HookHandlers()
+        private void HookHandlers()
         {
             _handlers = new Dictionary<Type, Type>();
             List<Type> actions = new List<Type>();
@@ -81,39 +71,39 @@ namespace ACE
                     }
                 }
             }
-            
+
             _actionTypes = new Dictionary<string, Type>();
             foreach (Type type in actions)
             {
                 _actionTypes[type.Name] = type;
             }
-            Log(actions);
+            //Log(actions);
         }
 
-        private static void BindHandlers()
+        private void BindHandlers()
         {
-            foreach(var kv in _handlers)
+            foreach (var kv in _handlers)
             {
-                ServiceLocator.NinjectContainer.Bind(kv.Key).To(kv.Value).InSingletonScope();
+                _container.Bind(kv.Key).To(kv.Value).InSingletonScope();
             }
         }
 
-        private static void Log(List<Type> actions)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("ActionBus:{0}", Environment.NewLine);
-            foreach (var action in actions)
-            {
-                sb.AppendFormat("{0}{1}", action, Environment.NewLine);
-                Type value;
-                if (_handlers.TryGetValue(action, out value))
-                {
-                    sb.AppendFormat("\t{0}{1}", value, Environment.NewLine);
-                }
-            }
-            sb.AppendLine();
-            ServiceLocator.BusLogger.Debug(sb.ToString());
-        }
+        //private  void Log(List<Type> actions)
+        //{
+        //    StringBuilder sb = new StringBuilder();
+        //    sb.AppendFormat("ActionBus:{0}", Environment.NewLine);
+        //    foreach (var action in actions)
+        //    {
+        //        sb.AppendFormat("{0}{1}", action, Environment.NewLine);
+        //        Type value;
+        //        if (_handlers.TryGetValue(action, out value))
+        //        {
+        //            sb.AppendFormat("\t{0}{1}", value, Environment.NewLine);
+        //        }
+        //    }
+        //    sb.AppendLine();
+        //    ServiceLocator.BusLogger.Debug(sb.ToString());
+        //}
 
         public IActionHandler<T> GetHandler<T>() where T : Action
         {
@@ -123,7 +113,7 @@ namespace ACE
                 throw new UnregisteredDomainCommandException("no handler registered for action: " + typeof(T));
             }
 
-            return (IActionHandler<T>)ServiceLocator.NinjectContainer.GetService(handler);
+            return (IActionHandler<T>)_container.GetService(handler);
         }
     }
 }

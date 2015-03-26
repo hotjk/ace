@@ -11,7 +11,7 @@ using ACE.Demo.Contracts;
 
 namespace ACE.Demo.Model.Accounts
 {
-    public class AccountHandler :
+    public class AccountHandler : HandlerBase,
         ICommandHandler<CreateAccount>,
         ICommandHandler<ChangeAccountAmount>
     {
@@ -22,7 +22,9 @@ namespace ACE.Demo.Model.Accounts
             AutoMapper.Mapper.CreateMap<CreateAccount, AccountStatusCreated>().ForMember(dest => dest._id, opt => opt.Ignore());
         }
         private IAccountWriteRepository _repository;
-        public AccountHandler(IAccountWriteRepository repository)
+        public AccountHandler(IEventBus eventBus,
+            IAccountWriteRepository repository)
+            : base(eventBus)
         {
             _repository = repository;
         }
@@ -32,7 +34,7 @@ namespace ACE.Demo.Model.Accounts
             {
                 throw new BusinessException(BusinessExceptionType.AccountBalanceOverflow, "账户余额不足。");
             }
-            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<AccountAmountChanged>(command).DistributeInThreadPool().DistributeToExternalQueue());
+            EventBus.Publish(AutoMapper.Mapper.Map<AccountAmountChanged>(command).DistributeInThreadPool().DistributeToExternalQueue());
         }
 
         public void Execute(CreateAccount command)
@@ -41,7 +43,7 @@ namespace ACE.Demo.Model.Accounts
             {
                 throw new BusinessException(BusinessExceptionType.AccountExist, "账户已存在。");
             }
-            ServiceLocator.EventBus.Publish(AutoMapper.Mapper.Map<AccountStatusCreated>(command).DistributeInThreadPool().DistributeToExternalQueue());
+            EventBus.Publish(AutoMapper.Mapper.Map<AccountStatusCreated>(command).DistributeInThreadPool().DistributeToExternalQueue());
         }
     }
 }
