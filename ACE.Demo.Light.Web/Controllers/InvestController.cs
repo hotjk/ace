@@ -17,10 +17,12 @@ using System.Web.Mvc;
 
 namespace ACE.Demo.Light.Web.Controllers
 {
-    public class InvestController : Controller
+    public class InvestController : ControllerBase
     {
-        public InvestController(ISequenceService sequenceService,
-            IInvestmentService investmentService)
+        public InvestController(IActionBus actionBus,
+            ISequenceService sequenceService,
+            IInvestmentService investmentService) 
+            : base(actionBus)
         {
             _sequenceService = sequenceService;
             _investmentService = investmentService;
@@ -53,7 +55,7 @@ namespace ACE.Demo.Light.Web.Controllers
 
             try
             {
-                ServiceLocator.ActionBus.Invoke<InvestmentCreateRequest>(action);
+                ActionBus.Invoke<InvestmentCreateRequest>(action);
             }
             catch (BusinessException ex)
             {
@@ -77,7 +79,7 @@ namespace ACE.Demo.Light.Web.Controllers
 
             try
             {
-                ServiceLocator.ActionBus.Invoke<InvestmentPayRequest>(action);
+                ActionBus.Invoke<InvestmentPayRequest>(action);
             }
             catch (BusinessException ex)
             {

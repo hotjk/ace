@@ -18,14 +18,14 @@ namespace ACE.Demo.EventConsumer
             log4net.Config.XmlConfigurator.Configure();
             BootStrapper.BootStrap();
 
-            ServiceLocator.EventBus.SubscribeInParallel("EventConsumer", new string[]{ "account.*.*", "*.*.created"}, 10);
+            BootStrapper.EventBus.SubscribeInParallel("EventConsumer", new string[] { "account.*.*", "*.*.created" }, 10);
             //ServiceLocator.EventBus.Subscribe("EventConsumer", new string[] { "account.*.*", "*.*.created" });
             
             Console.WriteLine("Ctrl-C to exit");
             Console.CancelKeyPress += (source, cancelKeyPressArgs) =>
             {
                 Console.WriteLine("Shut down...");
-                ServiceLocator.Dispose();
+                BootStrapper.Dispose();
                 Thread.Sleep(TimeSpan.FromSeconds(5));
                 Console.WriteLine("Shut down completed");
             };

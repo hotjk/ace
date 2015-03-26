@@ -36,6 +36,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EasyNetQ.0.44.3.363\lib\net40\EasyNetQ.dll</HintPath>
     </Reference>
+    <Reference Include="EasyNetQ.DI.Ninject, Version=0.44.3.363, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EasyNetQ.DI.Ninject.0.44.3.363\lib\net40\EasyNetQ.DI.Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>

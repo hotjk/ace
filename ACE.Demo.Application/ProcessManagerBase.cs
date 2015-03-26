@@ -8,11 +8,13 @@ namespace ACE.Demo.Application
 {
     public class ProcessManagerBase
     {
-        protected IServiceLocator ServiceLocator { get; private set; }
+        protected ICommandBus CommandBus { get; private set; }
+        protected IEventBus EventBus { get; private set; }
 
-        public ProcessManagerBase(IServiceLocator serviceLocator)
+        public ProcessManagerBase(ICommandBus commandBus, IEventBus eventBus)
         {
-            ServiceLocator = serviceLocator;
+            CommandBus = commandBus;
+            EventBus = eventBus;
         }
     }
 }

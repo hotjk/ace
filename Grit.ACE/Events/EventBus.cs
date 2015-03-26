@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ACE.Loggers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,11 +13,45 @@ namespace ACE
     public class EventBus : IEventBus
     {
         private IEventHandlerFactory _eventHandlerFactory;
+        private EasyNetQ.IBus _bus;
+        private IBusLogger _busLogger;
         private IList<dynamic> _events = new List<dynamic>();
-
-        public EventBus(IEventHandlerFactory eventHandlerFactory)
+        public Event.EventDistributionOptions _eventDistributionOptions;
+        public bool EventShouldDistributeInCurrentThread
         {
+            get
+            {
+                return (_eventDistributionOptions & Event.EventDistributionOptions.CurrentThread) == Event.EventDistributionOptions.CurrentThread;
+            }
+        }
+        public bool EventShouldDistributeInThreadPool
+        {
+            get
+            {
+                return (_eventDistributionOptions & Event.EventDistributionOptions.ThreadPool) == Event.EventDistributionOptions.ThreadPool;
+            }
+        }
+        public bool EventShouldDistributeToExternalQueue
+        {
+            get
+            {
+                return (_eventDistributionOptions & Event.EventDistributionOptions.Queue) == Event.EventDistributionOptions.Queue;
+            }
+        }
+
+        public EventBus(IBusLogger busLogger, IEventHandlerFactory eventHandlerFactory = null,
+            Event.EventDistributionOptions eventDistributionOptions = Event.EventDistributionOptions.BalckHole,
+            EasyNetQ.IBus bus = null)
+        {
+            _eventDistributionOptions = eventDistributionOptions;
             _eventHandlerFactory = eventHandlerFactory;
+            _bus = bus;
+            _busLogger = busLogger;
+            
+            if (EventShouldDistributeToExternalQueue && _bus == null)
+            {
+                throw new Exception("IBus is required when distribute event to queue.");
+            }
         }
 
         public void Publish<T>(T @event) where T : Event
@@ -35,7 +70,7 @@ namespace ACE
 
         private void FlushAnEvent<T>(T @event) where T : Event
         {
-            ServiceLocator.BusLogger.Sent(@event);
+            _busLogger.Sent(@event);
             if (@event.ShouldDistributeInCurrentThread())
             {
                 Invoke((dynamic)@event);
@@ -44,7 +79,7 @@ namespace ACE
             {
                 DistributeInThreadPool((dynamic)@event);
             }
-            if (ServiceLocator.EventShouldDistributeToExternalQueue && @event.ShouldDistributeToExternalQueue())
+            if (EventShouldDistributeToExternalQueue && @event.ShouldDistributeToExternalQueue())
             {
                 DistributeToExternalQueue(@event);
             }
@@ -55,7 +90,7 @@ namespace ACE
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
             {
-                ServiceLocator.BusLogger.Received(@event);
+                _busLogger.Received(@event);
                 foreach (var handler in handlers)
                 {
                     Task.Factory.StartNew(() =>
@@ -66,7 +101,7 @@ namespace ACE
                         }
                         catch (Exception ex)
                         {
-                            ServiceLocator.BusLogger.Exception(@event, ex);
+                            _busLogger.Exception(@event, ex);
                         }
                     });
                 }
@@ -77,11 +112,11 @@ namespace ACE
         {
             try
             {
-                ServiceLocator.EasyNetQBus.Publish<ACE.Event>(@event, @event.RoutingKey());
+                _bus.Publish<ACE.Event>(@event, @event.RoutingKey());
             }
             catch (Exception ex)
             {
-                ServiceLocator.BusLogger.Exception(@event, ex);
+                _busLogger.Exception(@event, ex);
             }
         }
 
@@ -90,7 +125,7 @@ namespace ACE
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
             {
-                ServiceLocator.BusLogger.Received(@event);
+                _busLogger.Received(@event);
                 foreach (var handler in handlers)
                 {
                     try
@@ -103,7 +138,7 @@ namespace ACE
                     }
                     catch (Exception ex)
                     {
-                        ServiceLocator.BusLogger.Exception(@event, ex);
+                        _busLogger.Exception(@event, ex);
                         throw;
                     }
                 }
@@ -124,7 +159,7 @@ namespace ACE
         {
             foreach (var topic in topics)
             {
-                ServiceLocator.EasyNetQBus.Subscribe<Event>(subscriptionId,
+                _bus.Subscribe<Event>(subscriptionId,
                     @event => Work(@event),
                     x => x.WithTopic(topic));
             }
@@ -140,7 +175,7 @@ namespace ACE
 
             foreach (var topic in topics)
             {
-                ServiceLocator.EasyNetQBus.SubscribeAsync<Event>(subscriptionId,
+                _bus.SubscribeAsync<Event>(subscriptionId,
                     @event => Task.Factory.StartNew(() =>
                     {
                         var worker = workers.Take();

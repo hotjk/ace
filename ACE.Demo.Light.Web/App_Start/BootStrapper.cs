@@ -20,40 +20,64 @@ namespace ACE.Demo.Light.Web
 {
     public static class BootStrapper
     {
+        public static Ninject.IKernel Container { get; private set; }
         public static void BootStrap()
         {
-            ServiceLocator.Init(new ACE.Loggers.Log4NetBusLogger(), null, false,
-                ACE.Event.EventDistributionOptions.ThreadPool);
-            AddIoCBindings();
-            InitHandlerFactory();
+            Container = new StandardKernel();
+            BindFrameworkObjects();
+            BindBusinessObjects();
         }
 
-        private static void AddIoCBindings()
+        private static void BindFrameworkObjects()
         {
-            ServiceLocator.NinjectContainer.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
+            Container.Settings.AllowNullInjection = true;
 
-            ServiceLocator.NinjectContainer.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IInvestmentWriteRepository>().To<InvestmentWriteRepository>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IProjectWriteRepository>().To<ProjectWriteRepository>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IAccountWriteRepository>().To<AccountWriteRepository>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IAccountService>().To<AccountService>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IMessageWriteRepository>().To<MessageWriteRepository>().InSingletonScope();
-            ServiceLocator.NinjectContainer.Bind<IAccountActivityWriteRepository>().To<AccountActivityWriteRepository>().InSingletonScope();
+            Container.Bind<ACE.Loggers.IBusLogger>().To<ACE.Loggers.Log4NetBusLogger>().InSingletonScope();
+            Container.Bind<ICommandHandlerFactory>().To<CommandHandlerFactory>()
+                .InSingletonScope()
+                .WithConstructorArgument("commandAssmblies", new string[] { "ACE.Demo.Contracts" })
+                .WithConstructorArgument("handlerAssmblies", new string[] { "ACE.Demo.Model.Write" });
+            Container.Bind<ICommandBus>().To<CommandBus>().InSingletonScope();
+
+            Container.Bind<IEventHandlerFactory>().To<EventHandlerFactory>()
+                .InSingletonScope()
+                .WithConstructorArgument("eventAssmblies", new string[] { "ACE.Demo.Contracts" })
+                .WithConstructorArgument("handlerAssmblies", new string[] { "ACE.Demo.Model.Write" });
+            // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
+            Container.Bind<IEventBus>().To<EventBus>().InThreadScope();
+
+            Container.Bind<IActionHandlerFactory>().To<ActionHandlerFactory>()
+                .InSingletonScope()
+                .WithConstructorArgument("actionAssmblies", new string[] { "ACE.Demo.Contracts" })
+                .WithConstructorArgument("handlerAssmblies", new string[] { "ACE.Demo.Application" });
+            // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
+            Container.Bind<IActionBus>().To<ActionBus>().InThreadScope();
         }
 
-        private static void InitHandlerFactory()
+        private static void BindBusinessObjects()
         {
-            CommandHandlerFactory.Init(new string[] { "ACE.Demo.Contracts" },
-                new string[] { "ACE.Demo.Model.Write" });
-            EventHandlerFactory.Init(new string[] { "ACE.Demo.Contracts" },
-                new string[] { "ACE.Demo.Model.Write" });
-            ActionHandlerFactory.Init(new string[] { "ACE.Demo.Contracts" },
-                new string[] { "ACE.Demo.Application" });
+            Container.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
+            Container.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
+
+            Container.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
+            Container.Bind<IInvestmentWriteRepository>().To<InvestmentWriteRepository>().InSingletonScope();
+            Container.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
+            Container.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
+            Container.Bind<IProjectWriteRepository>().To<ProjectWriteRepository>().InSingletonScope();
+            Container.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
+            Container.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
+            Container.Bind<IAccountWriteRepository>().To<AccountWriteRepository>().InSingletonScope();
+            Container.Bind<IAccountService>().To<AccountService>().InSingletonScope();
+            Container.Bind<IMessageWriteRepository>().To<MessageWriteRepository>().InSingletonScope();
+            Container.Bind<IAccountActivityWriteRepository>().To<AccountActivityWriteRepository>().InSingletonScope();
+        }
+
+        public static void Dispose()
+        {
+            if (Container != null)
+            {
+                Container.Dispose();
+            }
         }
     }
 }

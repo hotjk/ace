@@ -9,31 +9,29 @@ namespace ACE
 {
     public class CommandHandlerFactory : ICommandHandlerFactory
     {
-        private static IEnumerable<string> _commandAssmblies;
-        private static IEnumerable<string> _handlerAssmblies;
-        private static IDictionary<Type, Type> _handlers;
-        private static bool _isInitialized;
-        private static readonly object _lockThis = new object();
+        private IKernel _container;
+        private IEnumerable<string> _commandAssmblies;
+        private IEnumerable<string> _handlerAssmblies;
+        private IDictionary<Type, Type> _handlers;
+        private readonly object _lockThis = new object();
 
-        public static void Init(IEnumerable<string> commandAssmblies,
+        public CommandHandlerFactory(IKernel container,
+            IEnumerable<string> commandAssmblies,
             IEnumerable<string> handlerAssmblies)
         {
-            if (!_isInitialized)
+            lock (_lockThis)
             {
-                lock (_lockThis)
-                {
-                    _commandAssmblies = commandAssmblies;
-                    _handlerAssmblies = handlerAssmblies;
-                    Utility.EnsoureAssemblyLoaded(_commandAssmblies);
-                    Utility.EnsoureAssemblyLoaded(_handlerAssmblies);
-                    HookHandlers();
-                    BindHandlers();
-                    _isInitialized = true;
-                }
+                _container = container;
+                _commandAssmblies = commandAssmblies;
+                _handlerAssmblies = handlerAssmblies;
+                Utility.EnsoureAssemblyLoaded(_commandAssmblies);
+                Utility.EnsoureAssemblyLoaded(_handlerAssmblies);
+                HookHandlers();
+                BindHandlers();
             }
         }
 
-        private static void HookHandlers()
+        private void HookHandlers()
         {
             _handlers = new Dictionary<Type, Type>();
             List<Type> commands = new List<Type>();
@@ -48,7 +46,7 @@ namespace ACE
             {
                 var allHandlers = assembly.GetExportedTypes().Where(x => x.GetInterfaces()
                         .Any(a => a.IsGenericType && a.GetGenericTypeDefinition() == typeof(ICommandHandler<>)));
-                foreach(var command in commands)
+                foreach (var command in commands)
                 {
                     var handlers = allHandlers
                         .Where(h => h.GetInterfaces()
@@ -68,44 +66,43 @@ namespace ACE
             }
             foreach (var command in commands)
             {
-                if(!_handlers.ContainsKey(command))
+                if (!_handlers.ContainsKey(command))
                 {
                     throw new UnregisteredDomainCommandException("no handler registered for command: " + command.Name);
                 }
             }
-            Log(commands);
         }
 
-        private static void BindHandlers()
+        private void BindHandlers()
         {
             foreach (var kv in _handlers)
             {
-                ServiceLocator.NinjectContainer.Bind(kv.Key).To(kv.Value).InSingletonScope();
+                _container.Bind(kv.Key).To(kv.Value).InSingletonScope();
             }
         }
 
-        private static void Log(List<Type> commands)
+        private string Log()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("CommandBus:{0}", Environment.NewLine);
-            foreach (var command in commands)
+            foreach(var kv in this._handlers)
             {
-                sb.AppendFormat("{0}{1}", command, Environment.NewLine);
-                sb.AppendFormat("\t{0}{1}", _handlers[command], Environment.NewLine);
+                sb.AppendFormat("{0}{1}", kv.Key, Environment.NewLine);
+                sb.AppendFormat("\t{0}{1}", kv.Value, Environment.NewLine);
             }
             sb.AppendLine();
-            ServiceLocator.BusLogger.Debug(sb.ToString());
+            return sb.ToString();
         }
 
         public ICommandHandler<T> GetHandler<T>() where T : Command
         {
-            Type handler ;
-            if(!_handlers.TryGetValue(typeof(T), out handler))
+            Type handler;
+            if (!_handlers.TryGetValue(typeof(T), out handler))
             {
                 throw new UnregisteredDomainCommandException("no handler registered for command: " + typeof(T));
             }
 
-            return (ICommandHandler<T>)ServiceLocator.NinjectContainer.GetService(handler);
+            return (ICommandHandler<T>)_container.GetService(handler);
         }
     }
 }

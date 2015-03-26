@@ -17,10 +17,12 @@ using System.Web.Mvc;
 
 namespace ACE.Demo.Web.Controllers
 {
-    public class InvestController : Controller
+    public class InvestController : ControllerBase
     {
-        public InvestController(ISequenceService sequenceService,
+        public InvestController(IActionBus actionBus,
+            ISequenceService sequenceService,
             IInvestmentService investmentService)
+            : base(actionBus)
         {
             _sequenceService = sequenceService;
             _investmentService = investmentService;
@@ -51,7 +53,7 @@ namespace ACE.Demo.Web.Controllers
                 Amount = vm.Amount
             };
 
-            var response = await ServiceLocator.ActionBus.SendAsync<InvestmentActionBase, InvestmentCreateRequest>(action);
+            var response = await ActionBus.SendAsync<InvestmentActionBase, InvestmentCreateRequest>(action);
             //var response = ServiceLocator.ActionBus.Send(action);
             TempData["ActionResponse"] = response;
             return RedirectToAction("Index", new { id = action.InvestmentId });
@@ -70,7 +72,7 @@ namespace ACE.Demo.Web.Controllers
                 InvestmentId = id
             };
 
-            ActionResponse response = await ServiceLocator.ActionBus.SendAsync<InvestmentActionBase, InvestmentPayRequest>(action);
+            ActionResponse response = await ActionBus.SendAsync<InvestmentActionBase, InvestmentPayRequest>(action);
             TempData["ActionResponse"] = response;
             return RedirectToAction("Index", new { id = action.InvestmentId });
         }

@@ -1,4 +1,5 @@
 ﻿using ACE.Actions;
+using ACE.Loggers;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -16,10 +17,24 @@ namespace ACE
     public class ActionBus : IActionBus
     {
         private IActionHandlerFactory _actionHandlerFactory;
+        private EasyNetQ.IBus _bus;
+        private IBusLogger _busLogger;
+        public bool ActionShouldDistributeToExternalQueue { get; private set; }
 
-        public ActionBus(IActionHandlerFactory ActionHandlerFactory)
+        public ActionBus(IBusLogger busLogger, 
+            IActionHandlerFactory ActionHandlerFactory = null,
+            bool actionShouldDistributeToExternalQueue = false, 
+            EasyNetQ.IBus bus = null)
         {
+            ActionShouldDistributeToExternalQueue = actionShouldDistributeToExternalQueue;
             _actionHandlerFactory = ActionHandlerFactory;
+            _bus = bus;
+            _busLogger = busLogger;
+
+            if (ActionShouldDistributeToExternalQueue && _bus == null)
+            {
+                throw new Exception("IBus is required when distribute action to queue.");
+            }
         }
 
         public void Invoke<T>(T action) where T : Action
@@ -27,7 +42,7 @@ namespace ACE
             var handler = _actionHandlerFactory.GetHandler<T>();
             if (handler != null)
             {
-                ServiceLocator.BusLogger.Received(action);
+                _busLogger.Received(action);
                 try
                 {
                     handler.Invoke(action);
@@ -36,7 +51,7 @@ namespace ACE
                 {
                     if (!(ex is ACE.Exceptions.BusinessException))
                     {
-                        ServiceLocator.BusLogger.Exception(action, ex);
+                        _busLogger.Exception(action, ex);
                     }
                     throw;
                 }
@@ -47,24 +62,24 @@ namespace ACE
             where B : Action
             where T : B
         {
-            if (!ServiceLocator.ActionShouldDistributeToExternalQueue)
+            if (!ActionShouldDistributeToExternalQueue)
             {
                 throw new Exception("Action is not configure to distribute to queue, maybe you can direct invoke action in thread.");
             }
-            ServiceLocator.BusLogger.Sent(action);
-            return ServiceLocator.EasyNetQBus.Request<B, ActionResponse>(action);
+            _busLogger.Sent(action);
+            return _bus.Request<B, ActionResponse>(action);
         }
 
         public async Task<ActionResponse> SendAsync<B, T>(T action)
             where B : Action
             where T : B
         {
-            if (!ServiceLocator.ActionShouldDistributeToExternalQueue)
+            if (!ActionShouldDistributeToExternalQueue)
             {
                 throw new Exception("Action is not allow to distribute to queue, maybe you can direct invoke action in thread.");
             }
-            ServiceLocator.BusLogger.Sent(action);
-            return await ServiceLocator.EasyNetQBus.RequestAsync<B, ActionResponse>(action);
+            _busLogger.Sent(action);
+            return await _bus.RequestAsync<B, ActionResponse>(action);
         }
 
         private ActionResponse Work(ACE.Action action)
@@ -84,7 +99,7 @@ namespace ACE
 
         public void Subscribe<T>() where T : ACE.Action
         {
-            ServiceLocator.EasyNetQBus.Respond<T, ActionResponse>(action => Work(action));
+            _bus.Respond<T, ActionResponse>(action => Work(action));
         }
 
         public void SubscribeInParallel<T>(int capacity) where T : ACE.Action
@@ -95,7 +110,7 @@ namespace ACE
                 workers.Add(i);
             }
 
-            ServiceLocator.EasyNetQBus.RespondAsync<T, ActionResponse>(action =>
+            _bus.RespondAsync<T, ActionResponse>(action =>
                 Task.Factory.StartNew(() =>
                 {
                     var worker = workers.Take();

@@ -17,7 +17,7 @@ namespace ACE.Demo.Light.Web
             log4net.Config.XmlConfigurator.Configure();
 
             BootStrapper.BootStrap();
-            DependencyResolver.SetResolver(new NinjectDependencyResolver { Kernel = ServiceLocator.NinjectContainer });
+            DependencyResolver.SetResolver(new NinjectDependencyResolver { Kernel = BootStrapper.Container });
 
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -27,7 +27,7 @@ namespace ACE.Demo.Light.Web
 
         protected void Application_Stop()
         {
-            ServiceLocator.Dispose();
+            BootStrapper.Dispose();
         }
     }
 }
