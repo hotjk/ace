@@ -73,10 +73,6 @@ Event Consumer 收到来自事件队列的 Event 对象后，调用 Invoke 方�
 
 工作单元，TransactionScope 和 Event 队列的发起和提交在工作单元中处理。
 
-## ServiceLocator
-
-全局对象，承载 ActionBus/CommandBus/EventBus，Ninject Kernal，RabbitMQ Connection。
-
 ## MicroService
 
 微服务，业务处理中心，消费 Action，发布 Command/Event，返回 ActionResponse。
