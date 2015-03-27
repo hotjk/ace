@@ -1,15 +1,7 @@
-﻿using ACE.Demo.Contracts.Events;
-using ACE.Demo.Contracts.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ACE;
-using ACE.Demo.Model.Investments;
-using ACE.Demo.Model.Projects;
-using ACE.Exceptions;
+﻿using ACE.Demo.Contracts.Commands;
+using ACE.Demo.Contracts.Events;
 using ACE.Demo.Model.Accounts;
+using ACE.Demo.Model.Projects;
 
 namespace ACE.Demo.Model.Investments
 {

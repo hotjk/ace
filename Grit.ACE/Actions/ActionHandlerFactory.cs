@@ -1,23 +1,20 @@
-﻿using Ninject;
-using RabbitMQ.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ACE
 {
     public class ActionHandlerFactory : IActionHandlerFactory
     {
-        private IKernel _container;
+        private Ninject.IKernel _container;
         private IEnumerable<string> _actionAssmblies;
         private IEnumerable<string> _handlerAssmblies;
         private IDictionary<Type, Type> _handlers;
         private readonly object _lockThis = new object();
         private IDictionary<string, Type> _actionTypes;
 
-        public ActionHandlerFactory(IKernel container,
+        public ActionHandlerFactory(Ninject.IKernel container,
             IEnumerable<string> actionAssmblies,
             IEnumerable<string> handlerAssmblies)
         {

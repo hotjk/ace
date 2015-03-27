@@ -1,19 +1,10 @@
-﻿using ACE.Demo.Contracts.Actions;
+﻿using ACE.Demo.Contracts;
+using ACE.Demo.Contracts.Actions;
 using ACE.Demo.Contracts.Commands;
-using ACE.Demo.Contracts.Events;
 using ACE.Demo.Model.Accounts;
 using ACE.Demo.Model.Investments;
 using ACE.Demo.Model.Projects;
-using ACE;
 using ACE.Exceptions;
-using Grit.Sequence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
-using ACE.Demo.Contracts;
 
 namespace ACE.Demo.Application
 {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ACE
+﻿namespace ACE
 {
     /// <summary>
     /// Event can be handled by multiple method.

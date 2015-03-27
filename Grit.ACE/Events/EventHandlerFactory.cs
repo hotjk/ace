@@ -1,23 +1,20 @@
-﻿using Ninject;
-using RabbitMQ.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ACE
 {
     public class EventHandlerFactory : IEventHandlerFactory
     {
-        private IKernel _container;
+        private Ninject.IKernel _container;
         private IEnumerable<string> _eventAssmblies;
         private IEnumerable<string> _handlerAssmblies;
         private IDictionary<Type, List<Type>> _handlers;
         private readonly object _lockThis = new object();
         private IDictionary<string, Type> _eventTypes;
 
-        public EventHandlerFactory(IKernel container,
+        public EventHandlerFactory(Ninject.IKernel container,
             IEnumerable<string> eventAssmblies,
             IEnumerable<string> handlerAssmblies)
         {
