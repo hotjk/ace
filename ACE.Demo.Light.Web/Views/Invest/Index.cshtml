@@ -10,17 +10,19 @@
         @response.Message
     </h2>
 }
-@if (Model != null) { 
+@if (Model != null)
+{
     if (Model.Status == ACE.Demo.Contracts.Enum.InvestmentStatus.Initial)
     {
         <p>
             投资已发起
-            @using (Html.BeginForm("Pay", "Invest", FormMethod.Post))
-            {
-                @Html.Hidden("id", @Model.InvestmentId)
-                <input type="submit" value="支付" />
-            }
         </p>
+        using (Html.BeginForm("Pay", "Invest", FormMethod.Post))
+        {
+            @Html.Hidden("id", @Model.InvestmentId)
+            <button type="submit" class="btn btn-default">支付</button>
+        }
+
     }
     else if (Model.Status == ACE.Demo.Contracts.Enum.InvestmentStatus.Paied)
     {
@@ -29,5 +31,3 @@
         </p>
     }
 }
-
-@Html.ActionLink("Home", "Index", "Home", null, null)

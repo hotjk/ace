@@ -3,10 +3,9 @@
     ViewBag.Title = "Index";
 }
 
-<h2>ACE Demo</h2>
-@Html.ActionLink("投资", "Create", "Invest")
+@Html.ActionLink("投资", "Create", "Invest", null, new { @class = "btn btn-default" })
 
-<table>
+<table class="table">
     <thead>
         <tr>
             <th>
@@ -34,17 +33,17 @@
             </td>
             <td>
                 @investment.ProjectId
-        </td>
-        <td>
-            @investment.AccountId
-        </td>
-        <td>
-            @investment.Amount
-        </td>
-        <td>
-            @investment.Status
-        </td>
-    </tr>
+            </td>
+            <td>
+                @investment.AccountId
+            </td>
+            <td>
+                @investment.Amount
+            </td>
+            <td>
+                @investment.Status
+            </td>
+        </tr>
     }
 
 </table>

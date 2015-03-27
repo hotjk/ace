@@ -4,19 +4,17 @@
 }
 @using (Html.BeginForm("Create", "Invest", FormMethod.Post))
 {
-    <p>
-        <label>AccountId</label>
-        @Html.TextBoxFor(x => x.AccountId)
-    </p>
-    <p>
-        <label>ProjectId</label>
-        @Html.TextBoxFor(x => x.ProjectId)
-    </p>
-    <p>
-        <label>Amount</label>
-        @Html.TextBoxFor(x => x.Amount)
-    </p>
-    <p>
-        <input type="submit" value="投资" />
-    </p>
+    <div class="form-group">
+        <label for="AccountId">AccountIds</label>
+        @Html.TextBoxFor(x => x.AccountId, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <label for="ProjectId">ProjectId</label>
+        @Html.TextBoxFor(x => x.ProjectId, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <label for="Amount">Amount</label>
+        @Html.TextBoxFor(x => x.Amount, new { @class = "form-control" })
+    </div>
+    <button type="submit" class="btn btn-default">投资</button>
 }

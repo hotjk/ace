@@ -191,8 +191,6 @@
       <SubType>
       </SubType>
     </Content>
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Invest\Create.cshtml" />
     <Content Include="Views\Invest\Index.cshtml" />
