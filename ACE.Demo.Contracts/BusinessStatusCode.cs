@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace ACE.Demo.Contracts
 {
-    public static class BusinessExceptionType
+    public static class BusinessStatusCode
     {
+        public const int NotFound = 404;
+        public const int Conflict = 409;
+
         // Account
         public const int AccountBalanceOverflow = 50001;
         public const int AccountExist = 50101;

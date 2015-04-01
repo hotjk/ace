@@ -38,6 +38,18 @@ namespace ACE
             where T : B;
 
         /// <summary>
+        /// Send to RabbitMQ and waiting for response in async with retry.
+        /// </summary>
+        /// <typeparam name="B">The base class of request action class, base class will be the queue name.</typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="retryCount"></param>
+        /// <returns></returns>
+        Task<ActionResponse> SendAsyncWithRetry<B, T>(T action, int retryCount = 2)
+            where B : Action
+            where T : B;
+
+        /// <summary>
         /// Subscribe action from RabbitMQ.
         /// </summary>
         void Subscribe<T>() where T : ACE.Action;

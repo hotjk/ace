@@ -32,7 +32,7 @@ namespace ACE.Demo.Model.Accounts
         {
             if (!_repository.ChangeAmount(command.AccountId, command.Change))
             {
-                throw new BusinessException(BusinessExceptionType.AccountBalanceOverflow, "账户余额不足。");
+                throw new BusinessException(BusinessStatusCode.AccountBalanceOverflow, "账户余额不足。");
             }
             EventBus.Publish(AutoMapper.Mapper.Map<AccountAmountChanged>(command).DistributeInThreadPool().DistributeToExternalQueue());
         }
@@ -41,7 +41,7 @@ namespace ACE.Demo.Model.Accounts
         {
             if (!_repository.Create(AutoMapper.Mapper.Map<Account>(command)))
             {
-                throw new BusinessException(BusinessExceptionType.AccountExist, "账户已存在。");
+                throw new BusinessException(BusinessStatusCode.AccountExist, "账户已存在。");
             }
             EventBus.Publish(AutoMapper.Mapper.Map<AccountStatusCreated>(command).DistributeInThreadPool().DistributeToExternalQueue());
         }

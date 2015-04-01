@@ -53,7 +53,7 @@ namespace ACE.Demo.Web.Controllers
                 Amount = vm.Amount
             };
 
-            var response = await ActionBus.SendAsync<InvestmentActionBase, InvestmentCreateRequest>(action);
+            var response = await ActionBus.SendAsyncWithRetry<InvestmentActionBase, InvestmentCreateRequest>(action, 3);
             //var response = ServiceLocator.ActionBus.Send(action);
             TempData["ActionResponse"] = response;
             return RedirectToAction("Index", new { id = action.InvestmentId });

@@ -38,13 +38,13 @@ namespace ACE.Demo.Application
             var account = _accountService.Get(action.AccountId);
             if (account.Amount < action.Amount)
             {
-                throw new BusinessException(BusinessExceptionType.UserBalanceOverflow, "用户账户余额不足。");
+                throw new BusinessException(BusinessStatusCode.UserBalanceOverflow, "用户账户余额不足。");
             }
 
             var project = _projectService.Get(action.ProjectId);
             if (project.Amount < action.Amount)
             {
-                throw new BusinessException(BusinessExceptionType.ProjectBalanceOverflow, "项目可投资金额不足。");
+                throw new BusinessException(BusinessStatusCode.ProjectBalanceOverflow, "项目可投资金额不足。");
             }
 
             using (UnitOfWork u = new UnitOfWork(EventBus))
@@ -59,11 +59,11 @@ namespace ACE.Demo.Application
             var investment = _investmentService.Get(action.InvestmentId);
             if (investment == null)
             {
-                throw new BusinessException(BusinessExceptionType.InvestmentNotExist, "投资不存在。");
+                throw new BusinessException(BusinessStatusCode.InvestmentNotExist, "投资不存在。");
             }
             if (investment.Status != Contracts.Enum.InvestmentStatus.Initial)
             {
-                throw new BusinessException(BusinessExceptionType.InvestmentPaied, "投资已经支付。");
+                throw new BusinessException(BusinessStatusCode.InvestmentPaied, "投资已经支付。");
             }
             Project project = _projectService.Get(investment.ProjectId);
 

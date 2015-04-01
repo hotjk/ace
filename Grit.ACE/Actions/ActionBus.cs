@@ -74,6 +74,35 @@ namespace ACE
             return await _bus.RequestAsync<B, ActionResponse>(action);
         }
 
+        public async Task<ActionResponse> SendAsyncWithRetry<B, T>(T action, int retryCount = 2)
+            where B : Action
+            where T : B
+        {
+            ActionResponse response = null;
+            int currentRetry = 0;
+            while (true)
+            {
+                try
+                {
+                    response = await SendAsync<B, T>(action);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    if (ex is ACE.Exceptions.BusinessException)
+                    {
+                        throw;
+                    }
+                    currentRetry++;
+                    if (currentRetry > retryCount)
+                    {
+                        throw;
+                    }
+                }
+            }
+            return response;
+        }
+
         private ActionResponse Work(ACE.Action action)
         {
             ActionResponse response = new ActionResponse { Result = ActionResponse.ActionResponseResult.OK };
