@@ -31,7 +31,7 @@ namespace ACE.Demo.Model.Projects
         {
             if (!_repository.ChangeAmount(command.ProjectId, command.Change))
             {
-                throw new BusinessException(BusinessStatusCode.ProjectBalanceOverflow, "项目可投资金额不足。");
+                throw new BusinessException(BusinessStatusCode.Forbidden, "项目可投资金额不足。");
             }
             EventBus.Publish(AutoMapper.Mapper.Map<ProjectAmountChanged>(command).DistributeToExternalQueue());
         }
