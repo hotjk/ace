@@ -33,7 +33,7 @@ namespace ACE.Demo.Model.Projects
             {
                 throw new BusinessException(BusinessStatusCode.Forbidden, "项目可投资金额不足。");
             }
-            EventBus.Publish(ACEMapper.Map<ProjectAmountChanged>(command).DistributeToExternalQueue());
+            EventBus.Publish(ACEMapper.Map<ProjectAmountChanged>(command).ToExternalQueue());
         }
     }
 }

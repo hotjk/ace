@@ -44,8 +44,8 @@ namespace ACE.Demo.Model.Investments
             }
             _repository.Add(ACEMapper.Map<Investment>(command));
             EventBus.Publish(ACEMapper.Map<InvestmentStatusCreated>(command)
-                .DistributeInThreadPool()
-                .DistributeToExternalQueue());
+                .InThreadPool()
+                .ToExternalQueue());
         }
 
         public void Execute(CompleteInvestment command)
@@ -57,8 +57,8 @@ namespace ACE.Demo.Model.Investments
             }
             _repository.Complete(command.InvestmentId);
             EventBus.Publish(ACEMapper.Map<InvestmentStatusCompleted>(investment)
-                .DistributeInThreadPool()
-                .DistributeToExternalQueue());
+                .InThreadPool()
+                .ToExternalQueue());
         }
     }
 }

@@ -19,30 +19,30 @@
 
         public EventDistributionOptions _options { get; private set; }
 
-        public bool ShouldDistributeInCurrentThread()
+        internal bool ShouldDistributeInCurrentThread()
         {
             return (this._options & EventDistributionOptions.CurrentThread) == EventDistributionOptions.CurrentThread;
         }
-        public bool ShouldDistributeInThreadPool()
+        internal bool ShouldDistributeInThreadPool()
         {
             return (this._options & EventDistributionOptions.ThreadPool) == EventDistributionOptions.ThreadPool;
         }
-        public bool ShouldDistributeToExternalQueue()
+        internal bool ShouldDistributeToExternalQueue()
         {
             return (this._options & EventDistributionOptions.Queue) == EventDistributionOptions.Queue;
         }
 
-        public Event DistributeInCurrentThread()
+        public Event InCurrentThread()
         {
             this._options = this._options | EventDistributionOptions.CurrentThread;
             return this;
         }
-        public Event DistributeInThreadPool()
+        public Event InThreadPool()
         {
             this._options = this._options | EventDistributionOptions.ThreadPool;
             return this;
         }
-        public Event DistributeToExternalQueue()
+        public Event ToExternalQueue()
         {
             this._options = this._options | EventDistributionOptions.Queue;
             return this;
