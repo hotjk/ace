@@ -13,11 +13,11 @@ namespace ACE.Demo.Model.Investments
     {
         static InvestmentHandler()
         {
-            AutoMapper.Mapper.CreateMap<CreateInvestment, Investment>();
-            AutoMapper.Mapper.CreateMap<CreateInvestment, InvestmentStatusCreated>().ForMember(dest => dest._id, opt => opt.Ignore());
-            AutoMapper.Mapper.CreateMap<Investment, ChangeAccountAmount>().ForMember(dest => dest._id, opt => opt.Ignore());
-            AutoMapper.Mapper.CreateMap<Investment, ChangeProjectAmount>().ForMember(dest => dest._id, opt => opt.Ignore());
-            AutoMapper.Mapper.CreateMap<Investment, InvestmentStatusCompleted>().ForMember(dest => dest._id, opt => opt.Ignore());
+            ACEMapper.CreateMap<CreateInvestment, Investment>();
+            ACEMapper.CreateMapIgnoreId<CreateInvestment, InvestmentStatusCreated>();
+            ACEMapper.CreateMapIgnoreId<Investment, ChangeAccountAmount>();
+            ACEMapper.CreateMapIgnoreId<Investment, ChangeProjectAmount>();
+            ACEMapper.CreateMapIgnoreId<Investment, InvestmentStatusCompleted>();
         }
 
         private IInvestmentWriteRepository _repository;
@@ -42,8 +42,8 @@ namespace ACE.Demo.Model.Investments
             {
                 throw new BusinessException(BusinessStatusCode.Conflict, "投资已经存在，不要重复提交。"); 
             }
-            _repository.Add(AutoMapper.Mapper.Map<Investment>(command));
-            EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCreated>(command)
+            _repository.Add(ACEMapper.Map<Investment>(command));
+            EventBus.Publish(ACEMapper.Map<InvestmentStatusCreated>(command)
                 .DistributeInThreadPool()
                 .DistributeToExternalQueue());
         }
@@ -56,7 +56,7 @@ namespace ACE.Demo.Model.Investments
                 throw new BusinessException(BusinessStatusCode.NotFound, "投资不存在。");
             }
             _repository.Complete(command.InvestmentId);
-            EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCompleted>(investment)
+            EventBus.Publish(ACEMapper.Map<InvestmentStatusCompleted>(investment)
                 .DistributeInThreadPool()
                 .DistributeToExternalQueue());
         }

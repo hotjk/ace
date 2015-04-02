@@ -17,9 +17,9 @@ namespace ACE.Demo.Model.Accounts
     {
         static AccountHandler()
         {
-            AutoMapper.Mapper.CreateMap<ChangeAccountAmount, AccountAmountChanged>().ForMember(dest => dest._id, opt => opt.Ignore());
-            AutoMapper.Mapper.CreateMap<CreateAccount, Account>();
-            AutoMapper.Mapper.CreateMap<CreateAccount, AccountStatusCreated>().ForMember(dest => dest._id, opt => opt.Ignore());
+            ACEMapper.CreateMapIgnoreId<ChangeAccountAmount, AccountAmountChanged>();
+            ACEMapper.CreateMap<CreateAccount, Account>();
+            ACEMapper.CreateMapIgnoreId<CreateAccount, AccountStatusCreated>();
         }
         private IAccountWriteRepository _repository;
         public AccountHandler(IEventBus eventBus,
@@ -34,16 +34,16 @@ namespace ACE.Demo.Model.Accounts
             {
                 throw new BusinessException(BusinessStatusCode.Forbidden, "账户余额不足。");
             }
-            EventBus.Publish(AutoMapper.Mapper.Map<AccountAmountChanged>(command).DistributeInThreadPool().DistributeToExternalQueue());
+            EventBus.Publish(ACEMapper.Map<AccountAmountChanged>(command).DistributeInThreadPool().DistributeToExternalQueue());
         }
 
         public void Execute(CreateAccount command)
         {
-            if (!_repository.Create(AutoMapper.Mapper.Map<Account>(command)))
+            if (!_repository.Create(ACEMapper.Map<Account>(command)))
             {
                 throw new BusinessException(BusinessStatusCode.Conflict, "账户已存在。");
             }
-            EventBus.Publish(AutoMapper.Mapper.Map<AccountStatusCreated>(command).DistributeInThreadPool().DistributeToExternalQueue());
+            EventBus.Publish(ACEMapper.Map<AccountStatusCreated>(command).DistributeInThreadPool().DistributeToExternalQueue());
         }
     }
 }
