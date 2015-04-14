@@ -6,6 +6,7 @@
 ![ace](https://github.com/hotjk/ace/blob/master/ace.jpg)
 
 > 参考
+>
 > http://www.udidahan.com/2009/06/14/domain-events-salvation/
 > http://martinfowler.com/articles/microservices.html
 
@@ -84,4 +85,3 @@ Event Consumer 收到来自事件队列的 Event 对象后，调用 Invoke 方�
 ## BootStrapper
 
 通过反射将 Action/Command/Event 和相应的 Handler 绑定。
-初始化 ServiceLocator。
