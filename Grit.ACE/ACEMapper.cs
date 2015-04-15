@@ -12,17 +12,17 @@ namespace ACE
         public static IMappingExpression<TSource, TDestination> CreateMapIgnoreId<TSource, TDestination>()
             where TDestination : DomainMessage
         {
-            return ACEMapper.CreateMapIgnoreId<TSource, TDestination>();
+            return AutoMapper.Mapper.CreateMap<TSource, TDestination>().ForMember(dest => dest._id, opt => opt.Ignore());
         }
 
         public static IMappingExpression<TSource, TDestination> CreateMap<TSource, TDestination>()
         {
-            return ACEMapper.CreateMap<TSource, TDestination>();
+            return AutoMapper.Mapper.CreateMap<TSource, TDestination>();
         }
 
         public static TDestination Map<TDestination>(object source)
         {
-            return ACEMapper.Map<TDestination>(source);
+            return AutoMapper.Mapper.Map<TDestination>(source);
         }
     }
 }
