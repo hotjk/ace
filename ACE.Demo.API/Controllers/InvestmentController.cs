@@ -33,6 +33,8 @@ namespace ACE.Demo.API.Controllers
         [HttpPost]
         public IEnumerable<ACE.Demo.Contracts.Services.Investment> List()
         {
+            int b = 0;
+            int a = 10 / b;
             return AutoMapper.Mapper.Map<IEnumerable<ACE.Demo.Contracts.Services.Investment>>(_investmentService.GetAll());
         }
     }

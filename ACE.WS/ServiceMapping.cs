@@ -17,5 +17,13 @@ namespace ACE.WS
 
         public string BaseUrl { get; private set; }
         public string Resource { get; private set; }
+
+        public string Url 
+        { 
+            get
+            {
+                return string.Format("{0}{1}", BaseUrl, Resource);
+            }
+        }
     }
 }

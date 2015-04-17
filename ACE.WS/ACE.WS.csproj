@@ -52,6 +52,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IServiceBus.cs" />
     <Compile Include="ServiceBus.cs" />
+    <Compile Include="ServiceException.cs" />
     <Compile Include="ServiceMappingFactory.cs" />
     <Compile Include="ServiceMapping.cs" />
   </ItemGroup>

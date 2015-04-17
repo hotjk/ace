@@ -25,27 +25,42 @@ namespace ACE.WS
             var mapping = _serviceMappingFactory.GetServiceMapping(req.GetType());
             if (mapping == null)
             {
-                throw new Exception("Mapping not found.");
+                throw new ServiceException("ServiceBus mapping not found.");
             }
 
-            var client = new RestClient(mapping.BaseUrl);
-            var request = new RestRequest(mapping.Resource, Method.GET);
-            request.AddObject(req);
-            var restResponse = await client.ExecuteTaskAsync(request);
+            RestClient client = null;
+            RestRequest request = null;
+            IRestResponse restResponse;
+
+            try
+            {
+                client = new RestClient(mapping.BaseUrl);
+                request = new RestRequest(mapping.Resource, Method.GET);
+                request.AddObject(req);
+                restResponse = await client.ExecuteTaskAsync(request);
+            }
+            catch(Exception ex)
+            {
+                throw new ServiceException(string.Format("ServiceBus.Invoke {0}, Return: {1}, Url: {2}",
+                    req.GetType(),
+                    ex.Message,
+                    mapping.Url), ex);
+            }
+            if(restResponse.ErrorException != null)
+            {
+                throw new ServiceException(string.Format("ServiceBus.Invoke {0}, Return: {1}, Url: {2}",
+                    req.GetType(),
+                    restResponse.ErrorMessage,
+                    mapping.Url), restResponse.ErrorException);
+            }
+            if (restResponse.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new ServiceException(string.Format("ServiceBus.Invoke {0}, Return: {1}, Url: {2}",
+                    req.GetType(),
+                    restResponse.StatusCode,
+                    mapping.Url));
+            }
             return JsonConvert.DeserializeObject<TRep>(restResponse.Content);
-            //HttpClient httpClient = new HttpClient();
-            //httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            //var values = new List<KeyValuePair<string, string>>();
-
-            //PropertyInfo[] propertyInfos = req.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            //foreach(var pi in propertyInfos)
-            //{
-            //    request.AddParameter(pi.Name, pi.GetValue(req).ToString()));
-            //}
-            //var response = await httpClient.PostAsync(mapping.Uri, new FormUrlEncodedContent(values));
-            //var jsonString = await response.Content.ReadAsStringAsync();
-            //return JsonConvert.DeserializeObject<TRep>(jsonString);
         }
     }
 }
