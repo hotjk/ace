@@ -70,6 +70,12 @@ Event 是不需要应答的 Action。
 
 Event Consumer 收到来自事件队列的 Event 对象后，调用 Invoke 方法在进程内分发该消息，每个 EventHandler 将在独立线程内完成对 Event 的业务处理。
 
+## ServiceBus
+
+读服务以 Http Service 提供时，用于简化服务调用。
+读服务接口类与资源的映射需要配置，外部配置服务可以参考 [dotconfig](https://github.com/hotjk/dotconfig)
+采用传统分层架构时，MVC 直接引入读模型，不需要使用 ServiceBus。
+
 ## UnitOfWork
 
 工作单元，TransactionScope 和 Event 队列的发起和提交在工作单元中处理。
