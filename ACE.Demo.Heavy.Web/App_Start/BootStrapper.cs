@@ -1,8 +1,4 @@
-﻿using ACE.Demo.Model;
-using ACE.Demo.Model.Accounts;
-using ACE.Demo.Model.Investments;
-using ACE.Demo.Model.Projects;
-using ACE.Demo.Repositories;
+﻿using ACE.Demo.Repositories;
 using ACE;
 using Grit.Sequence;
 using Grit.Sequence.Repository.MySql;
@@ -64,13 +60,6 @@ namespace ACE.Demo.Heavy.Web
         {
             Container.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
             Container.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
-
-            Container.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
-            Container.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
-            Container.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
-            Container.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
-            Container.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
-            Container.Bind<IAccountService>().To<AccountService>().InSingletonScope();
         }
 
         public static void Dispose()

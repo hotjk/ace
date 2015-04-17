@@ -1,5 +1,4 @@
 ﻿using ACE.Demo.Contracts.Services;
-using ACE.Demo.Model.Investments;
 using ACE.WS;
 using System;
 using System.Collections.Generic;

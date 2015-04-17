@@ -60,9 +60,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\GetInvestmentRequest.cs" />
-    <Compile Include="Services\GetInvestmentsRequest.cs" />
+    <Compile Include="Services\Investments\GetInvestmentRequest.cs" />
+    <Compile Include="Services\Investments\GetInvestmentsRequest.cs" />
     <Compile Include="SequenceID.cs" />
+    <Compile Include="Services\Investments\Investment.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ACE.WS\ACE.WS.csproj">

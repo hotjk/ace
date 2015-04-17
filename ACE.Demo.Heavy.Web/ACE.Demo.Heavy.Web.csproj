@@ -207,10 +207,6 @@
       <Project>{b9fcad5a-3e1d-4d44-9c70-a1b0759dd9a4}</Project>
       <Name>ACE.Demo.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ACE.Demo.Model\ACE.Demo.Model.csproj">
-      <Project>{b2959bf3-9baf-4452-a94f-cee2886dae07}</Project>
-      <Name>ACE.Demo.Model</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ACE.Demo.Repositories\ACE.Demo.Repositories.csproj">
       <Project>{fe904a73-61f7-4e93-8bd0-6aa4fd879baf}</Project>
       <Name>ACE.Demo.Repositories</Name>

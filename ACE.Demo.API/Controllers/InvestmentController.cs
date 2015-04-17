@@ -11,6 +11,10 @@ namespace ACE.Demo.API.Controllers
 {
     public class InvestmentController : ApiController
     {
+        static InvestmentController()
+        {
+            AutoMapper.Mapper.CreateMap<Investment, ACE.Demo.Contracts.Services.Investment>();
+        }
         private IInvestmentService _investmentService;
 
         public InvestmentController(IInvestmentService investmentService)
@@ -20,16 +24,16 @@ namespace ACE.Demo.API.Controllers
 
         [HttpGet]
         [HttpPost]
-        public Investment Index(int id)
+        public ACE.Demo.Contracts.Services.Investment Index(int id)
         {
-            return _investmentService.Get(id);
+            return AutoMapper.Mapper.Map<ACE.Demo.Contracts.Services.Investment>(_investmentService.Get(id));
         }
 
         [HttpGet]
         [HttpPost]
-        public IEnumerable<Investment> List()
+        public IEnumerable<ACE.Demo.Contracts.Services.Investment> List()
         {
-            return _investmentService.GetAll();
+            return AutoMapper.Mapper.Map<IEnumerable<ACE.Demo.Contracts.Services.Investment>>(_investmentService.GetAll());
         }
     }
 }
