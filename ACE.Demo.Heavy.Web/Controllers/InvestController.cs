@@ -14,22 +14,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using ACE.WS;
+using ACE.Demo.Contracts.Services;
 
 namespace ACE.Demo.Web.Controllers
 {
     public class InvestController : ControllerBase
     {
-        public InvestController(IActionBus actionBus,
-            ISequenceService sequenceService,
-            IInvestmentService investmentService)
-            : base(actionBus)
+        public InvestController(IActionBus actionBus, IServiceBus serviceBus, 
+            ISequenceService sequenceService)
+            : base(actionBus, serviceBus)
         {
             _sequenceService = sequenceService;
-            _investmentService = investmentService;
         }
 
         private ISequenceService _sequenceService;
-        private IInvestmentService _investmentService;
 
         [HttpGet]
         public ActionResult Create()
@@ -54,14 +53,13 @@ namespace ACE.Demo.Web.Controllers
             };
 
             var response = await ActionBus.SendAsyncWithRetry<InvestmentActionBase, InvestmentCreateRequest>(action, 3);
-            //var response = ServiceLocator.ActionBus.Send(action);
             TempData["ActionResponse"] = response;
             return RedirectToAction("Index", new { id = action.InvestmentId });
         }
 
-        public ActionResult Index(int id)
+        public async Task<ActionResult> Index(int id)
         {
-            var investment = _investmentService.Get(id);
+            var investment = await ServiceBus.InvokeAsync<GetInvestmentRequest, Investment>(new GetInvestmentRequest { Id = id });
             return View(investment);
         }
 

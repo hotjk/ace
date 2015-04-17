@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B9FCAD5A-3E1D-4D44-9C70-A1B0759DD9A4}</ProjectGuid>
+    <ProjectGuid>{BFD5D0DF-4AA4-43EB-A5E4-45D1DE189AAD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ACE.Demo.Contracts</RootNamespace>
-    <AssemblyName>ACE.Demo.Contracts</AssemblyName>
+    <RootNamespace>ACE.WS</RootNamespace>
+    <AssemblyName>ACE.WS</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,8 +30,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -39,42 +47,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actions\InvestmentActionBase.cs" />
-    <Compile Include="BusinessStatusCode.cs" />
-    <Compile Include="Commands\CompleteInvestment.cs" />
-    <Compile Include="Commands\ChangeAccountAmount.cs" />
-    <Compile Include="Commands\ChangeProjectAmount.cs" />
-    <Compile Include="Commands\CreateAccountActivity.cs" />
-    <Compile Include="Commands\CreateAccount.cs" />
-    <Compile Include="Commands\CreateInvestment.cs" />
-    <Compile Include="Enum\InvestmentStatus.cs" />
-    <Compile Include="Events\AccountAmountChanged.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Events\AccountStatusCreated.cs" />
-    <Compile Include="Actions\InvestmentPayRequest.cs" />
-    <Compile Include="Actions\InvestmentCreateRequest.cs" />
-    <Compile Include="Events\InvestmentStatusCompleted.cs" />
-    <Compile Include="Events\InvestmentStatusCreated.cs" />
-    <Compile Include="Events\ProjectAmountChanged.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="IService.cs" />
+    <Compile Include="IServiceMappingFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\GetInvestmentRequest.cs" />
-    <Compile Include="Services\GetInvestmentsRequest.cs" />
-    <Compile Include="SequenceID.cs" />
+    <Compile Include="IServiceBus.cs" />
+    <Compile Include="ServiceBus.cs" />
+    <Compile Include="ServiceMappingFactory.cs" />
+    <Compile Include="ServiceMapping.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ACE.WS\ACE.WS.csproj">
-      <Project>{bfd5d0df-4aa4-43eb-a5e4-45d1de189aad}</Project>
-      <Name>ACE.WS</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Grit.ACE\ACE.csproj">
-      <Project>{81569f0a-133a-4e07-a66b-9efc8b5f7411}</Project>
-      <Name>ACE</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

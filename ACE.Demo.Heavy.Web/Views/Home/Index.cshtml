@@ -29,7 +29,7 @@
     {
         <tr>
             <td>
-                @investment.InvestmentId
+                @Html.ActionLink(investment.InvestmentId.ToString(), "Index", "Invest", new { Id = investment.InvestmentId }, null)
             </td>
             <td>
                 @investment.ProjectId

@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EasyNetQ;
 using EasyNetQ.Loggers;
+using ACE.WS;
 
 namespace ACE.Demo.Heavy.Web
 {
@@ -48,6 +49,15 @@ namespace ACE.Demo.Heavy.Web
             Container.Bind<IActionBus>().To<ActionBus>()
                 .InThreadScope()
                 .WithConstructorArgument("actionShouldDistributeToExternalQueue", true);
+
+            IServiceMappingFactory serviceMappingFactory = new ServiceMappingFactory(() => {
+                return new Dictionary<Type, ServiceMapping>() {
+                     { typeof(ACE.Demo.Contracts.Services.GetInvestmentsRequest), new ServiceMapping("http://localhost:59857", "api/investment/list") },
+                     { typeof(ACE.Demo.Contracts.Services.GetInvestmentRequest), new ServiceMapping("http://localhost:59857", "api/investment") }
+                };
+            });
+            Container.Bind<IServiceMappingFactory>().ToConstant(serviceMappingFactory);
+            Container.Bind<IServiceBus>().To<ServiceBus>().InSingletonScope();
         }
 
         private static void BindBusinessObjects()

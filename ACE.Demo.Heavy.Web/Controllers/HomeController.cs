@@ -1,24 +1,26 @@
-﻿using ACE.Demo.Model.Investments;
+﻿using ACE.Demo.Contracts.Services;
+using ACE.Demo.Model.Investments;
+using ACE.WS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
 namespace ACE.Demo.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : ControllerBase
     {
-        public HomeController(
-            IInvestmentService investmentService)
+        public HomeController(IServiceBus serviceBus)
+            : base(null, serviceBus)
         {
-            _investmentService = investmentService;
         }
 
-        private IInvestmentService _investmentService;
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var investments = _investmentService.GetAll();
+            IEnumerable<Investment> investments = 
+                await ServiceBus.InvokeAsync<GetInvestmentsRequest, IEnumerable<Investment>>(new GetInvestmentsRequest());
             return View(investments);
         }
     }
