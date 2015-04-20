@@ -72,9 +72,9 @@ Event Consumer 收到来自事件队列的 Event 对象后，调用 Invoke 方�
 
 ## ServiceBus
 
-读服务以 Http Service 提供时，用于简化服务调用。
-读服务接口类与资源的映射需要配置，外部配置服务可以参考 [dotconfig](https://github.com/hotjk/dotconfig)
-采用传统分层架构时，MVC 直接引入读模型，不需要使用 ServiceBus。
+读服务以 Http Service 提供时，ServiceBus 用于简化服务调用。
+读服务接口类与资源的映射需要配置，外部配置服务可以参考 [dotconfig](https://github.com/hotjk/dotconfig)。
+采用传统分层架构时，读模型可以代码级复用，MVC 直接引入读模型，不需要使用 ServiceBus。
 
 ## UnitOfWork
 
