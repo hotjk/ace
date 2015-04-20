@@ -18,7 +18,6 @@ namespace ACE.Demo.API.Controllers
         }
 
         [HttpGet]
-        [HttpPost]
         public Project Index(int id)
         {
             return _projectService.Get(id);

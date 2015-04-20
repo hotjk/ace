@@ -23,18 +23,14 @@ namespace ACE.Demo.API.Controllers
         }
 
         [HttpGet]
-        [HttpPost]
         public ACE.Demo.Contracts.Services.Investment Index(int id)
         {
             return AutoMapper.Mapper.Map<ACE.Demo.Contracts.Services.Investment>(_investmentService.Get(id));
         }
 
         [HttpGet]
-        [HttpPost]
         public IEnumerable<ACE.Demo.Contracts.Services.Investment> List()
         {
-            int b = 0;
-            int a = 10 / b;
             return AutoMapper.Mapper.Map<IEnumerable<ACE.Demo.Contracts.Services.Investment>>(_investmentService.GetAll());
         }
     }
