@@ -70,9 +70,9 @@
       <Project>{82f70b71-71ab-49b1-9e3f-5197abbfd1aa}</Project>
       <Name>ACE.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ACE.WS\ACE.WS.csproj">
-      <Project>{bfd5d0df-4aa4-43eb-a5e4-45d1de189aad}</Project>
-      <Name>ACE.WS</Name>
+    <ProjectReference Include="..\ACE.WS.Contracts\ACE.WS.Contracts.csproj">
+      <Project>{9b93d888-04f3-4d0d-8220-f36a8449a3a8}</Project>
+      <Name>ACE.WS.Contracts</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
