@@ -19,15 +19,15 @@
 
         public EventDistributionOptions _options { get; private set; }
 
-        internal bool ShouldDistributeInCurrentThread()
+        public bool ShouldDistributeInCurrentThread()
         {
             return (this._options & EventDistributionOptions.CurrentThread) == EventDistributionOptions.CurrentThread;
         }
-        internal bool ShouldDistributeInThreadPool()
+        public bool ShouldDistributeInThreadPool()
         {
             return (this._options & EventDistributionOptions.ThreadPool) == EventDistributionOptions.ThreadPool;
         }
-        internal bool ShouldDistributeToExternalQueue()
+        public bool ShouldDistributeToExternalQueue()
         {
             return (this._options & EventDistributionOptions.Queue) == EventDistributionOptions.Queue;
         }

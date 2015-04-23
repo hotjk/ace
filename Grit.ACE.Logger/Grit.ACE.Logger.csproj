@@ -63,6 +63,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ACE.Contracts\ACE.Contracts.csproj">
+      <Project>{82f70b71-71ab-49b1-9e3f-5197abbfd1aa}</Project>
+      <Name>ACE.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Grit.ACE\ACE.csproj">
       <Project>{81569f0a-133a-4e07-a66b-9efc8b5f7411}</Project>
       <Name>ACE</Name>

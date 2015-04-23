@@ -53,6 +53,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ACE.Contracts\ACE.Contracts.csproj">
+      <Project>{82f70b71-71ab-49b1-9e3f-5197abbfd1aa}</Project>
+      <Name>ACE.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ACE.Demo.Contracts\ACE.Demo.Contracts.csproj">
       <Project>{b9fcad5a-3e1d-4d44-9c70-a1b0759dd9a4}</Project>
       <Name>ACE.Demo.Contracts</Name>
@@ -72,10 +76,6 @@
     <ProjectReference Include="..\ACE.Demo.Repositories\ACE.Demo.Repositories.csproj">
       <Project>{fe904a73-61f7-4e93-8bd0-6aa4fd879baf}</Project>
       <Name>ACE.Demo.Repositories</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Grit.ACE\ACE.csproj">
-      <Project>{81569f0a-133a-4e07-a66b-9efc8b5f7411}</Project>
-      <Name>ACE</Name>
     </ProjectReference>
     <ProjectReference Include="..\Grit.Sequence.Repository.Mysql\Grit.Sequence.Repository.MySql.csproj">
       <Project>{c8223ccd-75f4-4b9e-813b-b8a5a83ff758}</Project>
