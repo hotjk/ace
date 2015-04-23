@@ -11,8 +11,9 @@ namespace ACE
     {
         public enum MessageRouteState
         {
-            Sent = 0,
-            Received = 1
+            Initial = 0,
+            Sent = 1,
+            Received = 2
         }
 
         public QDomainMessage()
@@ -32,9 +33,9 @@ namespace ACE
 
         #region Route State
 
-        public MessageRouteState _state { get; private set; }
-        public DateTime? _sendAt { get; private set; }
-        public DateTime? _receiveAt { get; private set; }
+        public MessageRouteState _state { get; set; }
+        public DateTime? _sendAt { get; set; }
+        public DateTime? _receiveAt { get; set; }
 
         public void MarkAsSent()
         {

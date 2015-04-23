@@ -67,6 +67,11 @@ namespace ACE
         private void FlushAnEvent<T>(T @event) where T : Event
         {
             _busLogger.Sent(@event);
+            // Handle event in current thread or in thread pool will change event, so dispatch orignal event to queue first.
+            if (EventShouldDistributeToExternalQueue && @event.ShouldDistributeToExternalQueue())
+            {
+                DistributeToExternalQueue(@event);
+            }
             if (@event.ShouldDistributeInCurrentThread())
             {
                 Invoke((dynamic)@event);
@@ -74,10 +79,6 @@ namespace ACE
             if (@event.ShouldDistributeInThreadPool())
             {
                 DistributeInThreadPool((dynamic)@event);
-            }
-            if (EventShouldDistributeToExternalQueue && @event.ShouldDistributeToExternalQueue())
-            {
-                DistributeToExternalQueue(@event);
             }
         }
 
