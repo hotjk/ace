@@ -7,8 +7,8 @@
     <ProjectGuid>{0D2BC216-5017-4182-9A2C-0E71A0BB95E4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Grit.ACE.Logger</RootNamespace>
-    <AssemblyName>Grit.ACE.Logger</AssemblyName>
+    <RootNamespace>ACE.Logger</RootNamespace>
+    <AssemblyName>ACE.Logger</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -67,7 +67,7 @@
       <Project>{82f70b71-71ab-49b1-9e3f-5197abbfd1aa}</Project>
       <Name>ACE.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Grit.ACE\ACE.csproj">
+    <ProjectReference Include="..\ACE\ACE.csproj">
       <Project>{81569f0a-133a-4e07-a66b-9efc8b5f7411}</Project>
       <Name>ACE</Name>
     </ProjectReference>

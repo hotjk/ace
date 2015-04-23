@@ -82,11 +82,11 @@
       <Project>{b9fcad5a-3e1d-4d44-9c70-a1b0759dd9a4}</Project>
       <Name>ACE.Demo.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Grit.ACE.Logger\Grit.ACE.Logger.csproj">
+    <ProjectReference Include="..\ACE.Logger\ACE.Logger.csproj">
       <Project>{0d2bc216-5017-4182-9a2c-0e71a0bb95e4}</Project>
-      <Name>Grit.ACE.Logger</Name>
+      <Name>ACE.Logger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Grit.ACE\ACE.csproj">
+    <ProjectReference Include="..\ACE\ACE.csproj">
       <Project>{81569f0a-133a-4e07-a66b-9efc8b5f7411}</Project>
       <Name>ACE</Name>
     </ProjectReference>

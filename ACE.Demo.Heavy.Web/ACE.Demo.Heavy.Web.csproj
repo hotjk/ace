@@ -216,6 +216,10 @@
       <Project>{fe904a73-61f7-4e93-8bd0-6aa4fd879baf}</Project>
       <Name>ACE.Demo.Repositories</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ACE.Logger\ACE.Logger.csproj">
+      <Project>{0d2bc216-5017-4182-9a2c-0e71a0bb95e4}</Project>
+      <Name>ACE.Logger</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ACE.WS.Contracts\ACE.WS.Contracts.csproj">
       <Project>{9b93d888-04f3-4d0d-8220-f36a8449a3a8}</Project>
       <Name>ACE.WS.Contracts</Name>
@@ -224,11 +228,7 @@
       <Project>{bfd5d0df-4aa4-43eb-a5e4-45d1de189aad}</Project>
       <Name>ACE.WS</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Grit.ACE.Logger\Grit.ACE.Logger.csproj">
-      <Project>{0d2bc216-5017-4182-9a2c-0e71a0bb95e4}</Project>
-      <Name>Grit.ACE.Logger</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Grit.ACE\ACE.csproj">
+    <ProjectReference Include="..\ACE\ACE.csproj">
       <Project>{81569f0a-133a-4e07-a66b-9efc8b5f7411}</Project>
       <Name>ACE</Name>
     </ProjectReference>
