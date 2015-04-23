@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ACE.Demo.Contracts.Commands
 {
-    public class CreateAccount : Command
+    public class CreateAccount : ICommand
     {
         public int AccountId { get; set; }
     }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ACE.Demo.Contracts.Commands
 {
-    public class ChangeProjectAmount : Command
+    public class ChangeProjectAmount : ICommand
     {
         public int ProjectId { get; set; }
         public decimal Change { get; set; }

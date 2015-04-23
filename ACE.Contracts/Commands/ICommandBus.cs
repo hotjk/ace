@@ -8,6 +8,6 @@
         /// <typeparam name="T"></typeparam>
         /// <param name="command"></param>
         /// <returns></returns>
-        ICommandBus Send<T>(T command) where T : Command;
+        ICommandBus Send<T>(T command) where T : ICommand;
     }
 }

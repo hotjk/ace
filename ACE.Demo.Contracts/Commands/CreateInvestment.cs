@@ -7,7 +7,7 @@ using ACE;
 
 namespace ACE.Demo.Contracts.Commands
 {
-    public class CreateInvestment : Command
+    public class CreateInvestment : ICommand
     {
         public int InvestmentId { get; set; }
         public int AccountId { get; set; }

@@ -46,7 +46,6 @@
     <Compile Include="Actions\IActionBus.cs" />
     <Compile Include="Actions\IActionHandler.cs" />
     <Compile Include="Actions\IActionHandlerFactory.cs" />
-    <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ICommandBus.cs" />
     <Compile Include="Commands\ICommandHandler.cs" />

@@ -9,7 +9,7 @@
             _commandHandlerFactory = commandHandlerFactory;
         }
 
-        public ICommandBus Send<T>(T command) where T : Command
+        public ICommandBus Send<T>(T command) where T : ICommand
         {
             var handler = _commandHandlerFactory.GetHandler<T>();
             handler.Execute(command);

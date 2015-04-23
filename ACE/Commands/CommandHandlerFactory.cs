@@ -37,7 +37,7 @@ namespace ACE
 
             foreach (var assembly in assemblies.Where(n => _commandAssmblies.Any(m => m == n.GetName().Name)))
             {
-                commands.AddRange(assembly.GetExportedTypes().Where(x => x.IsSubclassOf(typeof(Command))));
+                commands.AddRange(assembly.GetExportedTypes().Where(x => typeof(ICommand).IsAssignableFrom(x)));
             }
 
             foreach (var assembly in assemblies.Where(n => _handlerAssmblies.Any(m => m == n.GetName().Name)))
@@ -92,7 +92,7 @@ namespace ACE
             return sb.ToString();
         }
 
-        public ICommandHandler<T> GetHandler<T>() where T : Command
+        public ICommandHandler<T> GetHandler<T>() where T : ICommand
         {
             Type handler;
             if (!_handlers.TryGetValue(typeof(T), out handler))

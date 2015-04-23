@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ACE.Demo.Contracts.Commands
 {
-    public class CompleteInvestment : Command
+    public class CompleteInvestment : ICommand
     {
         public int InvestmentId { get; set; }
     }
