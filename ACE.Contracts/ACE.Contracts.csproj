@@ -51,7 +51,8 @@
     <Compile Include="Commands\ICommandBus.cs" />
     <Compile Include="Commands\ICommandHandler.cs" />
     <Compile Include="Commands\ICommandHandlerFactory.cs" />
-    <Compile Include="DomainMessage.cs" />
+    <Compile Include="IDomainMessage.cs" />
+    <Compile Include="QDomainMessage.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\IEvent.cs" />
     <Compile Include="Events\IEventBus.cs" />

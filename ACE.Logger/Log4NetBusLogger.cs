@@ -17,7 +17,7 @@ namespace ACE.Loggers
             DebugLogger = log4net.LogManager.GetLogger("debug.logger");
         }
 
-        public void Sent(DomainMessage message)
+        public void Sent(QDomainMessage message)
         {
             message.MarkAsSent();
             if (MessageLogger.IsInfoEnabled)
@@ -26,7 +26,7 @@ namespace ACE.Loggers
             }
         }
 
-        public void Received(DomainMessage message)
+        public void Received(QDomainMessage message)
         {
             message.MarkAsReceived();
             if (MessageLogger.IsInfoEnabled)
@@ -35,7 +35,7 @@ namespace ACE.Loggers
             }
         }
 
-        public void Exception(DomainMessage message, Exception ex)
+        public void Exception(QDomainMessage message, Exception ex)
         {
             ExceptionLogger.Error(JsonConvert.SerializeObject(message), ex);
         }

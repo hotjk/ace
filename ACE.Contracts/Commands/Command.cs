@@ -1,6 +1,6 @@
 ﻿namespace ACE
 {
-    public class Command : DomainMessage, ICommand
+    public class Command : IDomainMessage, ICommand
     {
     }
 }

@@ -4,17 +4,17 @@ namespace ACE.Loggers
 {
     public class NullBusLogger : IBusLogger
     {
-        public void Sent(DomainMessage message)
+        public void Sent(QDomainMessage message)
         {
             message.MarkAsSent();
         }
 
-        public void Received(DomainMessage message)
+        public void Received(QDomainMessage message)
         {
             message.MarkAsReceived();
         }
 
-        public void Exception(DomainMessage message, Exception ex)
+        public void Exception(QDomainMessage message, Exception ex)
         {
         }
 

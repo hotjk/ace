@@ -1,6 +1,6 @@
 ﻿namespace ACE.Actions
 {
-    public class ActionResponse : DomainMessage
+    public class ActionResponse : QDomainMessage
     {
         public enum ActionResponseResult
         {

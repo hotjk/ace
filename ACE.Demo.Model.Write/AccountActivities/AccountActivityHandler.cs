@@ -15,7 +15,7 @@ namespace ACE.Demo.Model.Write.AccountActivities
     {
         static AccountActivityHandler()
         {
-            ACEMapper.CreateMap<CreateAccountActivity, AccountActivity>();
+            AutoMapper.Mapper.CreateMap<CreateAccountActivity, AccountActivity>();
         }
         public AccountActivityHandler(IAccountActivityWriteRepository repository)
         {
@@ -28,7 +28,7 @@ namespace ACE.Demo.Model.Write.AccountActivities
             {
                 throw new BusinessException(BusinessStatusCode.BadRequest, "账户交易双方不能同时为空。");
             }
-            _repository.Save(ACEMapper.Map<AccountActivity>(command));
+            _repository.Save(AutoMapper.Mapper.Map<AccountActivity>(command));
         }
     }
 }

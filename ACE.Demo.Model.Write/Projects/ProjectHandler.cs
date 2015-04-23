@@ -16,7 +16,7 @@ namespace ACE.Demo.Model.Projects
     {
         static ProjectHandler()
         {
-            ACEMapper.CreateMapIgnoreId<ChangeProjectAmount, ProjectAmountChanged>();
+            AutoMapper.Mapper.CreateMap<ChangeProjectAmount, ProjectAmountChanged>();
         }
 
         private IProjectWriteRepository _repository;
@@ -33,7 +33,7 @@ namespace ACE.Demo.Model.Projects
             {
                 throw new BusinessException(BusinessStatusCode.Forbidden, "项目可投资金额不足。");
             }
-            EventBus.Publish(ACEMapper.Map<ProjectAmountChanged>(command).ToExternalQueue());
+            EventBus.Publish(AutoMapper.Mapper.Map<ProjectAmountChanged>(command).ToExternalQueue());
         }
     }
 }

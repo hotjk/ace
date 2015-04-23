@@ -51,7 +51,6 @@
     <Compile Include="AccountActivities\IAccountActivityWriteRepository.cs" />
     <Compile Include="Accounts\AccountHandler.cs" />
     <Compile Include="Accounts\IAccountWriteRepository.cs" />
-    <Compile Include="ACEMapper.cs" />
     <Compile Include="HandlerBase.cs" />
     <Compile Include="Investments\IInvestmentWriteRepository.cs" />
     <Compile Include="Investments\InvestmentHandler.cs" />

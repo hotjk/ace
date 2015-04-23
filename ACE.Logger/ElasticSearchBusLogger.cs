@@ -20,10 +20,10 @@ namespace ACE.Loggers
         {
             public string ExceptionMessage { get; set; }
             public string StackTrace { get; set; }
-            public DomainMessage Message { get; set; }
+            public QDomainMessage Message { get; set; }
         }
 
-        public void Sent(DomainMessage message)
+        public void Sent(QDomainMessage message)
         {
             message.MarkAsSent();
             try
@@ -37,12 +37,12 @@ namespace ACE.Loggers
             }
         }
 
-        public void Received(DomainMessage message)
+        public void Received(QDomainMessage message)
         {
             message.MarkAsReceived();
             try
             { 
-            var reponse = client.Update<DomainMessage, object>(i => i
+            var reponse = client.Update<QDomainMessage, object>(i => i
                 .Id(message._id.ToString())
                 .Index(messageIndex)
                 .Upsert(message));
@@ -52,7 +52,7 @@ namespace ACE.Loggers
             }
         }
 
-        public void Exception(DomainMessage message, Exception ex)
+        public void Exception(QDomainMessage message, Exception ex)
         {
             try
             {
