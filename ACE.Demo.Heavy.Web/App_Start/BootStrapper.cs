@@ -39,12 +39,12 @@ namespace ACE.Demo.Heavy.Web
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
             Container.Bind<IEventBus>().To<EventBus>()
                 .InThreadScope()
-                .WithConstructorArgument("eventDistributionOptions", ACE.Event.EventDistributionOptions.Queue);
+                .WithConstructorArgument(Constants.ParamEventDistributionOptions, ACE.Event.EventDistributionOptions.Queue);
 
             // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
             Container.Bind<IActionBus>().To<ActionBus>()
                 .InThreadScope()
-                .WithConstructorArgument("actionShouldDistributeToExternalQueue", true);
+                .WithConstructorArgument(Constants.ParamActionShouldDistributeToExternalQueue, true);
 
             IServiceMappingFactory serviceMappingFactory = new ServiceMappingFactory(() => {
                 return new Dictionary<Type, ServiceMapping>() {
