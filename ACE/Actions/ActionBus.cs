@@ -104,13 +104,12 @@ namespace ACE
                     }
                 }
             }
-            _busLogger.Received(response);
             return response;
         }
 
         private ActionResponse Work(ACE.Action action)
         {
-            ActionResponse response = new ActionResponse { Result = ActionResponse.ActionResponseResult.OK };
+            ActionResponse response = new ActionResponse(action);
             try
             {
                 Invoke((dynamic)action);
