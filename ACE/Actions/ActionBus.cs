@@ -59,7 +59,9 @@ namespace ACE
                 throw new Exception("Action is not configure to distribute to queue, maybe you can direct invoke action in thread.");
             }
             _busLogger.Sent(action);
-            return _bus.Request<B, ActionResponse>(action);
+            ActionResponse response = _bus.Request<B, ActionResponse>(action);
+            _busLogger.Received(response);
+            return response;
         }
 
         public async Task<ActionResponse> SendAsync<B, T>(T action)
@@ -71,7 +73,9 @@ namespace ACE
                 throw new Exception("Action is not allow to distribute to queue, maybe you can direct invoke action in thread.");
             }
             _busLogger.Sent(action);
-            return await _bus.RequestAsync<B, ActionResponse>(action);
+            ActionResponse response = await _bus.RequestAsync<B, ActionResponse>(action);
+            _busLogger.Received(response);
+            return response;
         }
 
         public async Task<ActionResponse> SendAsyncWithRetry<B, T>(T action, int retryCount = 2)
@@ -100,6 +104,7 @@ namespace ACE
                     }
                 }
             }
+            _busLogger.Received(response);
             return response;
         }
 
@@ -115,6 +120,7 @@ namespace ACE
                 response.Result = ActionResponse.ActionResponseResult.NG;
                 response.Message = ex.Message;
             }
+            _busLogger.Sent(response);
             return response;
         }
 
