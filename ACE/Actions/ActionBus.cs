@@ -119,6 +119,11 @@ namespace ACE
                 response.Result = ActionResponse.ActionResponseResult.NG;
                 response.Message = ex.Message;
             }
+            catch (Exception ex)
+            {
+                response.Result = ActionResponse.ActionResponseResult.Exception;
+                response.Message = ex.Message;
+            }
             _busLogger.Sent(response);
             return response;
         }
