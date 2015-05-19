@@ -18,6 +18,13 @@
         void Flush();
 
         /// <summary>
+        /// Direct flush an event.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="event"></param>
+        void FlushAnEvent<T>(T @event) where T : Event;
+
+        /// <summary>
         /// Direct handle a event in current thread.
         /// </summary>
         /// <typeparam name="T"></typeparam>

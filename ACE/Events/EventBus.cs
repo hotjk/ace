@@ -64,7 +64,7 @@ namespace ACE
             _events.Clear();
         }
 
-        private void FlushAnEvent<T>(T @event) where T : Event
+        public void FlushAnEvent<T>(T @event) where T : Event
         {
             _busLogger.Sent(@event);
             // Handle event in current thread or in thread pool will change event, so dispatch orignal event to queue first.
