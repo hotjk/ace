@@ -41,9 +41,7 @@ namespace ACE.Demo.Heavy.Web
                 .InThreadScope();
 
             // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
-            Container.Bind<IActionBus>().To<ActionBus>()
-                .InThreadScope()
-                .WithConstructorArgument(Constants.ParamActionShouldDistributeToExternalQueue, true);
+            Container.Bind<IActionBus>().To<ActionBus>().InThreadScope();
 
             IServiceMappingFactory serviceMappingFactory = new ServiceMappingFactory(() => {
                 return new Dictionary<Type, ServiceMapping>() {

@@ -10,22 +10,14 @@ namespace ACE
         private IActionHandlerFactory _actionHandlerFactory;
         private EasyNetQ.IBus _bus;
         private IBusLogger _busLogger;
-        public bool ActionShouldDistributeToExternalQueue { get; private set; }
 
         public ActionBus(IBusLogger busLogger, 
             IActionHandlerFactory ActionHandlerFactory = null,
-            bool actionShouldDistributeToExternalQueue = false, 
             EasyNetQ.IBus bus = null)
         {
-            ActionShouldDistributeToExternalQueue = actionShouldDistributeToExternalQueue;
             _actionHandlerFactory = ActionHandlerFactory;
             _bus = bus;
             _busLogger = busLogger;
-
-            if (ActionShouldDistributeToExternalQueue && _bus == null)
-            {
-                throw new Exception("IBus is required when distribute action to queue.");
-            }
         }
 
         public void Invoke<T>(T action) where T : IAction
@@ -53,10 +45,6 @@ namespace ACE
             where B : class, IAction
             where T : B
         {
-            if (!ActionShouldDistributeToExternalQueue)
-            {
-                throw new Exception("Action is not configure to distribute to queue, maybe you can direct invoke action in thread.");
-            }
             _busLogger.Sent(action);
             ActionResponse response = _bus.Request<B, ActionResponse>(action);
             _busLogger.Received(response);
@@ -67,10 +55,6 @@ namespace ACE
             where B : class, IAction
             where T : B
         {
-            if (!ActionShouldDistributeToExternalQueue)
-            {
-                throw new Exception("Action is not allow to distribute to queue, maybe you can direct invoke action in thread.");
-            }
             _busLogger.Sent(action);
             ActionResponse response = await _bus.RequestAsync<B, ActionResponse>(action);
             _busLogger.Received(response);

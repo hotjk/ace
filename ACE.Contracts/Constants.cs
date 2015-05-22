@@ -12,8 +12,5 @@ namespace ACE
         public const string ParamEventAssmblies = "eventAssmblies";
         public const string ParamActionAssmblies = "actionAssmblies";
         public const string ParamHandlerAssmblies = "handlerAssmblies";
-
-        public const string ParamEventDistributionOptions = "eventDistributionOptions";
-        public const string ParamActionShouldDistributeToExternalQueue = "actionShouldDistributeToExternalQueue";
     }
 }
