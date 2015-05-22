@@ -43,9 +43,7 @@ namespace ACE.Demo.Model.Investments
                 throw new BusinessException(BusinessStatusCode.Conflict, "投资已经存在，不要重复提交。"); 
             }
             _repository.Add(AutoMapper.Mapper.Map<Investment>(command));
-            EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCreated>(command)
-                .InThreadPool()
-                .ToExternalQueue());
+            EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCreated>(command));
         }
 
         public void Execute(CompleteInvestment command)
@@ -56,9 +54,7 @@ namespace ACE.Demo.Model.Investments
                 throw new BusinessException(BusinessStatusCode.NotFound, "投资不存在。");
             }
             _repository.Complete(command.InvestmentId);
-            EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCompleted>(investment)
-                .InThreadPool()
-                .ToExternalQueue());
+            EventBus.Publish(AutoMapper.Mapper.Map<InvestmentStatusCompleted>(investment));
         }
     }
 }

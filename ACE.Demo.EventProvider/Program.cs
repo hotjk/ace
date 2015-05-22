@@ -19,7 +19,7 @@ namespace ACE.Demo.EventProvider
             InvestmentStatusCreated investmentStatusCreated = new InvestmentStatusCreated { AccountId = 1, Amount = 2, InvestmentId = 3, ProjectId = 4 };
             for (int i = 0; i < 3600*100; i++)
             {
-                BootStrapper.EventBus.Publish(investmentStatusCreated.ToExternalQueue());
+                BootStrapper.EventBus.Publish(investmentStatusCreated);
                 BootStrapper.EventBus.Flush();
                 if (i % 10000 == 0)
                 {

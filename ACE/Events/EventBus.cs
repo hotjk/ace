@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace ACE
 {
@@ -12,42 +14,13 @@ namespace ACE
         private EasyNetQ.IBus _bus;
         private IBusLogger _busLogger;
         private IList<dynamic> _events = new List<dynamic>();
-        public Event.EventDistributionOptions _eventDistributionOptions;
-        public bool EventShouldDistributeInCurrentThread
-        {
-            get
-            {
-                return (_eventDistributionOptions & Event.EventDistributionOptions.CurrentThread) == Event.EventDistributionOptions.CurrentThread;
-            }
-        }
-        public bool EventShouldDistributeInThreadPool
-        {
-            get
-            {
-                return (_eventDistributionOptions & Event.EventDistributionOptions.ThreadPool) == Event.EventDistributionOptions.ThreadPool;
-            }
-        }
-        public bool EventShouldDistributeToExternalQueue
-        {
-            get
-            {
-                return (_eventDistributionOptions & Event.EventDistributionOptions.Queue) == Event.EventDistributionOptions.Queue;
-            }
-        }
 
         public EventBus(IBusLogger busLogger, IEventHandlerFactory eventHandlerFactory = null,
-            Event.EventDistributionOptions eventDistributionOptions = Event.EventDistributionOptions.BalckHole,
             EasyNetQ.IBus bus = null)
         {
-            _eventDistributionOptions = eventDistributionOptions;
             _eventHandlerFactory = eventHandlerFactory;
             _bus = bus;
             _busLogger = busLogger;
-            
-            if (EventShouldDistributeToExternalQueue && _bus == null)
-            {
-                throw new Exception("IBus is required when distribute event to queue.");
-            }
         }
 
         public void Publish<T>(T @event) where T : Event
@@ -67,19 +40,10 @@ namespace ACE
         public void FlushAnEvent<T>(T @event) where T : Event
         {
             _busLogger.Sent(@event);
-            // Handle event in current thread or in thread pool will change event, so dispatch orignal event to queue first.
-            if (EventShouldDistributeToExternalQueue && @event.ShouldDistributeToExternalQueue())
-            {
-                DistributeToExternalQueue(@event);
-            }
-            if (@event.ShouldDistributeInCurrentThread())
-            {
-                Invoke((dynamic)@event);
-            }
-            if (@event.ShouldDistributeInThreadPool())
-            {
-                DistributeInThreadPool((dynamic)@event);
-            }
+            DistributeToExternalQueue(@event);
+            // Since TransactionScope has completed, can not write database in current thread scope.
+            //Invoke((dynamic)@event);
+            DistributeInThreadPool((dynamic)@event);
         }
 
         private void DistributeInThreadPool<T>(T @event) where T : Event
@@ -109,7 +73,7 @@ namespace ACE
         {
             try
             {
-                _bus.Publish<ACE.Event>(@event, @event.RoutingKey());
+                _bus.Publish<ACE.Event>(@event, RoutingKey(@event));
             }
             catch (Exception ex)
             {
@@ -188,5 +152,41 @@ namespace ACE
                     x => x.WithTopic(topic));
             };
         }
+
+        /// <summary>
+        /// Routing key is the RabbitMQ exchange routing topic.
+        /// ProjectAmountChanged -> project.amount.changed 
+        /// </summary>
+        /// <returns></returns>
+        public static string RoutingKey(Event @event)
+        {
+            return ToDotString(@event.GetType().Name);
+        }
+
+        #region Converter between dot to camel
+
+        private static Regex _regexCamel = new Regex("[a-z][A-Z]");
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str">HelleWorld</param>
+        /// <returns>hello.world</returns>
+        public static string ToDotString(string str)
+        {
+            return _regexCamel.Replace(str, m => m.Value[0] + "." + m.Value[1]).ToLower();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str">hello.world</param>
+        /// <returns>HelleWorld</returns>
+        public static string ToCamelString(string str)
+        {
+            return string.Join("", str.Split(new char[] { '.' }).Select(n => char.ToUpper(n[0]) + n.Substring(1)));
+        }
+
+        #endregion
     }
 }

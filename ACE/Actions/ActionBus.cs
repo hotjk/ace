@@ -51,7 +51,7 @@ namespace ACE
         }
 
         public ActionResponse Send<B, T>(T action)
-            where B : Action
+            where B : class, Action
             where T : B
         {
             if (!ActionShouldDistributeToExternalQueue)
@@ -65,7 +65,7 @@ namespace ACE
         }
 
         public async Task<ActionResponse> SendAsync<B, T>(T action)
-            where B : Action
+            where B : class, Action
             where T : B
         {
             if (!ActionShouldDistributeToExternalQueue)
@@ -79,7 +79,7 @@ namespace ACE
         }
 
         public async Task<ActionResponse> SendAsyncWithRetry<B, T>(T action, int retryCount = 2)
-            where B : Action
+            where B : class, Action
             where T : B
         {
             ActionResponse response = null;
@@ -109,7 +109,7 @@ namespace ACE
 
         private ActionResponse Work(ACE.Action action)
         {
-            ActionResponse response = new ActionResponse(action);
+            ActionResponse response = new ActionResponse();
             try
             {
                 Invoke((dynamic)action);
@@ -128,12 +128,12 @@ namespace ACE
             return response;
         }
 
-        public void Subscribe<T>() where T : ACE.Action
+        public void Subscribe<T>() where T : class, ACE.Action
         {
             _bus.Respond<T, ActionResponse>(action => Work(action));
         }
 
-        public void SubscribeInParallel<T>(int capacity) where T : ACE.Action
+        public void SubscribeInParallel<T>(int capacity) where T : class, ACE.Action
         {
             var workers = new BlockingCollection<int>(capacity);
             for (int i = 0; i < capacity; i++)

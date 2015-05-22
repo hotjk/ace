@@ -44,7 +44,7 @@ namespace ACE
 
             foreach (var assembly in assemblies.Where(n => _eventAssmblies.Any(m => m == n.GetName().Name)))
             {
-                events.AddRange(assembly.GetExportedTypes().Where(x => x.IsSubclassOf(typeof(Event))).Where(x => !x.IsAbstract));
+                events.AddRange(assembly.GetExportedTypes().Where(x => typeof(IEvent).IsAssignableFrom(x)).Where(x => !x.IsAbstract));
             }
 
             foreach (var assembly in assemblies.Where(n => _handlerAssmblies.Any(m => m == n.GetName().Name)))

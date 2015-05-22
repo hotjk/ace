@@ -23,7 +23,7 @@ namespace ACE
         /// <param name="action"></param>
         /// <returns></returns>
         ActionResponse Send<B, T>(T action)
-            where B : Action
+            where B : class, Action
             where T : B;
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace ACE
         /// <param name="action"></param>
         /// <returns></returns>
         Task<ActionResponse> SendAsync<B, T>(T action)
-            where B : Action
+            where B : class, Action
             where T : B;
 
         /// <summary>
@@ -46,18 +46,18 @@ namespace ACE
         /// <param name="retryCount"></param>
         /// <returns></returns>
         Task<ActionResponse> SendAsyncWithRetry<B, T>(T action, int retryCount = 2)
-            where B : Action
+            where B : class, Action
             where T : B;
 
         /// <summary>
         /// Subscribe action from RabbitMQ.
         /// </summary>
-        void Subscribe<T>() where T : ACE.Action;
+        void Subscribe<T>() where T : class, ACE.Action;
 
         /// <summary>
         /// Subscribe action from RabbitMQ in parallel.
         /// </summary>
         /// <param name="capacity">Worker numbers</param>
-        void SubscribeInParallel<T>(int capacity) where T : ACE.Action;
+        void SubscribeInParallel<T>(int capacity) where T : class, ACE.Action;
     }
 }

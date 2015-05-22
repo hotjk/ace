@@ -34,7 +34,7 @@ namespace ACE.Demo.Model.Accounts
             {
                 throw new BusinessException(BusinessStatusCode.Forbidden, "账户余额不足。");
             }
-            EventBus.Publish(AutoMapper.Mapper.Map<AccountAmountChanged>(command).InThreadPool().ToExternalQueue());
+            EventBus.Publish(AutoMapper.Mapper.Map<AccountAmountChanged>(command));
         }
 
         public void Execute(CreateAccount command)
@@ -43,7 +43,7 @@ namespace ACE.Demo.Model.Accounts
             {
                 throw new BusinessException(BusinessStatusCode.Conflict, "账户已存在。");
             }
-            EventBus.Publish(AutoMapper.Mapper.Map<AccountStatusCreated>(command).InThreadPool().ToExternalQueue());
+            EventBus.Publish(AutoMapper.Mapper.Map<AccountStatusCreated>(command));
         }
     }
 }

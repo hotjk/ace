@@ -1,6 +1,6 @@
 ﻿namespace ACE
 {
-    public class Action : QDomainMessage, IAction
+    public interface Action : IAction
     {
     }
 }
