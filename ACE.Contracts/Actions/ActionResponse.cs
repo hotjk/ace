@@ -1,4 +1,4 @@
-﻿namespace ACE.Actions
+﻿namespace ACE.IActions
 {
     public class ActionResponse
     {

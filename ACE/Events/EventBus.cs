@@ -48,6 +48,7 @@ namespace ACE
 
         private void DistributeInThreadPool<T>(T @event) where T : IEvent
         {
+            if (_eventHandlerFactory == null) return;
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
             {
