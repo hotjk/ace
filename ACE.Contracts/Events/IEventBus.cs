@@ -10,7 +10,7 @@
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="event"></param>
-        void Publish<T>(T @event) where T : Event;
+        void Publish<T>(T @event) where T : IEvent;
 
         /// <summary>
         /// Flush all cached events.
@@ -22,14 +22,14 @@
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="event"></param>
-        void FlushAnEvent<T>(T @event) where T : Event;
+        void FlushAnEvent<T>(T @event) where T : IEvent;
 
         /// <summary>
         /// Direct handle a event in current thread.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="event"></param>
-        void Invoke<T>(T @event) where T : Event;
+        void Invoke<T>(T @event) where T : IEvent;
 
         /// <summary>
         /// Clear all cached events in thread.

@@ -97,7 +97,7 @@ namespace ACE
             return sb.ToString();
         }
 
-        public IActionHandler<T> GetHandler<T>() where T : Action
+        public IActionHandler<T> GetHandler<T>() where T : IAction
         {
             Type handler;
             if (!_handlers.TryGetValue(typeof(T), out handler))

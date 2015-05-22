@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ACE.Demo.Contracts.Actions
 {
-    public class InvestmentActionBase : ACE.Action
+    public class InvestmentActionBase : ACE.IAction
     {
     }
 }

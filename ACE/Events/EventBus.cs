@@ -23,7 +23,7 @@ namespace ACE
             _busLogger = busLogger;
         }
 
-        public void Publish<T>(T @event) where T : Event
+        public void Publish<T>(T @event) where T : IEvent
         {
             _events.Add(@event);
         }
@@ -37,7 +37,7 @@ namespace ACE
             _events.Clear();
         }
 
-        public void FlushAnEvent<T>(T @event) where T : Event
+        public void FlushAnEvent<T>(T @event) where T : IEvent
         {
             _busLogger.Sent(@event);
             DistributeToExternalQueue(@event);
@@ -46,7 +46,7 @@ namespace ACE
             DistributeInThreadPool((dynamic)@event);
         }
 
-        private void DistributeInThreadPool<T>(T @event) where T : Event
+        private void DistributeInThreadPool<T>(T @event) where T : IEvent
         {
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
@@ -69,11 +69,11 @@ namespace ACE
             }
         }
 
-        private void DistributeToExternalQueue<T>(T @event) where T : Event
+        private void DistributeToExternalQueue<T>(T @event) where T : IEvent
         {
             try
             {
-                _bus.Publish<ACE.Event>(@event, RoutingKey(@event));
+                _bus.Publish<ACE.IEvent>(@event, RoutingKey(@event));
             }
             catch (Exception ex)
             {
@@ -81,7 +81,7 @@ namespace ACE
             }
         }
 
-        public void Invoke<T>(T @event) where T : Event
+        public void Invoke<T>(T @event) where T : IEvent
         {
             var handlers = _eventHandlerFactory.GetHandlers<T>();
             if (handlers != null)
@@ -111,7 +111,7 @@ namespace ACE
             _events.Clear();
         }
 
-        private void Work(ACE.Event @event)
+        private void Work(ACE.IEvent @event)
         {
             Invoke((dynamic)@event);
         }
@@ -120,7 +120,7 @@ namespace ACE
         {
             foreach (var topic in topics)
             {
-                _bus.Subscribe<Event>(subscriptionId,
+                _bus.Subscribe<IEvent>(subscriptionId,
                     @event => Work(@event),
                     x => x.WithTopic(topic));
             }
@@ -136,7 +136,7 @@ namespace ACE
 
             foreach (var topic in topics)
             {
-                _bus.SubscribeAsync<Event>(subscriptionId,
+                _bus.SubscribeAsync<IEvent>(subscriptionId,
                     @event => Task.Factory.StartNew(() =>
                     {
                         var worker = workers.Take();
@@ -158,7 +158,7 @@ namespace ACE
         /// ProjectAmountChanged -> project.amount.changed 
         /// </summary>
         /// <returns></returns>
-        public static string RoutingKey(Event @event)
+        public static string RoutingKey(IEvent @event)
         {
             return ToDotString(@event.GetType().Name);
         }

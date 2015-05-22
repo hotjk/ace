@@ -109,7 +109,7 @@ namespace ACE
             return sb.ToString();
         }
 
-        public IEnumerable<IEventHandler<T>> GetHandlers<T>() where T : Event
+        public IEnumerable<IEventHandler<T>> GetHandlers<T>() where T : IEvent
         {
             List<Type> handlers;
             if (_handlers.TryGetValue(typeof(T), out handlers))

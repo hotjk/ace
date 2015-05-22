@@ -7,7 +7,7 @@ using ACE;
 
 namespace ACE.Demo.Contracts.Events
 {
-    public class InvestmentStatusCreated : Event
+    public class InvestmentStatusCreated : IEvent
     {
         public int InvestmentId { get; set; }
         public int AccountId { get; set; }

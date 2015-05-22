@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ACE.Demo.Contracts.Events
 {
-    public class AccountAmountChanged : Event
+    public class AccountAmountChanged : IEvent
     {
         public int AccountId { get; set; }
         public decimal Change { get; set; }

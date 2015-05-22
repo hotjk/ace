@@ -29,7 +29,7 @@ namespace ACE
             }
         }
 
-        public void Invoke<T>(T action) where T : Action
+        public void Invoke<T>(T action) where T : IAction
         {
             var handler = _actionHandlerFactory.GetHandler<T>();
             if (handler != null)
@@ -51,7 +51,7 @@ namespace ACE
         }
 
         public ActionResponse Send<B, T>(T action)
-            where B : class, Action
+            where B : class, IAction
             where T : B
         {
             if (!ActionShouldDistributeToExternalQueue)
@@ -65,7 +65,7 @@ namespace ACE
         }
 
         public async Task<ActionResponse> SendAsync<B, T>(T action)
-            where B : class, Action
+            where B : class, IAction
             where T : B
         {
             if (!ActionShouldDistributeToExternalQueue)
@@ -79,7 +79,7 @@ namespace ACE
         }
 
         public async Task<ActionResponse> SendAsyncWithRetry<B, T>(T action, int retryCount = 2)
-            where B : class, Action
+            where B : class, IAction
             where T : B
         {
             ActionResponse response = null;
@@ -107,7 +107,7 @@ namespace ACE
             return response;
         }
 
-        private ActionResponse Work(ACE.Action action)
+        private ActionResponse Work(ACE.IAction action)
         {
             ActionResponse response = new ActionResponse();
             try
@@ -128,12 +128,12 @@ namespace ACE
             return response;
         }
 
-        public void Subscribe<T>() where T : class, ACE.Action
+        public void Subscribe<T>() where T : class, ACE.IAction
         {
             _bus.Respond<T, ActionResponse>(action => Work(action));
         }
 
-        public void SubscribeInParallel<T>(int capacity) where T : class, ACE.Action
+        public void SubscribeInParallel<T>(int capacity) where T : class, ACE.IAction
         {
             var workers = new BlockingCollection<int>(capacity);
             for (int i = 0; i < capacity; i++)

@@ -1,6 +1,6 @@
 ﻿namespace ACE
 {
-    public interface IEventHandler<T> where T : Event
+    public interface IEventHandler<T> where T : IEvent
     {
         void Handle(T handle);
     }
