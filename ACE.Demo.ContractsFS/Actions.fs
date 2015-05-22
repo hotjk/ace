@@ -1,7 +1,6 @@
 ﻿namespace ACE.Demo.Contracts.Actions
 open System
 open ACE
-open ACE.WS
 
 type InvestmentActionBase = inherit IAction   
 type InvestmentCreateRequest = { InvestmentId: int; AccountId: int; ProjectId: int; Amount: decimal } interface InvestmentActionBase

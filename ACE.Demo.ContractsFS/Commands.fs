@@ -1,7 +1,6 @@
 ﻿namespace ACE.Demo.Contracts.Commands
 open System
 open ACE
-open ACE.WS
 
 type ChangeAccountAmount = { AccountId: int; Change: decimal } interface ICommand
 type ChangeProjectAmount = { ProjectId: int; Change: decimal } interface ICommand

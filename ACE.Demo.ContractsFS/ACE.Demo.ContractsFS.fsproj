@@ -42,8 +42,8 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands.fs" />
     <Compile Include="Actions.fs" />
+    <Compile Include="Commands.fs" />
     <Compile Include="Events.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -55,11 +55,6 @@
     <ProjectReference Include="..\ACE.Demo.Contracts\ACE.Demo.Contracts.csproj">
       <Name>ACE.Demo.Contracts</Name>
       <Project>{b9fcad5a-3e1d-4d44-9c70-a1b0759dd9a4}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\ACE.WS.Contracts\ACE.WS.Contracts.csproj">
-      <Name>ACE.WS.Contracts</Name>
-      <Project>{9b93d888-04f3-4d0d-8220-f36a8449a3a8}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

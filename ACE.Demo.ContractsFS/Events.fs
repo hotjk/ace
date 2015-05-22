@@ -1,7 +1,6 @@
 ﻿namespace ACE.Demo.Contracts.Events
 open System
 open ACE
-open ACE.WS
 
 type AccountAmountChanged = { AccountId: int; Change: decimal } interface IEvent
 type AccountStatusCreated = { AccountId: int } interface IEvent
