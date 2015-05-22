@@ -35,20 +35,20 @@ namespace ACE.Demo.Light.Web
             Container.Bind<ACE.Loggers.IBusLogger>().To<ACE.Loggers.Log4NetBusLogger>().InSingletonScope();
             Container.Bind<ICommandHandlerFactory>().To<CommandHandlerFactory>()
                 .InSingletonScope()
-                .WithConstructorArgument("commandAssmblies", new string[] { "ACE.Demo.Contracts" })
+                .WithConstructorArgument("commandAssmblies", new string[] { "ACE.Demo.ContractsFS" })
                 .WithConstructorArgument("handlerAssmblies", new string[] { "ACE.Demo.Model.Write" });
             Container.Bind<ICommandBus>().To<CommandBus>().InSingletonScope();
 
             Container.Bind<IEventHandlerFactory>().To<EventHandlerFactory>()
                 .InSingletonScope()
-                .WithConstructorArgument("eventAssmblies", new string[] { "ACE.Demo.Contracts" })
+                .WithConstructorArgument("eventAssmblies", new string[] { "ACE.Demo.ContractsFS" })
                 .WithConstructorArgument("handlerAssmblies", new string[] { "ACE.Demo.Model.Write" });
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
             Container.Bind<IEventBus>().To<EventBus>().InThreadScope();
 
             Container.Bind<IActionHandlerFactory>().To<ActionHandlerFactory>()
                 .InSingletonScope()
-                .WithConstructorArgument("actionAssmblies", new string[] { "ACE.Demo.Contracts" })
+                .WithConstructorArgument("actionAssmblies", new string[] { "ACE.Demo.ContractsFS" })
                 .WithConstructorArgument("handlerAssmblies", new string[] { "ACE.Demo.Application" });
             // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
             Container.Bind<IActionBus>().To<ActionBus>().InThreadScope();

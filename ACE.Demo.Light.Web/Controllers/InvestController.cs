@@ -45,13 +45,7 @@ namespace ACE.Demo.Light.Web.Controllers
         [HttpPost]
         public ActionResult Create(InvestViewModel vm)
         {
-            var action = new InvestmentCreateRequest
-            {
-                InvestmentId = _sequenceService.Next(SequenceID.ACE_Investment, 1),
-                AccountId = vm.AccountId,
-                ProjectId = vm.ProjectId,
-                Amount = vm.Amount
-            };
+            var action = new InvestmentCreateRequest(_sequenceService.Next(SequenceID.ACE_Investment, 1), vm.AccountId, vm.ProjectId, vm.Amount);
 
             try
             {
@@ -72,11 +66,7 @@ namespace ACE.Demo.Light.Web.Controllers
 
         public ActionResult Pay(int id)
         {
-            var action = new InvestmentPayRequest
-            {
-                InvestmentId = id
-            };
-
+            var action = new InvestmentPayRequest(id);
             try
             {
                 ActionBus.Invoke<InvestmentPayRequest>(action);

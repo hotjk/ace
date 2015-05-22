@@ -36,8 +36,7 @@ namespace ACE.Demo.EventConsumer
 
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
             Container.Bind<IEventBus>().To<ACE.EventBus>()
-                .InThreadScope()
-                .WithConstructorArgument("eventDistributionOptions", ACE.Event.EventDistributionOptions.Queue);
+                .InThreadScope();
         }
 
         public static void Dispose()
