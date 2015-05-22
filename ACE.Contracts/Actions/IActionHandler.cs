@@ -1,6 +1,6 @@
 ﻿namespace ACE
 {
-    public interface IActionHandler<T> where T : Action
+    public interface IActionHandler<T> where T : IAction
     {
         void Invoke(T action);
     }

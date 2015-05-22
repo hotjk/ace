@@ -1,6 +1,6 @@
-﻿namespace ACE.Actions
+﻿namespace ACE.IActions
 {
-    public class ActionResponse : QDomainMessage
+    public class ActionResponse
     {
         public enum ActionResponseResult
         {
@@ -9,13 +9,9 @@
             Exception = 2,
         }
 
-        public ActionResponse(QDomainMessage predecessor)
+        public ActionResponse()
         {
             this.Result = ActionResponseResult.OK;
-            if (predecessor != null)
-            {
-                this._id = predecessor._id;
-            }
         }
         
         public ActionResponseResult Result { get; set; }

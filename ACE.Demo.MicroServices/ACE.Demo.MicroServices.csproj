@@ -99,6 +99,10 @@
       <Project>{44f55475-7ab3-41f4-801e-e185294ab1f3}</Project>
       <Name>ACE.Demo.Application</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ACE.Demo.ContractsFS\ACE.Demo.ContractsFS.fsproj">
+      <Project>{aadb638a-93db-4191-82a1-954cc4d66c10}</Project>
+      <Name>ACE.Demo.ContractsFS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ACE.Demo.Contracts\ACE.Demo.Contracts.csproj">
       <Project>{b9fcad5a-3e1d-4d44-9c70-a1b0759dd9a4}</Project>
       <Name>ACE.Demo.Contracts</Name>

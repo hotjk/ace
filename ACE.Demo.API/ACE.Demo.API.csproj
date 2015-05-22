@@ -152,6 +152,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ACE.Demo.ContractsFS\ACE.Demo.ContractsFS.fsproj">
+      <Project>{aadb638a-93db-4191-82a1-954cc4d66c10}</Project>
+      <Name>ACE.Demo.ContractsFS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ACE.Demo.Contracts\ACE.Demo.Contracts.csproj">
       <Project>{b9fcad5a-3e1d-4d44-9c70-a1b0759dd9a4}</Project>
       <Name>ACE.Demo.Contracts</Name>
@@ -163,6 +167,10 @@
     <ProjectReference Include="..\ACE.Demo.Repositories\ACE.Demo.Repositories.csproj">
       <Project>{fe904a73-61f7-4e93-8bd0-6aa4fd879baf}</Project>
       <Name>ACE.Demo.Repositories</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACE.WS.Contracts\ACE.WS.Contracts.csproj">
+      <Project>{9b93d888-04f3-4d0d-8220-f36a8449a3a8}</Project>
+      <Name>ACE.WS.Contracts</Name>
     </ProjectReference>
     <ProjectReference Include="..\Grit.Configuration\Grit.Configuration.csproj">
       <Project>{38bff300-be60-4a8b-886e-0c3df4362657}</Project>

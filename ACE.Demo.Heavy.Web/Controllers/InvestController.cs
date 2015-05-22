@@ -20,7 +20,7 @@ namespace ACE.Demo.Web.Controllers
 {
     public class InvestController : ControllerBase
     {
-        public InvestController(IActionBus actionBus, IServiceBus serviceBus, 
+        public InvestController(IActionBus actionBus, IServiceBus serviceBus,
             ISequenceService sequenceService)
             : base(actionBus, serviceBus)
         {
@@ -43,13 +43,7 @@ namespace ACE.Demo.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(InvestViewModel vm)
         {
-            var action = new InvestmentCreateRequest
-            {
-                InvestmentId = _sequenceService.Next(SequenceID.ACE_Investment, 1),
-                AccountId = vm.AccountId,
-                ProjectId = vm.ProjectId,
-                Amount = vm.Amount
-            };
+            var action = new InvestmentCreateRequest(_sequenceService.Next(SequenceID.ACE_Investment, 1), vm.AccountId, vm.ProjectId, vm.Amount);
 
             var response = await ActionBus.SendAsyncWithRetry<InvestmentActionBase, InvestmentCreateRequest>(action, 3);
             TempData["ActionResponse"] = response;
@@ -64,11 +58,7 @@ namespace ACE.Demo.Web.Controllers
 
         public async Task<ActionResult> Pay(int id)
         {
-            var action = new InvestmentPayRequest
-            {
-                InvestmentId = id
-            };
-
+            var action = new InvestmentPayRequest(id);
             ActionResponse response = await ActionBus.SendAsync<InvestmentActionBase, InvestmentPayRequest>(action);
             TempData["ActionResponse"] = response;
             return RedirectToAction("Index", new { id = action.InvestmentId });

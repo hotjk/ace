@@ -4,9 +4,9 @@ namespace ACE.Loggers
 {
     public interface IBusLogger
     {
-        void Sent(QDomainMessage message);
-        void Received(QDomainMessage message);
-        void Exception(QDomainMessage message, Exception ex);
+        void Sent(object message);
+        void Received(object message);
+        void Exception(object message, Exception ex);
         void Debug(string message);
     }
 }
