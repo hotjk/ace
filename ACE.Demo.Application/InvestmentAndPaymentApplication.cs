@@ -70,31 +70,11 @@ namespace ACE.Demo.Application
             using (UnitOfWork u = new UnitOfWork(EventBus))
             {
                 CommandBus
-                    .Send(new CompleteInvestment
-                    {
-                        InvestmentId = action.InvestmentId
-                    })
-                    .Send(new ChangeProjectAmount
-                    {
-                        ProjectId = project.ProjectId,
-                        Change = 0 - investment.Amount
-                    })
-                    .Send(new ChangeAccountAmount
-                    {
-                        AccountId = investment.AccountId,
-                        Change = 0 - investment.Amount
-                    })
-                    .Send(new ChangeAccountAmount
-                    {
-                        AccountId = project.BorrowerId,
-                        Change = investment.Amount
-                    })
-                    .Send(new CreateAccountActivity
-                    {
-                        FromAccountId = investment.AccountId,
-                        ToAccountId = project.BorrowerId,
-                        Amount = investment.Amount
-                    });
+                    .Send(new CompleteInvestment(action.InvestmentId))
+                    .Send(new ChangeProjectAmount(project.ProjectId, 0 - investment.Amount))
+                    .Send(new ChangeAccountAmount(investment.AccountId, 0 - investment.Amount))
+                    .Send(new ChangeAccountAmount(project.BorrowerId, investment.Amount))
+                    .Send(new CreateAccountActivity(investment.AccountId, project.BorrowerId, investment.Amount));
                 u.Complete();
             }
         }

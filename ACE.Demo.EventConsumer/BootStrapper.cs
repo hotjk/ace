@@ -46,13 +46,13 @@ namespace ACE.Demo.EventConsumer
             Container.Bind<ACE.Loggers.IBusLogger>().To<ACE.Loggers.Log4NetBusLogger>().InSingletonScope();
             Container.Bind<ICommandHandlerFactory>().To<ACE.CommandHandlerFactory>()
                 .InSingletonScope()
-                .WithConstructorArgument(Constants.ParamCommandAssmblies, new string[] { "ACE.Demo.Contracts" })
+                .WithConstructorArgument(Constants.ParamCommandAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithConstructorArgument(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Model.Write" });
             Container.Bind<ICommandBus>().To<ACE.CommandBus>().InSingletonScope();
 
             Container.Bind<IEventHandlerFactory>().To<ACE.EventHandlerFactory>()
                 .InSingletonScope()
-                .WithConstructorArgument(Constants.ParamEventAssmblies, new string[] { "ACE.Demo.Contracts" })
+                .WithConstructorArgument(Constants.ParamEventAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithConstructorArgument(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Model.Write" });
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
             Container.Bind<IEventBus>().To<ACE.EventBus>()

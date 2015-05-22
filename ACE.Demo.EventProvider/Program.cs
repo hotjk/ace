@@ -16,7 +16,7 @@ namespace ACE.Demo.EventProvider
             log4net.Config.XmlConfigurator.Configure();
             BootStrapper.BootStrap();
 
-            InvestmentStatusCreated investmentStatusCreated = new InvestmentStatusCreated { AccountId = 1, Amount = 2, InvestmentId = 3, ProjectId = 4 };
+            InvestmentStatusCreated investmentStatusCreated = new InvestmentStatusCreated(3,1,4,2);
             for (int i = 0; i < 3600*100; i++)
             {
                 BootStrapper.EventBus.Publish(investmentStatusCreated);

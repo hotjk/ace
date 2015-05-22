@@ -60,7 +60,7 @@ namespace ACE.WS
                     restResponse.StatusCode,
                     mapping.Url));
             }
-            return JsonConvert.DeserializeObject<TRep>(restResponse.Content);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<TRep>(restResponse.Content);
         }
     }
 }

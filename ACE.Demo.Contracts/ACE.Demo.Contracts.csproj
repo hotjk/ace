@@ -39,26 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actions\InvestmentActionBase.cs" />
     <Compile Include="BusinessStatusCode.cs" />
-    <Compile Include="Commands\CompleteInvestment.cs" />
-    <Compile Include="Commands\ChangeAccountAmount.cs" />
-    <Compile Include="Commands\ChangeProjectAmount.cs" />
-    <Compile Include="Commands\CreateAccountActivity.cs" />
-    <Compile Include="Commands\CreateAccount.cs" />
-    <Compile Include="Commands\CreateInvestment.cs" />
     <Compile Include="Enum\InvestmentStatus.cs" />
-    <Compile Include="Events\AccountAmountChanged.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Events\AccountStatusCreated.cs" />
-    <Compile Include="Actions\InvestmentPayRequest.cs" />
-    <Compile Include="Actions\InvestmentCreateRequest.cs" />
-    <Compile Include="Events\InvestmentStatusCompleted.cs" />
-    <Compile Include="Events\InvestmentStatusCreated.cs" />
-    <Compile Include="Events\ProjectAmountChanged.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Investments\GetInvestmentRequest.cs" />
     <Compile Include="Services\Investments\GetInvestmentsRequest.cs" />
