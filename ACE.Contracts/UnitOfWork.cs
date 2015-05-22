@@ -35,6 +35,7 @@ namespace ACE
             scope.Complete();
             if(_eventBus != null)
             {
+                // Flush event in current thread can not write database since the TransactionScope has completed.
                 _eventBus.Flush();
             }
         }
