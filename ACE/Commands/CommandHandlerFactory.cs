@@ -9,8 +9,6 @@ namespace ACE
     public class CommandHandlerFactory : ICommandHandlerFactory
     {
         private IContainer _container;
-        private ILifetimeScope _scope;
-
         private IEnumerable<string> _commandAssmblies;
         private IEnumerable<string> _handlerAssmblies;
         private IDictionary<Type, Type> _handlers;
@@ -23,7 +21,6 @@ namespace ACE
             lock (_lockThis)
             {
                 _container = container;
-                _scope = _container.BeginLifetimeScope();
                 _commandAssmblies = commandAssmblies;
                 _handlerAssmblies = handlerAssmblies;
                 Utility.EnsoureAssemblyLoaded(_commandAssmblies);
@@ -78,9 +75,9 @@ namespace ACE
         private void BindHandlers()
         {
             var builder = new ContainerBuilder();
-            foreach (var kv in _handlers)
+            foreach (var v in _handlers.Values.Distinct())
             {
-                builder.RegisterType(kv.Value).SingleInstance();
+                builder.RegisterType(v).SingleInstance();
             }
             builder.Update(_container);
         }
@@ -106,8 +103,7 @@ namespace ACE
                 throw new UnregisteredDomainCommandException("no handler registered for command: " + typeof(T));
             }
 
-            //return (ICommandHandler<T>)_container.Resolve(handler);
-            return (ICommandHandler<T>)_scope.Resolve(handler);
+            return (ICommandHandler<T>)_container.Resolve(handler);
         }
     }
 }

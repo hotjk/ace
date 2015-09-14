@@ -28,8 +28,11 @@ namespace ACE.Demo.Light.Web
         {
             _builder = new ContainerBuilder();
             Container = _builder.Build();
+
+            _builder = new ContainerBuilder();
             BindFrameworkObjects();
             BindBusinessObjects();
+            _builder.Update(Container);
         }
 
         private static void BindFrameworkObjects()
@@ -57,7 +60,9 @@ namespace ACE.Demo.Light.Web
                 .WithParameter(Constants.ParamActionAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Application" });
             // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
-            _builder.RegisterType<ActionBus>().As<IActionBus>().SingleInstance();
+            _builder.RegisterType<ActionBus>().As<IActionBus>()
+                .SingleInstance()
+                .WithParameter(new TypedParameter(typeof(Autofac.IContainer), Container));
         }
 
         private static void BindBusinessObjects()

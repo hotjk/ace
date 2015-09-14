@@ -6,11 +6,9 @@ using Autofac;
 
 namespace ACE
 {
-    public class EventHandlerFactory : IEventHandlerFactory, IDisposable
+    public class EventHandlerFactory : IEventHandlerFactory
     {
         private Autofac.IContainer _container;
-        private ILifetimeScope _scope;
-
         private IEnumerable<string> _eventAssmblies;
         private IEnumerable<string> _handlerAssmblies;
         private IDictionary<Type, List<Type>> _handlers;
@@ -25,7 +23,6 @@ namespace ACE
             lock (_lockThis)
             {
                 _container = container;
-                _scope = _container.BeginLifetimeScope();
                 _eventAssmblies = eventAssmblies;
                 _handlerAssmblies = handlerAssmblies;
                 Utility.EnsoureAssemblyLoaded(_eventAssmblies);
@@ -87,13 +84,12 @@ namespace ACE
         private void BindHandlers()
         {
             var builder = new ContainerBuilder();
-            foreach (var kv in _handlers)
+
+            foreach (var v in _handlers.Values.SelectMany(x => x).Distinct())
             {
-                foreach (var type in kv.Value)
-                {
-                    builder.RegisterType(type).SingleInstance();
-                }
+                builder.RegisterType(v).SingleInstance();
             }
+
             builder.Update(_container);
         }
 
@@ -121,18 +117,9 @@ namespace ACE
             List<Type> handlers;
             if (_handlers.TryGetValue(typeof(T), out handlers))
             {
-                //return handlers.Select(handler => (IEventHandler<T>)_container.Resolve(handler)).ToList();
-                return handlers.Select(handler => (IEventHandler<T>)_scope.Resolve(handler)).ToList();
+                return handlers.Select(handler => (IEventHandler<T>)_container.Resolve(handler)).ToList();
             }
             return null;
-        }
-
-        public void Dispose()
-        {
-            if(_scope!=null)
-            {
-                _scope.Dispose();
-            }
         }
     }
 }

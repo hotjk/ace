@@ -9,8 +9,6 @@ namespace ACE
     public class ActionHandlerFactory : IActionHandlerFactory
     {
         private IContainer _container;
-        private ILifetimeScope _scope;
-
         private IEnumerable<string> _actionAssmblies;
         private IEnumerable<string> _handlerAssmblies;
         private IDictionary<Type, Type> _handlers;
@@ -24,7 +22,6 @@ namespace ACE
             lock (_lockThis)
             {
                 _container = container;
-                _scope = _container.BeginLifetimeScope();
                 _actionAssmblies = actionAssmblies;
                 _handlerAssmblies = handlerAssmblies;
                 Utility.EnsoureAssemblyLoaded(_actionAssmblies);
@@ -83,9 +80,9 @@ namespace ACE
         private void BindHandlers()
         {
             var builder = new ContainerBuilder();
-            foreach (var kv in _handlers)
+            foreach (var v in _handlers.Values.Distinct())
             {
-                builder.RegisterType(kv.Value).SingleInstance();
+                builder.RegisterType(v).SingleInstance();
             }
             builder.Update(_container);
         }
@@ -111,8 +108,7 @@ namespace ACE
                 throw new UnregisteredDomainCommandException("no handler registered for action: " + typeof(T));
             }
 
-            //return (IActionHandler<T>)_container.Resolve(handler);
-            return (IActionHandler<T>)_scope.Resolve(handler);
+            return (IActionHandler<T>)_container.Resolve(handler);
         }
     }
 }
