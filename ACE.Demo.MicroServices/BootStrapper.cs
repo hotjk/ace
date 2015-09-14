@@ -62,7 +62,7 @@ namespace ACE.Demo.MicroServices
                 .WithParameter(Constants.ParamEventAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Model.Write" });
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
-            _builder.RegisterType<EventBus>().As<IEventBus>().InstancePerRequest();
+            _builder.RegisterType<EventBus>().As<IEventBus>().InstancePerLifetimeScope();
 
             _builder.RegisterType<ActionHandlerFactory>().As<IActionHandlerFactory>()
                 .SingleInstance()
@@ -70,7 +70,9 @@ namespace ACE.Demo.MicroServices
                 .WithParameter(Constants.ParamActionAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Application" });
             // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
-            _builder.RegisterType<ActionBus>().As<IActionBus>().SingleInstance();
+            _builder.RegisterType<ActionBus>().As<IActionBus>()
+                .SingleInstance()
+                .WithParameter(new TypedParameter(typeof(Autofac.IContainer), Container));
         }
 
         private static void BindBusinessObjects()

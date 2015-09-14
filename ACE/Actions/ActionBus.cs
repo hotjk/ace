@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Autofac;
 
 namespace ACE
 {
@@ -10,11 +11,14 @@ namespace ACE
         private IActionHandlerFactory _actionHandlerFactory;
         private EasyNetQ.IBus _bus;
         private IBusLogger _busLogger;
+        private IContainer _container;
 
         public ActionBus(IBusLogger busLogger, 
+            IContainer container = null,
             IActionHandlerFactory ActionHandlerFactory = null,
             EasyNetQ.IBus bus = null)
         {
+            _container = container;
             _actionHandlerFactory = ActionHandlerFactory;
             _bus = bus;
             _busLogger = busLogger;
@@ -95,7 +99,10 @@ namespace ACE
             ActionResponse response = new ActionResponse();
             try
             {
-                Invoke((dynamic)action);
+                using (var scope = _container.BeginLifetimeScope())
+                {
+                    Invoke((dynamic)action);
+                }
             }
             catch (ACE.Exceptions.BusinessException ex)
             {

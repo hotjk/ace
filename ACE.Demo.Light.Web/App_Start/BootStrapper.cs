@@ -49,7 +49,7 @@ namespace ACE.Demo.Light.Web
                 .WithParameter(Constants.ParamEventAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Model.Write" });
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
-            _builder.RegisterType<EventBus>().As<IEventBus>().InstancePerRequest();
+            _builder.RegisterType<EventBus>().As<IEventBus>().SingleInstance();
 
             _builder.RegisterType<ActionHandlerFactory>().As<IActionHandlerFactory>()
                 .SingleInstance()

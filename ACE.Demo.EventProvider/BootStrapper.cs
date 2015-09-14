@@ -20,14 +20,16 @@ namespace ACE.Demo.EventConsumer
 
         public static void BootStrap()
         {
-            _builder = new ContainerBuilder();
-            Container = _builder.Build();
+            var adapter = new EasyNetQ.DI.AutofacAdapter(new ContainerBuilder());
+            Container = adapter.Container;
 
-            RabbitHutch.SetContainerFactory(() => { return new EasyNetQ.DI.AutofacAdapter(_builder); });
+            RabbitHutch.SetContainerFactory(() => { return adapter; });
             EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(Grit.Configuration.RabbitMQ.ACEQueueConnectionString,
                 x => x.Register<IEasyNetQLogger, NullLogger>());
-            
+
+            _builder = new ContainerBuilder();
             BindFrameworkObjects();
+            _builder.Update(Container);
 
             EventBus = Container.Resolve<IEventBus>();
         }
@@ -38,7 +40,7 @@ namespace ACE.Demo.EventConsumer
             _builder.RegisterType<ACE.Loggers.Log4NetBusLogger>().As<ACE.Loggers.IBusLogger>().SingleInstance();
 
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
-            _builder.RegisterType<EventBus>().As<IEventBus>().InstancePerRequest();
+            _builder.RegisterType<EventBus>().As<IEventBus>().SingleInstance();
         }
 
         public static void Dispose()
