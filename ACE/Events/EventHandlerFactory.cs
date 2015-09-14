@@ -2,19 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autofac;
 
 namespace ACE
 {
     public class EventHandlerFactory : IEventHandlerFactory
     {
-        private Ninject.IKernel _container;
+        private Autofac.IContainer _container;
         private IEnumerable<string> _eventAssmblies;
         private IEnumerable<string> _handlerAssmblies;
         private IDictionary<Type, List<Type>> _handlers;
         private readonly object _lockThis = new object();
         private IDictionary<string, Type> _eventTypes;
 
-        public EventHandlerFactory(Ninject.IKernel container,
+        public EventHandlerFactory(
+            Autofac.IContainer container,
             IEnumerable<string> eventAssmblies,
             IEnumerable<string> handlerAssmblies)
         {
@@ -81,13 +83,15 @@ namespace ACE
 
         private void BindHandlers()
         {
+            var builder = new ContainerBuilder();
             foreach (var kv in _handlers)
             {
                 foreach (var type in kv.Value)
                 {
-                    _container.Bind(kv.Key).To(type).InSingletonScope();
+                    builder.RegisterType(kv.Key).As(type).SingleInstance();
                 }
             }
+            builder.Update(_container);
         }
 
         private string Log()
@@ -114,7 +118,7 @@ namespace ACE
             List<Type> handlers;
             if (_handlers.TryGetValue(typeof(T), out handlers))
             {
-                return handlers.Select(handler => (IEventHandler<T>)_container.GetService(handler)).ToList();
+                return handlers.Select(handler => (IEventHandler<T>)_container.Resolve(handler)).ToList();
             }
             return null;
         }

@@ -2,7 +2,6 @@
 using ACE;
 using Grit.Sequence;
 using Grit.Sequence.Repository.MySql;
-using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,18 +10,23 @@ using System.Threading.Tasks;
 using EasyNetQ;
 using EasyNetQ.Loggers;
 using ACE.WS;
+using Autofac;
 
 namespace ACE.Demo.Heavy.Web
 {
     public static class BootStrapper
     {
-        public static Ninject.IKernel Container { get; private set; }
+        public static Autofac.IContainer Container { get; private set; }
         public static EasyNetQ.IBus EasyNetQBus { get; private set; }
+
+        private static ContainerBuilder _builder;
+
         public static void BootStrap()
         {
-            Container = new StandardKernel();
+            _builder = new ContainerBuilder();
+            Container = _builder.Build();
 
-            RabbitHutch.SetContainerFactory(() => { return new EasyNetQ.DI.NinjectAdapter(Container); });
+            RabbitHutch.SetContainerFactory(() => { return new EasyNetQ.DI.AutofacAdapter(_builder); });
             EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(Grit.Configuration.RabbitMQ.ACEQueueConnectionString,
                 x => x.Register<IEasyNetQLogger, NullLogger>());
 
@@ -32,16 +36,14 @@ namespace ACE.Demo.Heavy.Web
 
         private static void BindFrameworkObjects()
         {
-            Container.Settings.AllowNullInjection = true;
-
-            Container.Bind<ACE.Loggers.IBusLogger>().To<ACE.Loggers.Log4NetBusLogger>().InSingletonScope();
+            //Container.Settings.AllowNullInjection = true;
+            _builder.RegisterType<ACE.Loggers.IBusLogger>().As<ACE.Loggers.Log4NetBusLogger>().SingleInstance();
 
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
-            Container.Bind<IEventBus>().To<EventBus>()
-                .InThreadScope();
+            _builder.RegisterType<IEventBus>().As<EventBus>().InstancePerRequest();
 
             // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
-            Container.Bind<IActionBus>().To<ActionBus>().InThreadScope();
+            _builder.RegisterType<IActionBus>().As<ActionBus>().SingleInstance();
 
             IServiceMappingFactory serviceMappingFactory = new ServiceMappingFactory(() => {
                 return new Dictionary<Type, ServiceMapping>() {
@@ -49,14 +51,14 @@ namespace ACE.Demo.Heavy.Web
                      { typeof(ACE.Demo.Contracts.Services.GetInvestmentRequest), new ServiceMapping("http://localhost:59857", "api/investment") }
                 };
             });
-            Container.Bind<IServiceMappingFactory>().ToConstant(serviceMappingFactory);
-            Container.Bind<IServiceBus>().To<ServiceBus>().InSingletonScope();
+            _builder.RegisterInstance(serviceMappingFactory).As<IServiceMappingFactory>();
+            _builder.RegisterType<IServiceBus>().As<ServiceBus>().SingleInstance();
         }
 
         private static void BindBusinessObjects()
         {
-            Container.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
-            Container.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
+            _builder.RegisterType<ISequenceRepository>().As<SequenceRepository>().SingleInstance();
+            _builder.RegisterType<ISequenceService>().As<SequenceService>().SingleInstance();
         }
 
         public static void Dispose()

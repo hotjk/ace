@@ -9,6 +9,9 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Autofac;
+using Autofac.Integration.WebApi;
+using System.Reflection;
 
 namespace ACE.Demo.API
 {
@@ -16,14 +19,19 @@ namespace ACE.Demo.API
     {
         protected void Application_Start()
         {
-            NinjectDependencyResolver ninject = new NinjectDependencyResolver { Kernel = new Ninject.StandardKernel() };
-            DependencyResolver.SetResolver(ninject);
-            GlobalConfiguration.Configuration.DependencyResolver = new NinjectDependencyResolver4API(ninject.Kernel);
+            var builder = new ContainerBuilder();
 
-            ninject.Kernel.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
-            ninject.Kernel.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
-            ninject.Kernel.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
-            ninject.Kernel.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
+            var config = GlobalConfiguration.Configuration;
+            builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+            builder.RegisterWebApiFilterProvider(config);
+
+            builder.RegisterType<IProjectRepository>().As<ProjectRepository>().SingleInstance();
+            builder.RegisterType<IProjectService>().As<ProjectService>().SingleInstance();
+            builder.RegisterType<IInvestmentRepository>().As<InvestmentRepository>().SingleInstance();
+            builder.RegisterType<IInvestmentService>().As<InvestmentService>().SingleInstance();
+
+            var container = builder.Build();
+            config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
 
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);

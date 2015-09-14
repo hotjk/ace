@@ -7,6 +7,9 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Autofac;
+using Autofac.Integration.Mvc;
+using System.Reflection;
 
 namespace ACE.Demo.Light.Web
 {
@@ -17,7 +20,17 @@ namespace ACE.Demo.Light.Web
             log4net.Config.XmlConfigurator.Configure();
 
             BootStrapper.BootStrap();
-            DependencyResolver.SetResolver(new NinjectDependencyResolver { Kernel = BootStrapper.Container });
+
+            var builder = new ContainerBuilder();
+            builder.RegisterControllers(typeof(MvcApplication).Assembly);
+            builder.RegisterModelBinders(Assembly.GetExecutingAssembly());
+            builder.RegisterModelBinderProvider();
+            builder.RegisterModule<AutofacWebTypesModule>();
+            builder.RegisterSource(new ViewRegistrationSource());
+            builder.RegisterFilterProvider();
+
+            var container = builder.Build();
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

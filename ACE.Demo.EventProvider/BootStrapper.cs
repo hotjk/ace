@@ -1,42 +1,44 @@
 ﻿using ACE;
 using EasyNetQ;
 using EasyNetQ.Loggers;
-using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Autofac;
 
 namespace ACE.Demo.EventConsumer
 {
     public static class BootStrapper
     {
-        public static Ninject.IKernel Container { get; private set; }
+        public static Autofac.IContainer Container { get; private set; }
         public static EasyNetQ.IBus EasyNetQBus { get; private set; }
         public static IEventBus EventBus { get; private set; }
+
+        private static ContainerBuilder _builder;
+
         public static void BootStrap()
         {
-            Container = new StandardKernel();
-            
+            _builder = new ContainerBuilder();
+            Container = _builder.Build();
 
-            Container.Bind<ACE.Loggers.IBusLogger>().To<ACE.Loggers.Log4NetBusLogger>().InSingletonScope();
-            RabbitHutch.SetContainerFactory(() => { return new EasyNetQ.DI.NinjectAdapter(Container); });
+            RabbitHutch.SetContainerFactory(() => { return new EasyNetQ.DI.AutofacAdapter(_builder); });
             EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(Grit.Configuration.RabbitMQ.ACEQueueConnectionString,
                 x => x.Register<IEasyNetQLogger, NullLogger>());
             
             BindFrameworkObjects();
 
-            EventBus = Container.GetService(typeof(IEventBus)) as IEventBus;
+            EventBus = Container.Resolve<IEventBus>();
         }
 
         private static void BindFrameworkObjects()
         {
-            Container.Settings.AllowNullInjection = true;
+            //Container.Settings.AllowNullInjection = true;
+            _builder.RegisterType<ACE.Loggers.IBusLogger>().As<ACE.Loggers.Log4NetBusLogger>().SingleInstance();
 
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
-            Container.Bind<IEventBus>().To<ACE.EventBus>()
-                .InThreadScope();
+            _builder.RegisterType<IEventBus>().As<EventBus>().InstancePerRequest();
         }
 
         public static void Dispose()

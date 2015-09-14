@@ -9,7 +9,6 @@ using ACE.Demo.Repositories.Write;
 using ACE;
 using Grit.Sequence;
 using Grit.Sequence.Repository.MySql;
-using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,64 +16,67 @@ using System.Text;
 using System.Threading.Tasks;
 using EasyNetQ;
 using EasyNetQ.Loggers;
+using Autofac;
 
 namespace ACE.Demo.EventConsumer
 {
     public static class BootStrapper
     {
-        public static Ninject.IKernel Container { get; private set; }
+        public static Autofac.IContainer Container { get; private set; }
         public static EasyNetQ.IBus EasyNetQBus { get; private set; }
         public static IEventBus EventBus { get; private set; }
+        
+        private static ContainerBuilder _builder;
+
         public static void BootStrap()
         {
-            Container = new StandardKernel();
+            _builder = new ContainerBuilder();
+            Container = _builder.Build();
 
-            RabbitHutch.SetContainerFactory(() => { return new EasyNetQ.DI.NinjectAdapter(Container); });
+            RabbitHutch.SetContainerFactory(() => { return new EasyNetQ.DI.AutofacAdapter(_builder); });
             EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(Grit.Configuration.RabbitMQ.ACEQueueConnectionString,
                 x => x.Register<IEasyNetQLogger, NullLogger>());
 
             BindFrameworkObjects();
             BindBusinessObjects();
 
-            EventBus = Container.GetService(typeof(IEventBus)) as IEventBus;
+            EventBus = Container.Resolve<IEventBus>();
         }
 
         private static void BindFrameworkObjects()
         {
-            Container.Settings.AllowNullInjection = true;
+            //Container.Settings.AllowNullInjection = true;
+            _builder.RegisterType<ACE.Loggers.IBusLogger>().As<ACE.Loggers.Log4NetBusLogger>().SingleInstance();
+            _builder.RegisterType<ICommandHandlerFactory>().As<CommandHandlerFactory>()
+                .SingleInstance()
+                .WithParameter(Constants.ParamCommandAssmblies, new string[] { "ACE.Demo.ContractsFS" })
+                .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Model.Write" });
+            _builder.RegisterType<ICommandBus>().As<CommandBus>().SingleInstance();
 
-            Container.Bind<ACE.Loggers.IBusLogger>().To<ACE.Loggers.Log4NetBusLogger>().InSingletonScope();
-            Container.Bind<ICommandHandlerFactory>().To<ACE.CommandHandlerFactory>()
-                .InSingletonScope()
-                .WithConstructorArgument(Constants.ParamCommandAssmblies, new string[] { "ACE.Demo.ContractsFS" })
-                .WithConstructorArgument(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Model.Write" });
-            Container.Bind<ICommandBus>().To<ACE.CommandBus>().InSingletonScope();
-
-            Container.Bind<IEventHandlerFactory>().To<ACE.EventHandlerFactory>()
-                .InSingletonScope()
-                .WithConstructorArgument(Constants.ParamEventAssmblies, new string[] { "ACE.Demo.ContractsFS" })
-                .WithConstructorArgument(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Model.Write" });
+            _builder.RegisterType<IEventHandlerFactory>().As<EventHandlerFactory>()
+                .SingleInstance()
+                .WithParameter(Constants.ParamEventAssmblies, new string[] { "ACE.Demo.ContractsFS" })
+                .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Model.Write" });
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
-            Container.Bind<IEventBus>().To<ACE.EventBus>()
-                .InThreadScope();
+            _builder.RegisterType<IEventBus>().As<EventBus>().InstancePerRequest();
         }
 
         private static void BindBusinessObjects()
         {
-            Container.Bind<ISequenceRepository>().To<SequenceRepository>().InSingletonScope();
-            Container.Bind<ISequenceService>().To<SequenceService>().InSingletonScope();
+            _builder.RegisterType<ISequenceRepository>().As<SequenceRepository>().SingleInstance();
+            _builder.RegisterType<ISequenceService>().As<SequenceService>().SingleInstance();
 
-            Container.Bind<IInvestmentRepository>().To<InvestmentRepository>().InSingletonScope();
-            Container.Bind<IInvestmentWriteRepository>().To<InvestmentWriteRepository>().InSingletonScope();
-            Container.Bind<IInvestmentService>().To<InvestmentService>().InSingletonScope();
-            Container.Bind<IProjectRepository>().To<ProjectRepository>().InSingletonScope();
-            Container.Bind<IProjectWriteRepository>().To<ProjectWriteRepository>().InSingletonScope();
-            Container.Bind<IProjectService>().To<ProjectService>().InSingletonScope();
-            Container.Bind<IAccountRepository>().To<AccountRepository>().InSingletonScope();
-            Container.Bind<IAccountWriteRepository>().To<AccountWriteRepository>().InSingletonScope();
-            Container.Bind<IAccountService>().To<AccountService>().InSingletonScope();
-            Container.Bind<IMessageWriteRepository>().To<MessageWriteRepository>().InSingletonScope();
-            Container.Bind<IAccountActivityWriteRepository>().To<AccountActivityWriteRepository>().InSingletonScope();
+            _builder.RegisterType<IInvestmentRepository>().As<InvestmentRepository>().SingleInstance();
+            _builder.RegisterType<IInvestmentWriteRepository>().As<InvestmentWriteRepository>().SingleInstance();
+            _builder.RegisterType<IInvestmentService>().As<InvestmentService>().SingleInstance();
+            _builder.RegisterType<IProjectRepository>().As<ProjectRepository>().SingleInstance();
+            _builder.RegisterType<IProjectWriteRepository>().As<ProjectWriteRepository>().SingleInstance();
+            _builder.RegisterType<IProjectService>().As<ProjectService>().SingleInstance();
+            _builder.RegisterType<IAccountRepository>().As<AccountRepository>().SingleInstance();
+            _builder.RegisterType<IAccountWriteRepository>().As<AccountWriteRepository>().SingleInstance();
+            _builder.RegisterType<IAccountService>().As<AccountService>().SingleInstance();
+            _builder.RegisterType<IMessageWriteRepository>().As<MessageWriteRepository>().SingleInstance();
+            _builder.RegisterType<IAccountActivityWriteRepository>().As<AccountActivityWriteRepository>().SingleInstance();
         }
 
         public static void Dispose()

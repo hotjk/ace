@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autofac;
 
 namespace ACE
 {
     public class ActionHandlerFactory : IActionHandlerFactory
     {
-        private Ninject.IKernel _container;
+        private IContainer _container;
         private IEnumerable<string> _actionAssmblies;
         private IEnumerable<string> _handlerAssmblies;
         private IDictionary<Type, Type> _handlers;
         private readonly object _lockThis = new object();
         private IDictionary<string, Type> _actionTypes;
 
-        public ActionHandlerFactory(Ninject.IKernel container,
+        public ActionHandlerFactory(IContainer container,
             IEnumerable<string> actionAssmblies,
             IEnumerable<string> handlerAssmblies)
         {
@@ -78,9 +79,10 @@ namespace ACE
 
         private void BindHandlers()
         {
+            var builder = new ContainerBuilder();
             foreach (var kv in _handlers)
             {
-                _container.Bind(kv.Key).To(kv.Value).InSingletonScope();
+                builder.RegisterType(kv.Key).As(kv.Value).SingleInstance();
             }
         }
 
@@ -105,7 +107,7 @@ namespace ACE
                 throw new UnregisteredDomainCommandException("no handler registered for action: " + typeof(T));
             }
 
-            return (IActionHandler<T>)_container.GetService(handler);
+            return (IActionHandler<T>)_container.Resolve(handler);
         }
     }
 }
