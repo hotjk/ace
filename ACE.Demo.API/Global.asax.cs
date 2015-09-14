@@ -25,10 +25,10 @@ namespace ACE.Demo.API
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
             builder.RegisterWebApiFilterProvider(config);
 
-            builder.RegisterType<IProjectRepository>().As<ProjectRepository>().SingleInstance();
-            builder.RegisterType<IProjectService>().As<ProjectService>().SingleInstance();
-            builder.RegisterType<IInvestmentRepository>().As<InvestmentRepository>().SingleInstance();
-            builder.RegisterType<IInvestmentService>().As<InvestmentService>().SingleInstance();
+            builder.RegisterType<ProjectRepository>().As<IProjectRepository>().SingleInstance();
+            builder.RegisterType<ProjectService>().As<IProjectService>().SingleInstance();
+            builder.RegisterType<InvestmentRepository>().As<IInvestmentRepository>().SingleInstance();
+            builder.RegisterType<InvestmentService>().As<IInvestmentService>().SingleInstance();
 
             var container = builder.Build();
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);

@@ -37,13 +37,13 @@ namespace ACE.Demo.Heavy.Web
         private static void BindFrameworkObjects()
         {
             //Container.Settings.AllowNullInjection = true;
-            _builder.RegisterType<ACE.Loggers.IBusLogger>().As<ACE.Loggers.Log4NetBusLogger>().SingleInstance();
+            _builder.RegisterType<ACE.Loggers.Log4NetBusLogger>().As<ACE.Loggers.IBusLogger>().SingleInstance();
 
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
-            _builder.RegisterType<IEventBus>().As<EventBus>().InstancePerRequest();
+            _builder.RegisterType<EventBus>().As<IEventBus>().InstancePerRequest();
 
             // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
-            _builder.RegisterType<IActionBus>().As<ActionBus>().SingleInstance();
+            _builder.RegisterType<ActionBus>().As<IActionBus>().SingleInstance();
 
             IServiceMappingFactory serviceMappingFactory = new ServiceMappingFactory(() => {
                 return new Dictionary<Type, ServiceMapping>() {
@@ -52,13 +52,13 @@ namespace ACE.Demo.Heavy.Web
                 };
             });
             _builder.RegisterInstance(serviceMappingFactory).As<IServiceMappingFactory>();
-            _builder.RegisterType<IServiceBus>().As<ServiceBus>().SingleInstance();
+            _builder.RegisterType<ServiceBus>().As<IServiceBus>().SingleInstance();
         }
 
         private static void BindBusinessObjects()
         {
-            _builder.RegisterType<ISequenceRepository>().As<SequenceRepository>().SingleInstance();
-            _builder.RegisterType<ISequenceService>().As<SequenceService>().SingleInstance();
+            _builder.RegisterType<SequenceRepository>().As<ISequenceRepository>().SingleInstance();
+            _builder.RegisterType<SequenceService>().As<ISequenceService>().SingleInstance();
         }
 
         public static void Dispose()

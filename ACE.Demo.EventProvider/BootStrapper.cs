@@ -35,10 +35,10 @@ namespace ACE.Demo.EventConsumer
         private static void BindFrameworkObjects()
         {
             //Container.Settings.AllowNullInjection = true;
-            _builder.RegisterType<ACE.Loggers.IBusLogger>().As<ACE.Loggers.Log4NetBusLogger>().SingleInstance();
+            _builder.RegisterType<ACE.Loggers.Log4NetBusLogger>().As<ACE.Loggers.IBusLogger>().SingleInstance();
 
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
-            _builder.RegisterType<IEventBus>().As<EventBus>().InstancePerRequest();
+            _builder.RegisterType<EventBus>().As<IEventBus>().InstancePerRequest();
         }
 
         public static void Dispose()
