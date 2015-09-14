@@ -6,9 +6,11 @@ using Autofac;
 
 namespace ACE
 {
-    public class EventHandlerFactory : IEventHandlerFactory
+    public class EventHandlerFactory : IEventHandlerFactory, IDisposable
     {
         private Autofac.IContainer _container;
+        private ILifetimeScope _scope;
+
         private IEnumerable<string> _eventAssmblies;
         private IEnumerable<string> _handlerAssmblies;
         private IDictionary<Type, List<Type>> _handlers;
@@ -23,6 +25,7 @@ namespace ACE
             lock (_lockThis)
             {
                 _container = container;
+                _scope = _container.BeginLifetimeScope();
                 _eventAssmblies = eventAssmblies;
                 _handlerAssmblies = handlerAssmblies;
                 Utility.EnsoureAssemblyLoaded(_eventAssmblies);
@@ -88,7 +91,7 @@ namespace ACE
             {
                 foreach (var type in kv.Value)
                 {
-                    builder.RegisterType(kv.Key).As(type).SingleInstance();
+                    builder.RegisterType(type).SingleInstance();
                 }
             }
             builder.Update(_container);
@@ -118,9 +121,18 @@ namespace ACE
             List<Type> handlers;
             if (_handlers.TryGetValue(typeof(T), out handlers))
             {
-                return handlers.Select(handler => (IEventHandler<T>)_container.Resolve(handler)).ToList();
+                //return handlers.Select(handler => (IEventHandler<T>)_container.Resolve(handler)).ToList();
+                return handlers.Select(handler => (IEventHandler<T>)_scope.Resolve(handler)).ToList();
             }
             return null;
+        }
+
+        public void Dispose()
+        {
+            if(_scope!=null)
+            {
+                _scope.Dispose();
+            }
         }
     }
 }

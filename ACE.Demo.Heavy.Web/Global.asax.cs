@@ -28,8 +28,8 @@ namespace ACE.Demo.Heavy.Web
             builder.RegisterSource(new ViewRegistrationSource());
             builder.RegisterFilterProvider();
 
-            var container = builder.Build();
-            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+            builder.Update(BootStrapper.Container);
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(BootStrapper.Container));
 
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

@@ -23,15 +23,17 @@ namespace ACE.Demo.Heavy.Web
 
         public static void BootStrap()
         {
-            _builder = new ContainerBuilder();
-            Container = _builder.Build();
+            var adapter = new EasyNetQ.DI.AutofacAdapter(new ContainerBuilder());
+            Container = adapter.Container;
 
-            RabbitHutch.SetContainerFactory(() => { return new EasyNetQ.DI.AutofacAdapter(_builder); });
+            RabbitHutch.SetContainerFactory(() => { return adapter; });
             EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(Grit.Configuration.RabbitMQ.ACEQueueConnectionString,
                 x => x.Register<IEasyNetQLogger, NullLogger>());
 
+            _builder = new ContainerBuilder();
             BindFrameworkObjects();
             BindBusinessObjects();
+            _builder.Update(Container);
         }
 
         private static void BindFrameworkObjects()

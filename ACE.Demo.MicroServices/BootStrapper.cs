@@ -30,16 +30,16 @@ namespace ACE.Demo.MicroServices
 
         public static void BootStrap()
         {
-            _builder = new ContainerBuilder();
-            Container = _builder.Build();
+            var adapter = new EasyNetQ.DI.AutofacAdapter(new ContainerBuilder());
+            Container = adapter.Container;
 
-            RabbitHutch.SetContainerFactory(() => { return new EasyNetQ.DI.AutofacAdapter(_builder); });
+            RabbitHutch.SetContainerFactory(() => { return adapter; });
             EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(Grit.Configuration.RabbitMQ.ACEQueueConnectionString,
                 x => x.Register<IEasyNetQLogger, NullLogger>());
 
+            _builder = new ContainerBuilder();
             BindFrameworkObjects();
             BindBusinessObjects();
-
             _builder.Update(Container);
 
             ActionBus = Container.Resolve<IActionBus>();
@@ -51,12 +51,14 @@ namespace ACE.Demo.MicroServices
             _builder.RegisterType<ACE.Loggers.Log4NetBusLogger>().As<ACE.Loggers.IBusLogger>().SingleInstance();
             _builder.RegisterType<CommandHandlerFactory>().As<ICommandHandlerFactory>()
                 .SingleInstance()
+                .WithParameter(new TypedParameter(typeof(Autofac.IContainer), Container))
                 .WithParameter(Constants.ParamCommandAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Model.Write" });
             _builder.RegisterType<CommandBus>().As<ICommandBus>().SingleInstance();
 
             _builder.RegisterType<EventHandlerFactory>().As<IEventHandlerFactory>()
                 .SingleInstance()
+                .WithParameter(new TypedParameter(typeof(Autofac.IContainer), Container))
                 .WithParameter(Constants.ParamEventAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Model.Write" });
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
@@ -64,6 +66,7 @@ namespace ACE.Demo.MicroServices
 
             _builder.RegisterType<ActionHandlerFactory>().As<IActionHandlerFactory>()
                 .SingleInstance()
+                .WithParameter(new TypedParameter(typeof(Autofac.IContainer), Container))
                 .WithParameter(Constants.ParamActionAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Application" });
             // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
