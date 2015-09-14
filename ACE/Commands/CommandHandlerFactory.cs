@@ -73,9 +73,9 @@ namespace ACE
 
         private void BindHandlers()
         {
-            foreach (var kv in _handlers)
+            foreach (var v in _handlers.Values.Distinct())
             {
-                _container.Bind(kv.Key).To(kv.Value).InSingletonScope();
+                _container.Bind(v).ToSelf().InSingletonScope();
             }
         }
 
