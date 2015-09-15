@@ -70,6 +70,8 @@ MUST 为每个微服务承载的消息提供统一的基类, 路由基类 RPC �
 
 ### EventStation
 
+时间处理中心 Event Consumer 负责从消息总线中获取 Event 并执行具体的业务操作。
+
 #### Subscribe
 
 从事件总线获取 Event, 调用 Invoke 进行 Event 处理。
@@ -93,11 +95,11 @@ Event Consumer 收到来自事件队列的 Event 对象后, 调用 Invoke 方法
 
 ## MicroService
 
-微服务，业务处理中心。消费 Action 发布 Command/Event 返回 ActionResponse。
+业务处理中心。消费 Action 发布 Command/Event 返回 ActionResponse。
 
 ## Event Consumer
 
-特定业务的 Event 消费者，特定 Event consumer 需要根据特定业务创建特定 Queue 并配置路由规则将 Queue 绑定到 Event Exchange。
+特定业务的 Event 消费者, 特定 Event consumer 需要根据特定业务创建特定 Queue 并配置路由规则将 Queue 绑定到 Event Exchange。
 
 ## BootStrapper
 
