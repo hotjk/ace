@@ -8,16 +8,12 @@ namespace ACE
 {
     public class ActionBus : IActionBus
     {
-        private IActionHandlerFactory _actionHandlerFactory;
         private EasyNetQ.IBus _bus;
         private IBusLogger _busLogger;
-        private IContainer _container;
 
         public ActionBus(IBusLogger busLogger, 
-            IActionHandlerFactory ActionHandlerFactory = null,
             EasyNetQ.IBus bus = null)
         {
-            _actionHandlerFactory = ActionHandlerFactory;
             _bus = bus;
             _busLogger = busLogger;
         }

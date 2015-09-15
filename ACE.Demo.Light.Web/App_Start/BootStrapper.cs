@@ -37,7 +37,6 @@ namespace ACE.Demo.Light.Web
 
         private static void BindFrameworkObjects()
         {
-            //Container.Settings.AllowNullInjection = true;
             _builder.RegisterType<ACE.Loggers.Log4NetBusLogger>().As<ACE.Loggers.IBusLogger>().SingleInstance();
             _builder.RegisterType<CommandHandlerFactory>().As<ICommandHandlerFactory>()
                 .SingleInstance()
@@ -51,15 +50,13 @@ namespace ACE.Demo.Light.Web
                 .WithParameter(new TypedParameter(typeof(Autofac.IContainer), Container))
                 .WithParameter(Constants.ParamEventAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Model.Write" });
-            // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
-            _builder.RegisterType<EventBus>().As<IEventBus>().SingleInstance();
+            _builder.RegisterType<EventBus>().As<IEventBus>().InstancePerLifetimeScope();
 
             _builder.RegisterType<ActionHandlerFactory>().As<IActionHandlerFactory>()
                 .SingleInstance()
                 .WithParameter(new TypedParameter(typeof(Autofac.IContainer), Container))
                 .WithParameter(Constants.ParamActionAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Application" });
-            // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
             _builder.RegisterType<ActionStation>().As<IActionStation>()
                 .SingleInstance()
                 .WithParameter(new TypedParameter(typeof(Autofac.IContainer), Container));

@@ -47,8 +47,8 @@ namespace ACE.Demo.MicroServices
 
         private static void BindFrameworkObjects()
         {
-            //Container.Settings.AllowNullInjection = true;
             _builder.RegisterType<ACE.Loggers.Log4NetBusLogger>().As<ACE.Loggers.IBusLogger>().SingleInstance();
+
             _builder.RegisterType<CommandHandlerFactory>().As<ICommandHandlerFactory>()
                 .SingleInstance()
                 .WithParameter(new TypedParameter(typeof(Autofac.IContainer), Container))
@@ -69,7 +69,6 @@ namespace ACE.Demo.MicroServices
                 .WithParameter(new TypedParameter(typeof(Autofac.IContainer), Container))
                 .WithParameter(Constants.ParamActionAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Application" });
-            // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
             _builder.RegisterType<ActionStation>().As<IActionStation>()
                 .SingleInstance()
                 .WithParameter(new TypedParameter(typeof(Autofac.IContainer), Container));

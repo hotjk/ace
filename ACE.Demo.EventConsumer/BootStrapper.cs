@@ -47,8 +47,8 @@ namespace ACE.Demo.EventConsumer
 
         private static void BindFrameworkObjects()
         {
-            //Container.Settings.AllowNullInjection = true;
             _builder.RegisterType<ACE.Loggers.Log4NetBusLogger>().As<ACE.Loggers.IBusLogger>().SingleInstance();
+
             _builder.RegisterType<CommandHandlerFactory>().As<ICommandHandlerFactory>()
                 .SingleInstance()
                 .WithParameter(new TypedParameter(typeof(Autofac.IContainer), Container))
@@ -61,7 +61,6 @@ namespace ACE.Demo.EventConsumer
                 .WithParameter(new TypedParameter(typeof(Autofac.IContainer), Container))
                 .WithParameter(Constants.ParamEventAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Model.Write" });
-            // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
             _builder.RegisterType<EventStation>().As<IEventStation>().SingleInstance();
         }
 
