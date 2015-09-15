@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autofac;
 
 namespace ACE
 {
     public class CommandHandlerFactory : ICommandHandlerFactory
     {
-        private Ninject.IKernel _container;
+        private IContainer _container;
         private IEnumerable<string> _commandAssmblies;
         private IEnumerable<string> _handlerAssmblies;
         private IDictionary<Type, Type> _handlers;
         private readonly object _lockThis = new object();
 
-        public CommandHandlerFactory(Ninject.IKernel container,
+        public CommandHandlerFactory(IContainer container,
             IEnumerable<string> commandAssmblies,
             IEnumerable<string> handlerAssmblies)
         {
@@ -73,10 +74,12 @@ namespace ACE
 
         private void BindHandlers()
         {
+            var builder = new ContainerBuilder();
             foreach (var v in _handlers.Values.Distinct())
             {
-                _container.Bind(v).ToSelf().InSingletonScope();
+                builder.RegisterType(v).SingleInstance();
             }
+            builder.Update(_container);
         }
 
         private string Log()
@@ -100,7 +103,7 @@ namespace ACE
                 throw new UnregisteredDomainCommandException("no handler registered for command: " + typeof(T));
             }
 
-            return (ICommandHandler<T>)_container.GetService(handler);
+            return (ICommandHandler<T>)_container.Resolve(handler);
         }
     }
 }

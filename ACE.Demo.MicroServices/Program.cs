@@ -20,7 +20,7 @@ namespace ACE.Demo.MicroServices
             log4net.Config.XmlConfigurator.Configure();
             BootStrapper.BootStrap();
 
-            BootStrapper.ActionBus.SubscribeInParallel<ACE.Demo.Contracts.Actions.InvestmentActionBase>(10);
+            BootStrapper.ActionStation.SubscribeInParallel<ACE.Demo.Contracts.Actions.InvestmentActionBase>(10);
 
             Console.WriteLine("Ctrl-C to exit");
             Console.CancelKeyPress += (source, cancelKeyPressArgs) =>

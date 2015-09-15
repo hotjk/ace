@@ -18,10 +18,10 @@ namespace ACE.Demo.Light.Web.Controllers
 {
     public class InvestController : ControllerBase
     {
-        public InvestController(IActionBus actionBus,
+        public InvestController(IActionStation actionStation,
             ISequenceService sequenceService,
             IInvestmentService investmentService) 
-            : base(actionBus)
+            : base(actionStation)
         {
             _sequenceService = sequenceService;
             _investmentService = investmentService;
@@ -48,7 +48,7 @@ namespace ACE.Demo.Light.Web.Controllers
 
             try
             {
-                ActionBus.Invoke<InvestmentCreateRequest>(action);
+                ActionStation.Invoke<InvestmentCreateRequest>(action);
             }
             catch (BusinessException ex)
             {
@@ -68,7 +68,7 @@ namespace ACE.Demo.Light.Web.Controllers
             var action = new InvestmentPayRequest(id);
             try
             {
-                ActionBus.Invoke<InvestmentPayRequest>(action);
+                ActionStation.Invoke<InvestmentPayRequest>(action);
             }
             catch (BusinessException ex)
             {
