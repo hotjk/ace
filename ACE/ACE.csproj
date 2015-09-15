@@ -53,10 +53,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\ActionStation.cs" />
     <Compile Include="Actions\ActionBus.cs" />
     <Compile Include="Actions\ActionHandlerFactory.cs" />
     <Compile Include="Commands\CommandBus.cs" />
     <Compile Include="Commands\CommandHandlerFactory.cs" />
+    <Compile Include="Events\EventStation.cs" />
     <Compile Include="Events\EventBus.cs" />
     <Compile Include="Events\EventHandlerFactory.cs">
       <SubType>Code</SubType>

@@ -24,7 +24,7 @@ namespace ACE.Demo.MicroServices
     {
         public static Autofac.IContainer Container { get; private set; }
         public static EasyNetQ.IBus EasyNetQBus { get; private set; }
-        public static IActionBus ActionBus { get; private set; }
+        public static IActionStation ActionStation { get; private set; }
 
         private static ContainerBuilder _builder;
 
@@ -42,7 +42,7 @@ namespace ACE.Demo.MicroServices
             BindBusinessObjects();
             _builder.Update(Container);
 
-            ActionBus = Container.Resolve<IActionBus>();
+            ActionStation = Container.Resolve<IActionStation>();
         }
 
         private static void BindFrameworkObjects()
@@ -70,7 +70,7 @@ namespace ACE.Demo.MicroServices
                 .WithParameter(Constants.ParamActionAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Application" });
             // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
-            _builder.RegisterType<ActionBus>().As<IActionBus>()
+            _builder.RegisterType<ActionStation>().As<IActionStation>()
                 .SingleInstance()
                 .WithParameter(new TypedParameter(typeof(Autofac.IContainer), Container));
         }

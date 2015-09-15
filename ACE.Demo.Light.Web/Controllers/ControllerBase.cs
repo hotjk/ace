@@ -8,10 +8,10 @@ namespace ACE.Demo.Light.Web.Controllers
 {
     public abstract class ControllerBase : Controller
     {
-        protected IActionBus ActionBus { get; private set; }
-        public ControllerBase(IActionBus actionBus)
+        protected IActionStation ActionStation { get; private set; }
+        public ControllerBase(IActionStation actionStation)
         {
-            ActionBus = actionBus;
+            ActionStation = actionStation;
         }
     }
 }

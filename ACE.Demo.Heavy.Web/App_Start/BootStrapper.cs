@@ -38,14 +38,13 @@ namespace ACE.Demo.Heavy.Web
 
         private static void BindFrameworkObjects()
         {
-            //Container.Settings.AllowNullInjection = true;
             _builder.RegisterType<ACE.Loggers.Log4NetBusLogger>().As<ACE.Loggers.IBusLogger>().SingleInstance();
 
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
             _builder.RegisterType<EventBus>().As<IEventBus>().SingleInstance();
 
             // ActionBus must be thread scope, single thread bind to use single anonymous RabbitMQ queue for reply.
-            _builder.RegisterType<ActionBus>().As<IActionBus>().SingleInstance();
+            _builder.RegisterType<ActionBus>().As<IActionBus>().InstancePerDependency();
 
             IServiceMappingFactory serviceMappingFactory = new ServiceMappingFactory(() => {
                 return new Dictionary<Type, ServiceMapping>() {

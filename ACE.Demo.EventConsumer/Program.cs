@@ -18,7 +18,7 @@ namespace ACE.Demo.EventConsumer
             log4net.Config.XmlConfigurator.Configure();
             BootStrapper.BootStrap();
 
-            BootStrapper.EventBus.SubscribeInParallel("EventConsumer", new string[] { "account.*.*", "*.*.created" }, 10);
+            BootStrapper.EventStation.SubscribeInParallel("EventConsumer", new string[] { "account.*.*", "*.*.created" }, 10);
             //ServiceLocator.EventBus.Subscribe("EventConsumer", new string[] { "account.*.*", "*.*.created" });
             
             Console.WriteLine("Ctrl-C to exit");

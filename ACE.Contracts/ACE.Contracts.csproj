@@ -45,12 +45,14 @@
     <Compile Include="Actions\IActionBus.cs" />
     <Compile Include="Actions\IActionHandler.cs" />
     <Compile Include="Actions\IActionHandlerFactory.cs" />
+    <Compile Include="Actions\IActionStation.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ICommandBus.cs" />
     <Compile Include="Commands\ICommandHandler.cs" />
     <Compile Include="Commands\ICommandHandlerFactory.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Events\IEvent.cs" />
+    <Compile Include="Events\IEventStation.cs" />
     <Compile Include="Events\IEventBus.cs" />
     <Compile Include="Events\IEventHandler.cs" />
     <Compile Include="Events\IEventHandlerFactory.cs" />

@@ -24,7 +24,7 @@ namespace ACE.Demo.EventConsumer
     {
         public static Autofac.IContainer Container { get; private set; }
         public static EasyNetQ.IBus EasyNetQBus { get; private set; }
-        public static IEventBus EventBus { get; private set; }
+        public static IEventStation EventStation { get; private set; }
         
         private static ContainerBuilder _builder;
 
@@ -42,7 +42,7 @@ namespace ACE.Demo.EventConsumer
             BindBusinessObjects();
             _builder.Update(Container);
 
-            EventBus = Container.Resolve<IEventBus>();
+            EventStation = Container.Resolve<IEventStation>();
         }
 
         private static void BindFrameworkObjects()
@@ -62,7 +62,7 @@ namespace ACE.Demo.EventConsumer
                 .WithParameter(Constants.ParamEventAssmblies, new string[] { "ACE.Demo.ContractsFS" })
                 .WithParameter(Constants.ParamHandlerAssmblies, new string[] { "ACE.Demo.Model.Write" });
             // EventBus must be thread scope, published events will be saved in thread EventBus._events, until Flush/Clear.
-            _builder.RegisterType<EventBus>().As<IEventBus>().SingleInstance();
+            _builder.RegisterType<EventStation>().As<IEventStation>().SingleInstance();
         }
 
         private static void BindBusinessObjects()
