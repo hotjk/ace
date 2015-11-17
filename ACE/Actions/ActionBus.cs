@@ -63,6 +63,7 @@ namespace ACE
                         throw;
                     }
                 }
+                await Task.Delay(100);
             }
             return response;
         }
