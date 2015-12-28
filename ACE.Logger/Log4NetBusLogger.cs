@@ -21,7 +21,7 @@ namespace ACE.Loggers
         {
             if (MessageLogger.IsInfoEnabled)
             {
-                MessageLogger.Info("Sent: " + JsonConvert.SerializeObject(message));
+                MessageLogger.Info(string.Format("{0} {1} {2}", "Sent", message.GetType().ToString(), JsonConvert.SerializeObject(message)));
             }
         }
 
@@ -29,7 +29,7 @@ namespace ACE.Loggers
         {
             if (MessageLogger.IsInfoEnabled)
             {
-                MessageLogger.Info("Received: " + JsonConvert.SerializeObject(message));
+                MessageLogger.Info(string.Format("{0} {1} {2}", "Received", message.GetType().ToString(), JsonConvert.SerializeObject(message)));
             }
         }
 
