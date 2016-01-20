@@ -1,4 +1,7 @@
-﻿namespace ACE
+﻿using System;
+using System.Threading.Tasks;
+
+namespace ACE
 {
     /// <summary>
     /// EventStation
@@ -26,5 +29,9 @@
         /// <param name="topic"></param>
         /// <param name="capacity">Worker numbers</param>
         void SubscribeInParallel(string subscriptionId, string[] topics, int capacity);
+
+        void SubscribeAsync(string subscriptionId, string[] topics, Func<IEvent, Task> onMessage);
+
+        void Subscribe(string subscriptionId, string[] topics, Action<IEvent> onMessage);
     }
 }

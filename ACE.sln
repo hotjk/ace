@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utility", "Utility", "{9EA42C80-014F-4D5C-99C5-03D923A7BEF8}"
 EndProject
@@ -73,6 +73,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE.WS.Contracts", "ACE.WS.Contracts\ACE.WS.Contracts.csproj", "{9B93D888-04F3-4D0D-8220-F36A8449A3A8}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ACE.Demo.ContractsFS", "ACE.Demo.ContractsFS\ACE.Demo.ContractsFS.fsproj", "{AADB638A-93DB-4191-82A1-954CC4D66C10}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Watcher", "Watcher", "{16D0B243-ED54-4AF6-88B5-4ACCC0A5E5A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watcher.Foodie", "Watcher.Foodie\Watcher.Foodie.csproj", "{BFB2E8EF-6014-4814-952E-51B484C34EBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -168,6 +172,10 @@ Global
 		{AADB638A-93DB-4191-82A1-954CC4D66C10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AADB638A-93DB-4191-82A1-954CC4D66C10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AADB638A-93DB-4191-82A1-954CC4D66C10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFB2E8EF-6014-4814-952E-51B484C34EBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFB2E8EF-6014-4814-952E-51B484C34EBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFB2E8EF-6014-4814-952E-51B484C34EBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFB2E8EF-6014-4814-952E-51B484C34EBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -197,5 +205,7 @@ Global
 		{82F70B71-71AB-49B1-9E3F-5197ABBFD1AA} = {9C7D4CD4-9C10-48E0-AAEE-83419CD8B19B}
 		{9B93D888-04F3-4D0D-8220-F36A8449A3A8} = {9C7D4CD4-9C10-48E0-AAEE-83419CD8B19B}
 		{AADB638A-93DB-4191-82A1-954CC4D66C10} = {FDFAFEC7-BFDD-4862-A8EF-4D2162E2412A}
+		{16D0B243-ED54-4AF6-88B5-4ACCC0A5E5A0} = {BAF43B16-9BAD-4569-9E4D-CD7202BAB7C7}
+		{BFB2E8EF-6014-4814-952E-51B484C34EBF} = {16D0B243-ED54-4AF6-88B5-4ACCC0A5E5A0}
 	EndGlobalSection
 EndGlobal

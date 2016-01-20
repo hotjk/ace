@@ -64,6 +64,24 @@ namespace ACE
             }
         }
 
+        public void SubscribeAsync(string subscriptionId, string[] topics,Func<IEvent, Task> onMessage)
+        {
+            foreach (var topic in topics)
+            {
+                _bus.SubscribeAsync<IEvent>(subscriptionId, onMessage, x => x.WithTopic(topic));
+            }
+        }
+
+        public void Subscribe(string subscriptionId, string[] topics, Action<IEvent> onMessage)
+        {
+            foreach (var topic in topics)
+            {
+                _bus.Subscribe<IEvent>(subscriptionId,
+                    onMessage,
+                    x => x.WithTopic(topic));
+            }
+        }
+
         public void SubscribeInParallel(string subscriptionId, string[] topics, int capacity)
         {
             var workers = new BlockingCollection<int>(capacity);

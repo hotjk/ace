@@ -197,7 +197,7 @@
     <Content Include="Views\Invest\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="App_Data\App_Start\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
