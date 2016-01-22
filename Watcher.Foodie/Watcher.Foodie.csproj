@@ -72,6 +72,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BootStrapper.cs" />
+    <Compile Include="Model\Period\Days.cs" />
+    <Compile Include="Model\Period\IPeriod.cs" />
+    <Compile Include="Model\Period\Hours.cs" />
+    <Compile Include="Model\Predicate\IPredicate.cs" />
+    <Compile Include="Model\Predicate\GreatThan.cs" />
+    <Compile Include="Model\Predicate\LessThan.cs" />
+    <Compile Include="Model\Period\Minutes.cs" />
+    <Compile Include="Model\Rule.cs" />
+    <Compile Include="Model\Period\Seconds.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -104,6 +113,7 @@
       <Name>Grit.Configuration</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using StackExchange.Redis;
+using Watcher.Foodie.Model;
+using System.Collections.Concurrent;
 
 namespace Watcher.Foodie
 {
@@ -18,7 +20,7 @@ namespace Watcher.Foodie
             BootStrapper.BootStrap();
             redis = ConnectionMultiplexer.Connect(Grit.Configuration.Redis.Configuration);
 
-            BootStrapper.EventStation.SubscribeAsync("WatcherFoodie", new string[] { "#" }, OnMessage);
+            BootStrapper.EventStation.SubscribeAsync("WatcherFoodie", new string[] { "#" }, x=> Increase(x.ToString()));
 
             Console.WriteLine("Ctrl-C to exit");
             Console.CancelKeyPress += (source, cancelKeyPressArgs) =>
@@ -29,21 +31,66 @@ namespace Watcher.Foodie
                 Console.WriteLine("Shut down completed");
             };
 
+            Task.Run(() => {
+                while (true)
+                {
+                    CleanAll().Wait();
+                    Thread.Sleep(TimeSpan.FromSeconds(10));
+                }
+            });
+
             Thread.Sleep(Timeout.Infinite);
         }
 
-        private static async Task OnMessage(IEvent @event)
+        private static readonly IEnumerable<IPeriod> _countPeriods = new List<IPeriod>() { new Seconds(), new Minutes(), new Hours(), new Days()  };
+        private static ConcurrentDictionary<string, DateTime> _waitingForClean = new ConcurrentDictionary<string, DateTime>();
+        private static IList<Rule> _rules = new List<Rule>()
         {
-            string eventName = @event.ToString();
+             new Rule { Interval = 2, Period = new Seconds(), Predicate = new GreatThan(), Times = 10, Repeats = 5  }
+        };
+
+        private static async Task Increase(string name)
+        {
+            DateTime now = DateTime.Now;
             IDatabase db = redis.GetDatabase();
-            string s = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string m = DateTime.Now.ToString("yyyyMMddHHmm");
-            string h = DateTime.Now.ToString("yyyyMMddHH");
-            string d = DateTime.Now.ToString("yyyyMMdd");
-            await db.HashIncrementAsync(eventName + "_s", s, 1);
-            await db.HashIncrementAsync(eventName + "_m", m, 1);
-            await db.HashIncrementAsync(eventName + "_h", h, 1);
-            await db.HashIncrementAsync(eventName + "_d", d, 1);
+            foreach (var period in _countPeriods)
+            {
+                await db.HashIncrementAsync(period.Key(name), period.Field(now), 1);
+            }
+            _waitingForClean.TryAdd(name, now);
+        }
+
+        private static async Task CleanAll()
+        {
+            var list = _waitingForClean.ToArray();
+            _waitingForClean.Clear();
+            foreach(var item in list)
+            {
+                await Clean(item.Key);
+            }
+            Console.WriteLine("Clean: " + list.Length);
+        }
+
+        private static async Task Clean(string name)
+        {
+            DateTime now = DateTime.Now;
+            IDatabase db = redis.GetDatabase();
+            foreach (var period in _countPeriods)
+            {
+                var keys = await db.HashKeysAsync(period.Key(name));
+                var keeps = period.KeepKeys(now);
+                var removed = keys
+                    .Select(n => n.ToString())
+                    .Where(n => !keeps.Any(k => n.StartsWith(k)))
+                    .Select(n => (RedisValue)n)
+                    .ToArray();
+                await db.HashDeleteAsync(period.Key(name), removed);
+            }
+        }
+
+        private static async Task Patral(string name)
+        {
+
         }
     }
 }
