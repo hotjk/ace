@@ -1,4 +1,4 @@
-﻿using ACE;
+using ACE;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace Watcher.Foodie
             BootStrapper.BootStrap();
             redis = ConnectionMultiplexer.Connect(Grit.Configuration.Redis.Configuration);
 
-            BootStrapper.EventStation.SubscribeAsync("WatcherFoodie", new string[] { "#" }, x=> Increase(x.ToString()));
+            BootStrapper.EventStation.SubscribeAsync("WatcherFoodie", new string[] { "#" }, x => Increase(x.ToString()));
 
             Console.WriteLine("Ctrl-C to exit");
             Console.CancelKeyPress += (source, cancelKeyPressArgs) =>
@@ -42,11 +42,11 @@ namespace Watcher.Foodie
             Thread.Sleep(Timeout.Infinite);
         }
 
-        private static readonly IEnumerable<IPeriod> _countPeriods = new List<IPeriod>() { new Seconds(), new Minutes(), new Hours(), new Days()  };
+        private static readonly IEnumerable<IPeriod> _countPeriods = new List<IPeriod>() { Seconds.Instance, Minutes.Instance, Hours.Instance, Days.Instance };
         private static ConcurrentDictionary<string, DateTime> _waitingForClean = new ConcurrentDictionary<string, DateTime>();
         private static IList<Rule> _rules = new List<Rule>()
         {
-             new Rule { Interval = 2, Period = new Seconds(), Predicate = new GreatThan(), Times = 10, Repeats = 5  }
+             new Rule { Interval = 2, Period = Seconds.Instance, Predicate = new GreatThan(), Times = 10, Repeats = 5  }
         };
 
         private static async Task Increase(string name)
@@ -64,7 +64,7 @@ namespace Watcher.Foodie
         {
             var list = _waitingForClean.ToArray();
             _waitingForClean.Clear();
-            foreach(var item in list)
+            foreach (var item in list)
             {
                 await Clean(item.Key);
             }
@@ -78,7 +78,7 @@ namespace Watcher.Foodie
             foreach (var period in _countPeriods)
             {
                 var keys = await db.HashKeysAsync(period.Key(name));
-                var keeps = period.KeepKeys(now);
+                var keeps = period.KeepFields(now);
                 var removed = keys
                     .Select(n => n.ToString())
                     .Where(n => !keeps.Any(k => n.StartsWith(k)))

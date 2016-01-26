@@ -10,7 +10,8 @@ namespace Watcher.Foodie.Model
     {
         string Key(string @event);
         string Field(DateTime dt);
-        IEnumerable<string> KeepKeys(DateTime dt);
-        TimeSpan HowLong(int n);
+        IEnumerable<string> KeepFields(DateTime dt);
+        long HowLong(int n);
+        IEnumerable<string> PatralFields(DateTime from, DateTime to);
     }
 }

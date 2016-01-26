@@ -8,6 +8,9 @@ namespace Watcher.Foodie.Model
 {
     public class Days : IPeriod
     {
+        private Days() { }
+        public static readonly Days Instance = new Days();
+
         public string Key(string @event)
         {
             return @event + "_d";
@@ -17,14 +20,22 @@ namespace Watcher.Foodie.Model
             return dt.ToString("yyyyMMdd");
         }
 
-        public IEnumerable<string> KeepKeys(DateTime dt)
+        public IEnumerable<string> KeepFields(DateTime dt)
         {
             return new string[] { dt.AddMinutes(-1).ToString("yyyyMM"), dt.ToString("yyyyMM") };
         }
 
-        public TimeSpan HowLong(int n)
+        public long HowLong(int n)
         {
-            return new TimeSpan(n, 0, 0, 0);
+            return new TimeSpan(n, 0, 0, 0).Ticks;
+        }
+
+        public IEnumerable<string> PatralFields(DateTime from, DateTime to)
+        {
+            for (DateTime dt = from; dt < to; dt = dt.AddDays(1))
+            {
+                yield return (Field(dt));
+            }
         }
     }
 }

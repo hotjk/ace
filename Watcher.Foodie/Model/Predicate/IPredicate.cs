@@ -8,5 +8,6 @@ namespace Watcher.Foodie.Model
 {
     public interface IPredicate
     {
+        bool IsSatisfiedBy(int a, int b);
     }
 }

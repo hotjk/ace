@@ -8,6 +8,9 @@ namespace Watcher.Foodie.Model
 {
     public class Minutes : IPeriod
     {
+        private Minutes() { }
+        public static readonly Minutes Instance = new Minutes();
+
         public string Key(string @event)
         {
             return @event + "_m";
@@ -17,14 +20,22 @@ namespace Watcher.Foodie.Model
             return dt.ToString("yyyyMMddHHmm");
         }
 
-        public IEnumerable<string> KeepKeys(DateTime dt)
+        public IEnumerable<string> KeepFields(DateTime dt)
         {
             return new string[] { dt.AddHours(-1).ToString("yyyyMMddHH"), dt.ToString("yyyyMMddHH") };
         }
 
-        public TimeSpan HowLong(int n)
+        public long HowLong(int n)
         {
-            return new TimeSpan(0, n, 0);
+            return new TimeSpan(0, n, 0).Ticks;
+        }
+
+        public IEnumerable<string> PatralFields(DateTime from, DateTime to)
+        {
+            for (DateTime dt = from; dt < to; dt = dt.AddMinutes(1))
+            {
+                yield return (Field(dt));
+            }
         }
     }
 }
