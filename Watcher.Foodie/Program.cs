@@ -20,7 +20,7 @@ namespace Watcher.Foodie
             BootStrapper.BootStrap();
             redis = ConnectionMultiplexer.Connect(Grit.Configuration.Redis.Configuration);
 
-            BootStrapper.EventStation.SubscribeAsync("WatcherFoodie", new string[] { "#" }, x => Increase(x.ToString()));
+            BootStrapper.EventStation.SubscribeAsync("WatcherFoodie", new string[] { "#" }, x => Increase(x.ToString()), true, true);
 
             Console.WriteLine("Ctrl-C to exit");
             Console.CancelKeyPress += (source, cancelKeyPressArgs) =>

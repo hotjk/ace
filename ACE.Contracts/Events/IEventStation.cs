@@ -20,7 +20,7 @@ namespace ACE
         /// </summary>
         /// <param name="subscriptionId">A unique identifier for the subscription. Two subscriptions with the same subscriptionId and type will get messages delivered in turn. </param>
         /// <param name="topic">RabbitMQ exchange routing key</param>
-        void Subscribe(string subscriptionId, string[] topics);
+        void Subscribe(string subscriptionId, string[] topics, bool withAutoDelete = false, bool exclusive = false);
 
         /// <summary>
         /// Subscribe event from RabbitMQ in parallel.
@@ -28,10 +28,10 @@ namespace ACE
         /// <param name="subscriptionId"></param>
         /// <param name="topic"></param>
         /// <param name="capacity">Worker numbers</param>
-        void SubscribeInParallel(string subscriptionId, string[] topics, int capacity);
+        void SubscribeInParallel(string subscriptionId, string[] topics, int capacity, bool withAutoDelete = false, bool exclusive = false);
 
-        void SubscribeAsync(string subscriptionId, string[] topics, Func<IEvent, Task> onMessage);
+        void SubscribeAsync(string subscriptionId, string[] topics, Func<IEvent, Task> onMessage, bool withAutoDelete = false, bool exclusive = false);
 
-        void Subscribe(string subscriptionId, string[] topics, Action<IEvent> onMessage);
+        void Subscribe(string subscriptionId, string[] topics, Action<IEvent> onMessage, bool withAutoDelete = false, bool exclusive = false);
     }
 }

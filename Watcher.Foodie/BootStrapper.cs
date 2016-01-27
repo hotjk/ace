@@ -24,7 +24,7 @@ namespace Watcher.Foodie
             Container = adapter.Container;
 
             RabbitHutch.SetContainerFactory(() => { return adapter; });
-            EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(Grit.Configuration.RabbitMQ.ACEQueueConnectionString,
+            EasyNetQBus = EasyNetQ.RabbitHutch.CreateBus(Grit.Configuration.RabbitMQ.WatcherQueueConnectionString,
                 x => {
                     x.Register<IEasyNetQLogger, NullLogger>();
                 });
