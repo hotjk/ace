@@ -45,5 +45,10 @@ namespace Watcher.Foodie.Model
                 yield return (Field(dt));
             }
         }
+
+        public DateTime RemoveLastPeriod(DateTime dt)
+        {
+            return dt.AddMinutes(-1);
+        }
     }
 }

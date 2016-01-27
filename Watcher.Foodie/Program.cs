@@ -61,7 +61,7 @@ namespace Watcher.Foodie
         private static IList<Rule> _rules = new List<Rule>()
         {
              new Rule { Key ="ACE.Demo.Contracts.Events.InvestmentStatusCreated", Interval = 3, Period = Seconds.Instance, Predicate = new GreatThan(), Times = 258, Repeats = 2, Cooldown = TimeSpan.FromSeconds(10)  },
-             new Rule { Key ="ACE.Demo.Contracts.Events.InvestmentStatusCompleted", Interval = 1, Period = Minutes.Instance, Predicate = new LessThan(), Times = 10, Repeats = 2, Cooldown = TimeSpan.FromSeconds(10)  }
+             new Rule { Key ="ACE.Demo.Contracts.Events.InvestmentStatusCompleted", Interval = 1, Period = Minutes.Instance, Predicate = new LessThan(), Times = 60, Repeats = 1, Cooldown = TimeSpan.FromMinutes(10)  }
         };
 
         private static async Task Increase(string name)
@@ -122,12 +122,12 @@ namespace Watcher.Foodie
                 var rules = _rules.Where(n => n.Period == period);
                 if(rules.Any())
                 {
+                    var to = period.RemoveLastPeriod(now);
                     var maxTicks = rules.Max(n => n.HowLong());
-                    var from = now.AddTicks(0 - maxTicks);
-                    var keys = period.PatrolFields(from, now).Select(n => (RedisValue)n).ToArray();
+                    var from = to.AddTicks(0 - maxTicks);
+                    var keys = period.PatrolFields(from, to).Select(n => (RedisValue)n).ToArray();
                     var redisValues = await db.HashGetAsync(period.Key(name), keys);
                     var values = redisValues.Select(n=>n.HasValue? int.Parse(n):0).ToList();
-                    //Console.WriteLine(string.Join(", ", keys.Zip(values, (x, y) => x + ":" + y)));
                     foreach (var rule in rules)
                     {
                         if(rule.IsSatisfiedBy(values) && rule.Fire(now))

@@ -14,5 +14,6 @@ namespace Watcher.Foodie.Model
         IEnumerable<string> KeepFields(DateTime dt);
         long HowLong(int n);
         IEnumerable<string> PatrolFields(DateTime from, DateTime to);
+        DateTime RemoveLastPeriod(DateTime dt);
     }
 }
