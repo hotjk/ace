@@ -60,7 +60,8 @@ namespace Watcher.Foodie
         private static ConcurrentDictionary<string, DateTime> _waitingForClean = new ConcurrentDictionary<string, DateTime>();
         private static IList<Rule> _rules = new List<Rule>()
         {
-             new Rule { Key ="ACE.Demo.Contracts.Events.InvestmentStatusCreated", Interval = 2, Period = Seconds.Instance, Predicate = new GreatThan(), Times = 10, Repeats = 5  }
+             new Rule { Key ="ACE.Demo.Contracts.Events.InvestmentStatusCreated", Interval = 3, Period = Seconds.Instance, Predicate = new GreatThan(), Times = 258, Repeats = 2, Cooldown = TimeSpan.FromSeconds(10)  },
+             new Rule { Key ="ACE.Demo.Contracts.Events.InvestmentStatusCompleted", Interval = 1, Period = Minutes.Instance, Predicate = new LessThan(), Times = 10, Repeats = 2, Cooldown = TimeSpan.FromSeconds(10)  }
         };
 
         private static async Task Increase(string name)
@@ -129,9 +130,9 @@ namespace Watcher.Foodie
                     //Console.WriteLine(string.Join(", ", keys.Zip(values, (x, y) => x + ":" + y)));
                     foreach (var rule in rules)
                     {
-                        if(rule.IsSatisfiedBy(values))
+                        if(rule.IsSatisfiedBy(values) && rule.Fire(now))
                         {
-                            warnings.Add(name);
+                            warnings.Add(rule.WarningMessage());
                         }
                     }
                 }

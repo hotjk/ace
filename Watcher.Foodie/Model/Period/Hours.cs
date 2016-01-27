@@ -11,6 +11,14 @@ namespace Watcher.Foodie.Model
         private Hours() { }
         public static readonly Hours Instance = new Hours();
 
+        public string Quantifier
+        {
+            get
+            {
+                return "hour(s)";
+            }
+        }
+
         public string Key(string @event)
         {
             return @event + "_h";

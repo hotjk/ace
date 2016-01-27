@@ -11,6 +11,14 @@ namespace Watcher.Foodie.Model
         private Days() { }
         public static readonly Days Instance = new Days();
 
+        public string Quantifier
+        {
+            get
+            {
+                return "day(s)";
+            }
+        }
+
         public string Key(string @event)
         {
             return @event + "_d";

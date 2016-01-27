@@ -13,19 +13,28 @@ namespace ACE.Demo.EventProvider
     {
         static void Main(string[] args)
         {
+            Random random = new Random();
             log4net.Config.XmlConfigurator.Configure();
             BootStrapper.BootStrap();
 
             InvestmentStatusCreated investmentStatusCreated = new InvestmentStatusCreated(3,1,4,2);
+            InvestmentStatusCompleted investmentStatusCompleted = new InvestmentStatusCompleted(3);
             for (int i = 0; i < 3600*100; i++)
             {
-                BootStrapper.EventBus.Publish(investmentStatusCreated);
+                if (random.Next(100) == 0)
+                {
+                    BootStrapper.EventBus.Publish(investmentStatusCompleted);
+                }
+                else
+                {
+                    BootStrapper.EventBus.Publish(investmentStatusCreated);
+                }
                 BootStrapper.EventBus.Flush();
                 if (i % 10000 == 0)
                 {
                     Console.WriteLine(i);
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(random.Next(20));
             }
         }
     }

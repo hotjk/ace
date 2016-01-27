@@ -12,7 +12,18 @@ public class Rule
     public IPredicate Predicate { get; set; }
     public int Times { get; set; }
     public int Repeats { get; set; }
+    public TimeSpan Cooldown { get; set; }
 
+    public DateTime _lastFireAt;
+    public bool Fire(DateTime dt)
+    {
+        if(dt - _lastFireAt > Cooldown)
+        {
+            _lastFireAt = dt;
+            return true;
+        }
+        return false;
+    }
     public long HowLong()
     {
         return Period.HowLong(Interval) * Repeats;
@@ -21,21 +32,32 @@ public class Rule
     public bool IsSatisfiedBy(IEnumerable<int> values)
     {
         int counter = 0;
+        Queue<int> valueQueue = new Queue<int>(Interval);
         foreach(var value in values)
         {
-            if(Predicate.IsSatisfiedBy(value, Times))
+            valueQueue.Enqueue(value);
+            if(valueQueue.Count == Interval)
             {
-                counter++;
-                if (counter >= Repeats)
+                if (Predicate.IsSatisfiedBy(valueQueue.Sum(), Times))
                 {
-                    return true;
+                    valueQueue.Clear();
+                    counter++;
+                    if (counter >= Repeats)
+                    {
+                        return true;
+                    }
+                    continue;
                 }
-            }
-            else
-            {
                 counter = 0;
+                valueQueue.Dequeue();
             }
         }
         return false;
+    }
+
+    public string WarningMessage()
+    {
+        return string.Format("{0} event {1} {2} within {3} {4} repeat {5} times.", 
+            Key, Predicate.Quantifier, Times, Interval, Period.Quantifier, Repeats);
     }
 }

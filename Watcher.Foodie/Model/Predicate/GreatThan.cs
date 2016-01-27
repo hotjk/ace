@@ -8,6 +8,14 @@ namespace Watcher.Foodie.Model
 {
     public class GreatThan : IPredicate
     {
+        public string Quantifier
+        {
+            get
+            {
+                return "great than";
+            }
+        }
+
         public bool IsSatisfiedBy(int a, int b)
         {
             return a > b;
