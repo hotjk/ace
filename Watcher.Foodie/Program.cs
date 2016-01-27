@@ -34,8 +34,22 @@ namespace Watcher.Foodie
             Task.Run(() => {
                 while (true)
                 {
+                    Console.WriteLine("Patrol");
+                    var warnings = Patrol().Result;
+                    foreach(var warning in warnings)
+                    {
+                        Console.WriteLine(warning);
+                    }
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                }
+            });
+
+            Task.Run(() =>
+            {
+                while (true)
+                {
                     CleanAll().Wait();
-                    Thread.Sleep(TimeSpan.FromSeconds(10));
+                    Thread.Sleep(TimeSpan.FromSeconds(30));
                 }
             });
 
@@ -109,9 +123,11 @@ namespace Watcher.Foodie
                 {
                     var maxTicks = rules.Max(n => n.HowLong());
                     var from = now.AddTicks(0 - maxTicks);
-                    var values = db.HashGet(period.Key(name), period.PatrolFields(from, now).Select(n => (RedisValue)n).ToArray()).
-                        Select(n=>n.IsInteger? (int)n:0).ToList();
-                    foreach(var rule in rules)
+                    var keys = period.PatrolFields(from, now).Select(n => (RedisValue)n).ToArray();
+                    var redisValues = await db.HashGetAsync(period.Key(name), keys);
+                    var values = redisValues.Select(n=>n.HasValue? int.Parse(n):0).ToList();
+                    //Console.WriteLine(string.Join(", ", keys.Zip(values, (x, y) => x + ":" + y)));
+                    foreach (var rule in rules)
                     {
                         if(rule.IsSatisfiedBy(values))
                         {
