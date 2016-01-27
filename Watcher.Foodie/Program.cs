@@ -46,7 +46,7 @@ namespace Watcher.Foodie
         private static ConcurrentDictionary<string, DateTime> _waitingForClean = new ConcurrentDictionary<string, DateTime>();
         private static IList<Rule> _rules = new List<Rule>()
         {
-             new Rule { Interval = 2, Period = Seconds.Instance, Predicate = new GreatThan(), Times = 10, Repeats = 5  }
+             new Rule { Key ="ACE.Demo.Contracts.Events.InvestmentStatusCreated", Interval = 2, Period = Seconds.Instance, Predicate = new GreatThan(), Times = 10, Repeats = 5  }
         };
 
         private static async Task Increase(string name)
@@ -88,9 +88,38 @@ namespace Watcher.Foodie
             }
         }
 
-        private static async Task Patral(string name)
+        private static async Task<IList<string>> Patrol()
         {
+            IList<string> warnings = new List<string>();
+            foreach(var name in _rules.Select(n=>n.Key).Distinct())
+            {
+                await Inspect(name, warnings);
+            }
+            return warnings;
+        }
 
+        private static async Task Inspect(string name, IList<string> warnings)
+        {
+            DateTime now = DateTime.Now;
+            IDatabase db = redis.GetDatabase();
+            foreach (var period in _countPeriods)
+            {
+                var rules = _rules.Where(n => n.Period == period);
+                if(rules.Any())
+                {
+                    var maxTicks = rules.Max(n => n.HowLong());
+                    var from = now.AddTicks(0 - maxTicks);
+                    var values = db.HashGet(period.Key(name), period.PatrolFields(from, now).Select(n => (RedisValue)n).ToArray()).
+                        Select(n=>n.IsInteger? (int)n:0).ToList();
+                    foreach(var rule in rules)
+                    {
+                        if(rule.IsSatisfiedBy(values))
+                        {
+                            warnings.Add(name);
+                        }
+                    }
+                }
+            }
         }
     }
 }

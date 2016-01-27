@@ -30,7 +30,7 @@ namespace Watcher.Foodie.Model
             return new TimeSpan(0, 0, n).Ticks;
         }
 
-        public IEnumerable<string> PatralFields(DateTime from, DateTime to)
+        public IEnumerable<string> PatrolFields(DateTime from, DateTime to)
         {
             for (DateTime dt = from; dt < to; dt = dt.AddSeconds(1))
             {
