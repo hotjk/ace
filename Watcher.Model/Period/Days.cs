@@ -4,43 +4,43 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Watcher.Foodie.Model
+namespace Watcher.Model
 {
-    public class Seconds : IPeriod
+    public class Days : IPeriod
     {
-        private Seconds() { }
-        public static readonly Seconds Instance = new Seconds();
+        private Days() { }
+        public static readonly Days Instance = new Days();
 
         public string Quantifier
         {
             get
             {
-                return "second(s)";
+                return "day(s)";
             }
         }
 
         public string Key(string @event)
         {
-            return @event + "_s";
+            return @event + "_d";
         }
         public string Field(DateTime dt)
         {
-            return dt.ToString("yyyyMMddHHmmss");
+            return dt.ToString("yyyyMMdd");
         }
 
         public IEnumerable<string> KeepFields(DateTime dt)
         {
-            return new string[] { dt.AddMinutes(-1).ToString("yyyyMMddHHmm"), dt.ToString("yyyyMMddHHmm") };
+            return new string[] { dt.AddMinutes(-1).ToString("yyyyMM"), dt.ToString("yyyyMM") };
         }
 
         public long HowLong(int n)
         {
-            return new TimeSpan(0, 0, n).Ticks;
+            return new TimeSpan(n, 0, 0, 0).Ticks;
         }
 
         public IEnumerable<string> PatrolFields(DateTime from, DateTime to)
         {
-            for (DateTime dt = from; dt < to; dt = dt.AddSeconds(1))
+            for (DateTime dt = from; dt < to; dt = dt.AddDays(1))
             {
                 yield return (Field(dt));
             }
@@ -48,7 +48,7 @@ namespace Watcher.Foodie.Model
 
         public DateTime RemoveLastPeriod(DateTime dt)
         {
-            return dt.AddSeconds(-1);
+            return dt.AddDays(-1);
         }
     }
 }
