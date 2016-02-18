@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="scripts/jquery.js"></script>
+    <script src="scripts/Chart.js"></script>
+    <script>
+        $(document).ready(function () {
+            Chart.defaults.global.animation = false;
+            var refresh = function () {
+                $.getJSON("/event/ACE.Demo.Contracts.Events.InvestmentStatusCreated/s", function (data) {
+                    var keys = [], values = [];
+                    for (var k in data) {
+                        keys.push(k);
+                        values.push(data[k]);
+                    };
+
+                    var data = {
+                        labels: keys,
+                        datasets: [
+                            {
+                                label: "ACE.Demo.Contracts.Events.InvestmentStatusCreated/s",
+                                data: values
+                            }
+                        ]
+                    };
+                    var ctx = document.getElementById("myChart").getContext("2d");
+                    var myBarChart = new Chart(ctx).Bar(data);
+                });
+            };
+            refresh();
+            setInterval(refresh, 5000);
+        });
+    </script>
+</head>
+<body>
+    <canvas id="myChart" width="800" height="400"></canvas>
+</body>
+</html>
