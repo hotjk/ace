@@ -8,29 +8,31 @@
     <script>
         $(document).ready(function () {
             Chart.defaults.global.animation = false;
-            var refresh = function () {
-                $.getJSON("/event/ACE.Demo.Contracts.Events.InvestmentStatusCreated/s", function (data) {
-                    var keys = [], values = [];
-                    for (var k in data) {
-                        keys.push(k);
-                        values.push(data[k]);
-                    };
+            $.getJSON("/event/ACE.Demo.Contracts.Events.InvestmentStatusCreated/s", function (data) {
+                var keys = [], values = [];
+                for (var k in data) {
+                    keys.push(k);
+                    values.push(data[k]);
+                };
 
-                    var data = {
-                        labels: keys,
-                        datasets: [
-                            {
-                                label: "ACE.Demo.Contracts.Events.InvestmentStatusCreated/s",
-                                data: values
-                            }
-                        ]
-                    };
-                    var ctx = document.getElementById("myChart").getContext("2d");
-                    var myBarChart = new Chart(ctx).Bar(data);
-                });
-            };
-            refresh();
-            setInterval(refresh, 5000);
+                var data = {
+                    labels: keys,
+                    datasets: [
+                        {
+                            label: "ACE.Demo.Contracts.Events.InvestmentStatusCreated/s",
+                            fillColor: "rgba(151,187,205,0.2)",
+                            strokeColor: "rgba(151,187,205,1)",
+                            pointColor: "rgba(151,187,205,1)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(151,187,205,1)",
+                            data: values
+                        }
+                    ]
+                };
+                var ctx = document.getElementById("myChart").getContext("2d");
+                var myBarChart = new Chart(ctx).Line(data);
+            });
         });
     </script>
 </head>
